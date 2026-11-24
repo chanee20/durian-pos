@@ -149,11 +149,12 @@ table.hours td,table.hours th{padding:6px}table.hours tr.z td{color:var(--mute);
 .cs-r .t{text-align:right;font-weight:900;color:var(--green)}
 .cs-x{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;font-size:12px;color:var(--mute)}
 .cs-x label{display:flex;align-items:center;gap:4px}.cs-x input[type=date]{width:9.6em}.cs-x input:not([type=date]){width:3.3em}
-.lhead,.lrow{display:grid;grid-template-columns:4.6em repeat(3,minmax(0,1fr)) 2.3em repeat(2,minmax(0,.85fr));gap:4px;align-items:center}
-.lhead{position:sticky;top:60px;white-space:nowrap;z-index:2;background:var(--card);font-size:11px;font-weight:700;color:var(--mute);text-align:center;padding:6px 0;border-bottom:1px solid var(--line)}
+.lhead,.lrow{display:grid;grid-template-columns:3.9em 2em repeat(3,minmax(0,1fr)) 2em 2em repeat(2,minmax(0,.8fr));gap:4px;align-items:center}
+.lhead{position:sticky;top:60px;line-height:1.15;z-index:2;background:var(--card);font-size:11px;font-weight:700;color:var(--mute);text-align:center;padding:6px 0;border-bottom:1px solid var(--line)}
 .lgrp{padding:8px 0 4px;border-bottom:1px solid var(--line)}.lg-h{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 8px;margin-bottom:4px}.lg-h b{font-size:16px}.lg-h .sold{margin-left:auto;font-weight:700;color:var(--green);font-size:13px}.lg-h .sold.neg{color:var(--bad)}
 .lrow{margin-top:4px}.lrow .numf{min-height:44px;font-size:18px;padding:0}.lrow .numf.sm2{width:auto;min-height:44px;font-size:16px;background:var(--bg);border-style:dashed}.lrow .numf.sm2.set{border-style:solid}
-.lrow .t{text-align:center;font-weight:900;color:var(--green);font-size:15px}
+.lrow .ro{text-align:center;font-weight:800;font-size:15px;color:var(--mute)}.lrow .ro.sub{color:var(--green)}.lrow .ro.sold.on{color:var(--ink)}.lrow .ro.sold.neg{color:var(--bad)}
+.lhead span{font-size:10.5px}.lrow .numf{font-size:17px}.expb{font-size:11.5px!important}
 .expb{min-height:44px;border:1px solid var(--green);border-radius:10px;background:var(--card);font-size:13px;font-weight:700;color:var(--green);padding:0 2px}.expb.empty{border-style:dashed;color:var(--bad);border-color:var(--bad)}
 .addl{display:block;margin:6px 0 2px;font-size:13px}
 .csi{border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin-top:10px;background:var(--card)}
@@ -292,7 +293,7 @@ addons:[
 thresholds:[{min:3000,gift:'BAGL',skipBag:true,label:'大保冷袋'},{min:3500,gift:'PLS',fallback:'KC',label:'小抱枕'}]};
 const CB=Object.fromEntries(CAMPAIGN.combos.map(c=>[c.id,c]));
 const AD=Object.fromEntries(CAMPAIGN.addons.map(a=>[a.id,a]));
-const DEFAULT_CONFIG={staff:{tc:['美玲','淑芬'],ks:['秀英','雅惠']},pt:{'cs-yq':['Cyndi'],'cs-tc':['凱']},discountStep:10,discountCap:100,extraGiftCap:3,durianGiftCap:1,closeMode:'confirm',dealGifts:['BAGS','PLS','KC','PEN'],autoBag:true,tastingBase:1,tastingPer:10,lowStock:3,commission:0.25,admins:['行政'],codes:{"staff|tc|美玲": "36fd6609119a3ad3ed4773b060c4f676d55d0e75e976736ef691d3631e4aa517", "staff|tc|淑芬": "668b3778e6bc375a63ff31892d5e8a0a101c9dc09955e26f08abb495ac51e0e7", "staff|ks|秀英": "3a4cfba281cadcd1d679e24c8e2c00430c3ac943c9e02fc8414b82057dad66e8", "staff|ks|雅惠": "8caba75249a8842ca79ebd2a74aeede6cefc8e3726a282aad96604c727793d21", "pt|cs-yq|Cyndi": "cd20f8bb7b77ed33aa2bdbad73b25508b6f5c64d4c9c79a0b441647cf97de0be", "pt|cs-tc|凱": "4d06c59fb1317cbd2d76341a916ef3c2358c2101cb1b84487e190443fc5a67b9", "admin||行政": "effbee3feccca60353e8b131190e3a9bba544fc1b3304384f84043d1e6e1ec50"},costEnc:{"s": "Fo1bSs0b2Z1dOZyn+ViOqw==", "i": "4rG4whByUUT/XhAq", "d": "ZGWK5uQ0Z61QY92B7yQNvtF1TYijXuLmcVLYj+U2mOkhpdZSRba/osk42J59PiFRN1NJx6EFOeXpBDHCINspvQbrmx0USt1GdkMDjPo3vD4iXPRAI483+2d+i7A1OghivFwfNgq11hyuupkLGUKpUWRZnKQCGPKFTgRCU4aG1PWNmPbWn5ZWUCXzDbWsVh/m5PFXUEkRiPaeTQabLToH/ucuJ/Erx74nER0unCBP5CZ1w+jj0G8guABmp/F3VtOhd8mOKVRDcNoGA5tPeqAI2cX9bVDHLbJUEbtqE/SAyP+WSV883Ra/BI3rscZmle86C+VgfhIOcbZyMobpORmqcNosr+M8LJDgz6oBCApnEL6hz307K2rdf5KRHdiRAXRy+Ce7hCD9vlXTwDwKku8Rgt5sv0IC2dCK4y5UQr14ibUvcoWTuqNARjtXjhchAGXbACZPNKGr5fe5wevwOg==", "n": 200000},carry:{ks:{month:'2026-11',amount:234287}}};
+const DEFAULT_CONFIG={staff:{tc:['美玲','淑芬'],ks:['秀英','雅惠']},pt:{'cs-yq':['Cyndi'],'cs-tc':['凱']},discountStep:10,discountCap:100,extraGiftCap:3,durianGiftCap:1,closeMode:'confirm',dealGifts:['BAGS','PLS','KC','PEN'],autoBag:true,tastingBase:1,tastingPer:10,lowStock:3,commission:0.25,admins:['行政'],codes:{"staff|tc|美玲": "36fd6609119a3ad3ed4773b060c4f676d55d0e75e976736ef691d3631e4aa517", "staff|tc|淑芬": "668b3778e6bc375a63ff31892d5e8a0a101c9dc09955e26f08abb495ac51e0e7", "staff|ks|秀英": "3a4cfba281cadcd1d679e24c8e2c00430c3ac943c9e02fc8414b82057dad66e8", "staff|ks|雅惠": "8caba75249a8842ca79ebd2a74aeede6cefc8e3726a282aad96604c727793d21", "pt|cs-yq|Cyndi": "cd20f8bb7b77ed33aa2bdbad73b25508b6f5c64d4c9c79a0b441647cf97de0be", "pt|cs-tc|凱": "4d06c59fb1317cbd2d76341a916ef3c2358c2101cb1b84487e190443fc5a67b9", "admin||行政": "effbee3feccca60353e8b131190e3a9bba544fc1b3304384f84043d1e6e1ec50"},costEnc:{"s": "Xbdx+pWT7B/M9jfcvKphHg==", "i": "yWrDy08XVAcnCG+Z", "d": "3O1pGapAHCbATxg6PCfupCHC9x2gFohcqQO9KArilCZ702BNRq2Hxv5UzCA1YL9Cf1I7vPRYmpdsJX3wytjZdgamt3WyrU9dKsvSfNSIsacCvsah5LCkK8uF+WUHE+l/2ZdIB7veK6dtor4AXQ25H+4gxAlL6AetE5MbPeEeIj0shiNK2GBsjB94ATp2rbIBMoazg6IzIuGZ9q0p1Jak7ngcDLs7ykxUEUs6SfSMYmVFEJQIX/pyy3ig4TC8E6EAN0gm1ULFvYd7A/sqqri9isdAL/N8/K0Y7WA0p19GJ/Zc+XQl22kFKDLFZ7Dwvl6QA0h3deNd5PKp1UbYJ9oi6rbolrk1KQP+FVrGmEYraeC6XEuU93F5NS7udymc1T9x7/YD/i0bqd6qArz6qGe2P2EsloObtBbxDKMtjOeqKWQ8WxGiNcFJ73TrUnPBXUKY8yMrsy6F4pM+w/HDOg==", "n": 200000},carry:{ks:{month:'2026-11',amount:234287}}};
 const MOVE_TYPES={in:{label:'進櫃',sign:1,col:'in'},restock:{label:'補貨',sign:1,col:'re'},withdraw:{label:'寄庫提領',sign:1,col:'wd'},deposit:{label:'寄庫',sign:-1,col:'dep'},return:{label:'撤櫃回倉',sign:-1,col:'other'},waste:{label:'銷毀',sign:-1,col:'other'},tasting:{label:'試吃',sign:-1,col:'taste'},gift:{label:'贈品',sign:-1,col:'gift'},linegift:{label:'LINE@贈品',sign:-1,col:'gift'}};
 const CATS=[['combo','雙11組合'],['addon','加購'],['400','400g'],['200','200g'],['ice','冰品甜點'],['goods','周邊']];
 const PAYS=[['cash','現金'],['card','刷卡'],['voucher','商券'],['other','其他']];
@@ -477,9 +478,9 @@ const dotDate=d=>d?d.replace(/-/g,'.'):'';
 /* 跟 PT 平常貼 LINE 的格式一樣 */
 function countReport(c){const cs=countsOf(c.store);const i=cs.findIndex(x=>x.id===c.id);const prev=i>0?cs[i-1]:null;const R=consignInterval(c.store,c,prev);
   const [,m,d]=c.date.split('-').map(Number);let s=m+'/'+d+sname(c.store);
-  const part=(x,u)=>num(x.shelf)+u+'在架上，'+num(x.under)+u+'在底下'+(num(x.wh)?'，'+num(x.wh)+u+'在超市倉':'');
+  const part=(x,u)=>num(x.shelf)+u+'在架上，'+num(x.under)+u+'在底下'+(num(x.wh)?'，'+num(x.wh)+u+'在超市冷凍':'');
   for(const r of R.rows){if(!r.now)continue;const u=cunit(r.pid);
-    if(r.lots.length>1){s+='\n'+cname(r.pid)+'：總共'+r.now+u+'（'+r.lots.length+' 個效期）';for(const x of r.lots)s+='\n　'+(x.exp?'('+dotDate(x.exp)+') ':'(效期未填) ')+(num(x.shelf)+num(x.under)+num(x.wh))+u+'：'+part(x,u)+'。';s+='\n'}
+    if(r.lots.length>1){for(const x of r.lots)s+='\n'+cname(r.pid)+'：總共'+(num(x.shelf)+num(x.under)+num(x.wh))+u+'，'+part(x,u)+'。'+(x.exp?'('+dotDate(x.exp)+')。':'(效期未填)。')+'\n'}
     else{const x=r.lots[0]||r;s+='\n'+cname(r.pid)+'：總共'+r.now+u+'，'+part(x,u)+'。'+(x.exp?'('+dotDate(x.exp)+')。':'')+'\n'}}
   const lotIO=f=>{const out=[];for(const [k,l] of Object.entries(c.lines||{}))for(const x of lotsOf(l))if(num(x[f]))out.push(cname(k)+(x.exp?'('+dotDate(x.exp)+')':'')+num(x[f])+cunit(k));if(!out.length)for(const [k,q] of Object.entries((f==='in'?c.inQ:c.outQ)||{}))if(q)out.push(cname(k)+q+cunit(k));return out};
   const ins=lotIO('in'),outs=lotIO('out');
@@ -743,12 +744,17 @@ function vClose(){const s=S.session.store,d=sd();const T=sysTotals(s,d);const c=
 /* ---------- 寄賣盤點 PT ---------- */
 function ptInit(){return {date:today(),lines:{},before:[],after:[],issues:[],note:'',all:false}}
 const blank=v=>String(v??'')==='';
-/* 一個效期一列：效期｜架上｜冰箱底｜超市倉｜小計｜進貨｜其他 */
+/* 一個效期一列：效期｜總計(應有)｜架上｜冰箱底｜超市冷凍｜小記｜賣出｜進貨｜其他 —— 每個效期各算各的 */
 const shortDate=d=>d?d.slice(2).replace(/-/g,'.'):'';
-function lotLine(id,c,j,lots){const pre='pt.lines.'+id+'.lots.'+j;const x=lots[j]||{};const tot=num(x.shelf)+num(x.under)+num(x.wh);const filled=!blank(x.shelf)||!blank(x.under)||!blank(x.wh);
-  const lab=c.name+(x.exp?'（'+dotDate(x.exp)+'）':'');
+function lotPrev(last,id,exp){if(!last)return null;const ls=lotsOf((last.lines||{})[id]);const one=ls.length===1;
+  const x=ls.find(l=>(l.exp||'')===(exp||''))||(!exp&&one?ls[0]:null);if(!x)return 0;
+  let q=num(x.shelf)+num(x.under)+num(x.wh)+num(x.in)-num(x.out);if(one&&!('in' in x)&&!('out' in x))q+=num((last.inQ||{})[id])-num((last.outQ||{})[id]);return q}
+function lotLine(id,c,j,lots,last){const pre='pt.lines.'+id+'.lots.'+j;const x=lots[j]||{};const cnt=num(x.shelf)+num(x.under)+num(x.wh);const filled=!blank(x.shelf)||!blank(x.under)||!blank(x.wh);
+  const lab=c.name+(x.exp?'（'+dotDate(x.exp)+'）':'');const tot=lotPrev(last,id,x.exp);const sold=tot!=null&&filled?tot-cnt:null;
   return '<div class="lrow"><button class="expb'+(x.exp?'':' empty')+'" data-act="ptexpopen" data-v="'+id+'|'+j+'" aria-label="'+esc(c.name)+' 效期">'+(x.exp?shortDate(x.exp):'選效期')+'</button>'+
-    ['shelf','under','wh'].map(f=>numf(pre+'.'+f,lab+'・'+({shelf:'架上',under:'冰箱底',wh:'超市倉'}[f]),null)).join('')+'<div class="t">'+(filled?tot:'')+'</div>'+
+    '<div class="ro tot">'+(tot!=null?tot:'')+'</div>'+
+    ['shelf','under','wh'].map(f=>numf(pre+'.'+f,lab+'・'+({shelf:'架上',under:'冰箱底',wh:'超市冷凍'}[f]),null)).join('')+
+    '<div class="ro sub">'+(filled?cnt:'')+'</div><div class="ro sold'+(sold!=null&&sold<0?' neg':sold>0?' on':'')+'">'+(sold!=null?sold:'')+'</div>'+
     numf(pre+'.in',lab+'・本次進貨',null,'sm2')+numf(pre+'.out',lab+'・其他（退回／報廢）',null,'sm2')+'</div>'}
 function vExp(){const E=S.ui.ex;if(!E)return '';const c=CSI[E.id];const L=S.pt.lines[E.id];const x=L.lots[E.j]||{};const ch=expChoices(S.session.store,E.id);
   return '<div class="sh-h"><h2>'+esc(c.name)+' 的效期</h2><button class="x" data-act="closesheet" aria-label="關閉">×</button></div>'+
@@ -765,15 +771,16 @@ function vPT(){const s=S.session.store;if(!S.pt)S.pt=ptInit();const T=S.pt;const
   if(last&&!T.editId&&T.prefill!==last.id){for(const [k,l] of Object.entries(last.lines||{})){const ls=lotsOf(l).filter(x=>num(x.shelf)+num(x.under)+num(x.wh)+num(x.in)-num(x.out)>0||x.exp);if(!ls.length||(T.lines[k]&&(T.lines[k].lots||[]).length))continue;const ex=[...new Set(ls.map(x=>x.exp||''))];T.lines[k]={lots:ex.map(d=>({exp:d}))}}T.prefill=last.id}
   const has=id=>e[id]>0||(last&&(last.lines||{})[id])||T.lines[id];
   const items=CS_ITEMS.filter(c=>T.all||has(c.id));
-  h+='<div class="card"><h3><span class="stepno">2</span>點數量（先點，再補貨）</h3><p class="small" style="margin-top:-4px">架上、冰箱底、超市倉分開填，小計自動加。一個效期一列，跟原本的盤點表一樣。點格子跳出數字，點一下就填好並跳下一格。同一品項有新的效期，按「＋ 新增一列效期」，再點最左邊選日期。</p>';
-  h+='<div class="lhead"><span>效期</span><span>架上</span><span>冰箱底</span><span>超市倉</span><span>小計</span><span>進貨</span><span>其他</span></div>';
+  h+='<div class="card"><h3><span class="stepno">2</span>點數量（先點，再補貨）</h3><p class="small" style="margin-top:-4px">架上、冰箱底、超市冷凍分開填，小計自動加。跟原本的盤點表一樣，一個效期一列，每一列各算各的：<b>總計</b>＝上次這個效期留下的數量（含上次進貨），<b>小記</b>＝這次點到的，<b>賣出</b>＝總計－小記。點格子跳出數字，點一下就填好並跳下一格。有新的效期，按「＋ 新增一列效期」。</p>';
+  h+='<div class="lhead"><span>效期</span><span>總計</span><span>架上</span><span>冰箱底</span><span>超市冷凍</span><span>小記</span><span>賣出</span><span>進貨</span><span>其他</span></div>';
+  const lastKey=last?ckey(last.date,last.ts):'';
   let lastG='';
   for(const c of items){const id=c.id;if(!T.lines[id]||!Array.isArray(T.lines[id].lots)||!T.lines[id].lots.length){const old=T.lines[id]||{};T.lines[id]={lots:lotsOf(old).length?lotsOf(old):[{exp:(KNOWN_EXP[id]||[]).length===1?KNOWN_EXP[id][0]:''}]}}
-    const lots=T.lines[id].lots;const tot=lots.reduce((a,x)=>a+num(x.shelf)+num(x.under)+num(x.wh),0);const filled=lots.some(x=>!blank(x.shelf)||!blank(x.under)||!blank(x.wh));
+    const lots=T.lines[id].lots;
     if(c.g!==lastG){h+='<div class="cs-g '+c.g+'">'+(c.g==='d'?'榴槤':'冰品・甜點')+'</div>';lastG=c.g}
-    const sold=last&&filled?e[id]-tot:null;
-    h+='<div class="lgrp'+((S.ui.miss||[]).includes('cr-'+id)?' need':'')+'" id="cr-'+id+'"><div class="lg-h"><b>'+esc(c.name)+'</b><span class="small">'+(last?'應有 '+e[id]:'')+(lots.length>1?'・合計 '+(filled?tot:'–'):'')+'</span>'+(sold!=null?'<span class="sold'+(sold<0?' neg':'')+'">'+(sold>0?'賣出 '+sold:sold<0?'多 '+(-sold):'賣出 0')+'</span>':'')+'</div>';
-    lots.forEach((x,j)=>h+=lotLine(id,c,j,lots));
+    const adm=S.moves.filter(m=>m.store===s&&m.role!=='pt'&&(m.lines||{})[id]&&(!lastKey||ckey(m.date,m.ts)>lastKey)&&MOVE_TYPES[m.type]).reduce((a,m)=>a+MOVE_TYPES[m.type].sign*m.lines[id],0);
+    h+='<div class="lgrp'+((S.ui.miss||[]).includes('cr-'+id)?' need':'')+'" id="cr-'+id+'"><div class="lg-h"><b>'+esc(c.name)+'</b>'+(adm?'<span class="small neg">行政另有'+(adm>0?'補貨 '+adm:'退回 '+(-adm))+'（沒有效期，不在各列總計裡）</span>':'')+'</div>';
+    lots.forEach((x,j)=>h+=lotLine(id,c,j,lots,last));
     h+='<button class="lnk addl" data-act="ptlotadd" data-v="'+id+'">＋ 新增一列效期</button></div>'}
   h+='<button class="mini" style="margin-top:8px" data-act="ptall">'+(T.all?'只顯示這裡有的品項':'顯示全部 '+CS_ITEMS.length+' 個品項')+'</button></div>';
   h+='<div class="card"><h3><span class="stepno">3</span>盤點後再拍一張</h3><p class="small" style="margin-top:-4px">補完貨、排好之後拍，讓公司看擺放、冰櫃狀況</p>'+uploader('ptafter','拍盤點後照片')+thumbs(ap)+'</div>';
@@ -856,7 +863,7 @@ function vBoss(){const B=S.boss;const d=B.date||latestDate();const showC=B.store
   h+='<div class="card"><h3>匯出 Excel（CSV）</h3><div class="row"><button class="mini" data-act="csv" data-v="txn">交易明細</button><button class="mini" data-act="csv" data-v="move">庫存異動</button><button class="mini" data-act="csv" data-v="sheet">'+dlabel(d)+' 日銷表</button><button class="mini" data-act="csv" data-v="count">寄賣盤點</button></div><p class="small">用 Excel 或 Google 試算表開啟。正式版會自動寫入雲端試算表。</p></div>';
   h+=vSettings();return h+'</div>'}
 function consignTable(pt,cur,prev){const R=consignInterval(pt,cur,prev);
-  return '<div class="scroll"><table class="frz"><thead><tr><th>品項</th><th>效期</th><th>架上</th><th>冰箱底</th><th>超市倉</th><th>本次小計</th><th>上次</th><th>期間進貨</th><th>其他</th><th>推估賣出</th><th>金額</th></tr></thead><tbody>'+R.rows.map(r=>'<tr><td>'+esc(cname(r.pid))+'</td><td>'+esc(dotDate(r.exp))+'</td><td>'+(r.shelf||'')+'</td><td>'+(r.under||'')+'</td><td>'+(r.wh||'')+'</td><td class="hl">'+r.now+'</td><td>'+(r.before??'—')+'</td><td>'+(r.inQ||'')+'</td><td>'+(r.outQ||'')+'</td><td class="'+(r.sold!=null&&r.sold<0?'neg':'')+'">'+(r.sold??'—')+'</td><td>'+(r.sold>0?(r.price?fmt(r.sold*r.price):'<span class="neg">未設價</span>'):'')+'</td></tr>').join('')+'</tbody><tfoot><tr><td>合計</td><td></td><td></td><td></td><td></td><td>'+R.rows.reduce((s,r)=>s+r.now,0)+'</td><td></td><td></td><td></td><td>'+(prev?R.qty:'—')+'</td><td>'+(prev?fmt(R.amt):'')+'</td></tr></tfoot></table></div>'+
+  return '<div class="scroll"><table class="frz"><thead><tr><th>品項</th><th>效期</th><th>架上</th><th>冰箱底</th><th>超市冷凍</th><th>本次小計</th><th>上次</th><th>期間進貨</th><th>其他</th><th>推估賣出</th><th>金額</th></tr></thead><tbody>'+R.rows.map(r=>'<tr><td>'+esc(cname(r.pid))+'</td><td>'+esc(dotDate(r.exp))+'</td><td>'+(r.shelf||'')+'</td><td>'+(r.under||'')+'</td><td>'+(r.wh||'')+'</td><td class="hl">'+r.now+'</td><td>'+(r.before??'—')+'</td><td>'+(r.inQ||'')+'</td><td>'+(r.outQ||'')+'</td><td class="'+(r.sold!=null&&r.sold<0?'neg':'')+'">'+(r.sold??'—')+'</td><td>'+(r.sold>0?(r.price?fmt(r.sold*r.price):'<span class="neg">未設價</span>'):'')+'</td></tr>').join('')+'</tbody><tfoot><tr><td>合計</td><td></td><td></td><td></td><td></td><td>'+R.rows.reduce((s,r)=>s+r.now,0)+'</td><td></td><td></td><td></td><td>'+(prev?R.qty:'—')+'</td><td>'+(prev?fmt(R.amt):'')+'</td></tr></tfoot></table></div>'+
     '<p class="small">'+(prev?'自 '+dlabel(prev.date)+' 到 '+dlabel(cur.date)+'。推估賣出＝上次＋期間進貨−其他−本次。負數代表比應有的多，可能有補貨沒登錄。':'第一次盤點，下次盤點後才算得出賣出數量。')+(R.noPrice.length?' <b class="neg">'+R.noPrice.map(cname).join('、')+' 還沒設寄賣價，金額沒算進去，請到「設定」填。</b>':'')+'</p>'}
 function consignRecon(pt,month){const M=consignMonth(pt.id,month);const st=stmtOf(pt.id,month);const hasDays=st&&st.days&&Object.keys(st.days).length;
   let h='<button class="btn ghost" style="margin-top:4px" data-act="stopen" data-v="'+pt.id+'|'+month+'">'+(st?'修改':'輸入／貼上')+' '+Number(month.slice(5))+' 月百貨對帳單</button>';
@@ -950,7 +957,7 @@ function csvOf(kind){const B=S.boss;const d=B.date||latestDate();const ids=STORE
     for(const t of S.txns.filter(t=>ids.includes(t.store)).sort((a,b)=>(a.date+a.store+String(a.no).padStart(4,'0')).localeCompare(b.date+b.store+String(b.no).padStart(4,'0'))))
       t.items.forEach((i,n)=>rows.push([t.date,t.time,sname(t.store),t.no,t.staff,i.name,i.qty,i.unit,i.total,n?'':t.discount,n?'':t.total,n?'':t.pay.cash,n?'':t.pay.card,n?'':t.pay.voucher,n?'':t.pay.other,n?'':t.giftText,n?'':(t.deal||{}).reason||'',n?'':lineTxt((t.deal||{}).gifts),n?'':t.note,t.voided?'作廢：'+t.voidReason:'']))}
   else if(kind==='move'){rows.push(['日期','店','類型','品項','數量','經手人','原因','備註']);for(const m of S.moves.filter(m=>ids.includes(m.store)).sort((a,b)=>a.date.localeCompare(b.date)))for(const [k,q] of Object.entries(m.lines))rows.push([m.date,sname(m.store),mvLabel(m),cname(k),q,m.by,m.reason,m.note||''])}
-  else if(kind==='count'){rows.push(['日期','寄賣點','盤點人','品項','保存期限','架上','冰箱底','超市倉','小計','本次進貨','其他','回報']);for(const c of S.counts.filter(c=>ids.includes(c.store)).sort((a,b)=>a.date.localeCompare(b.date)))for(const k of csList(Object.keys(c.lines||{})).filter(k=>(c.lines||{})[k]||(c.inQ||{})[k]||(c.outQ||{})[k])){const ls=lotsOf((c.lines||{})[k]);(ls.length?ls:[{}]).forEach((l,j)=>rows.push([c.date,sname(c.store),c.by,cname(k),l.exp||'',num(l.shelf),num(l.under),num(l.wh),num(l.shelf)+num(l.under)+num(l.wh),j?'':(c.inQ||{})[k]||'',j?'':(c.outQ||{})[k]||'',(c.issues||[]).join('、')]))}}
+  else if(kind==='count'){rows.push(['日期','寄賣點','盤點人','品項','保存期限','架上','冰箱底','超市冷凍','小計','本次進貨','其他','回報']);for(const c of S.counts.filter(c=>ids.includes(c.store)).sort((a,b)=>a.date.localeCompare(b.date)))for(const k of csList(Object.keys(c.lines||{})).filter(k=>(c.lines||{})[k]||(c.inQ||{})[k]||(c.outQ||{})[k])){const ls=lotsOf((c.lines||{})[k]);(ls.length?ls:[{}]).forEach((l,j)=>rows.push([c.date,sname(c.store),c.by,cname(k),l.exp||'',num(l.shelf),num(l.under),num(l.wh),num(l.shelf)+num(l.under)+num(l.wh),j?'':(c.inQ||{})[k]||'',j?'':(c.outQ||{})[k]||'',(c.issues||[]).join('、')]))}}
   else{rows.push(['日期','店','品項','前日庫存','今日銷售','贈品','試吃','進貨','補貨','今日合計','其他','可銷售數量','收櫃實點']);for(const s of ids.filter(i=>COUNTERS.some(c=>c.id===i))){const st=stockTable(s,d);const c=closeOf(s,d);for(const p of PRODUCTS){const r=st[p.id];if(!r.any)continue;rows.push([d,sname(s),pname(p.id),r.prev,r.sold,r.gift,r.taste,r.in,r.re,r.out,r.other,r.avail,c&&c.counts?c.counts[p.id]??'':''])}}}
   return {name:({txn:'交易明細',move:'庫存異動',count:'寄賣盤點',sheet:'日銷表-'+d}[kind])+'.csv',text:rows.map(csvLine).join('\r\n')}}
 
