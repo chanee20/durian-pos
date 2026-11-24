@@ -149,12 +149,15 @@ table.hours td,table.hours th{padding:6px}table.hours tr.z td{color:var(--mute);
 .cs-r .t{text-align:right;font-weight:900;color:var(--green)}
 .cs-x{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;font-size:12px;color:var(--mute)}
 .cs-x label{display:flex;align-items:center;gap:4px}.cs-x input[type=date]{width:9.6em}.cs-x input:not([type=date]){width:3.3em}
+.lot{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) 3.3em 3.3em 3.3em 2.2em;gap:6px;align-items:center;margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}.lot .nm{display:flex;gap:8px;align-items:center}
+.cs-e{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:12px;color:var(--mute)}.cs-e .chip.sm{min-height:34px;padding:4px 10px;font-size:13px}.cs-e input[type=date]{width:9.6em}
 .cs-x .io{flex-basis:100%;display:flex;gap:14px;padding-left:2.4em}
 .cs-x .sold{margin-left:auto;font-weight:700;color:var(--green);font-size:13px}.cs-x .sold.neg{color:var(--bad)}
 .cpg{display:grid;grid-template-columns:repeat(auto-fill,minmax(9.5em,1fr));gap:6px 10px}.cpg label{display:flex;align-items:center;justify-content:space-between;gap:6px;font-size:13px}.cpg input{width:5em}
 .lnk{border:0;background:none;color:var(--green);font-weight:700;text-decoration:underline;padding:0;font:inherit}
 .need{outline:3px solid var(--bad)!important;outline-offset:2px;border-radius:10px;animation:pulse 1s ease-out 2}
 @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(180,35,24,.5)}100%{box-shadow:0 0 0 12px rgba(180,35,24,0)}}
+.guard.ok{background:var(--ok-soft);border-color:var(--ok);color:var(--ink)}
 .guard{background:var(--bad-soft);border:2px solid var(--bad);color:var(--bad);border-radius:14px;padding:12px 14px;margin-top:14px;font-size:16px;line-height:1.5}.guard b{display:block;font-size:18px;margin-bottom:4px}
 .acc{border:1px solid var(--line);border-radius:14px;margin-bottom:8px;background:var(--card);overflow:hidden}
 .acc-h{width:100%;border:0;background:none;display:flex;align-items:center;gap:10px;min-height:56px;padding:0 14px;font-size:17px;text-align:left;color:var(--ink)}
@@ -276,8 +279,8 @@ addons:[
 thresholds:[{min:3000,gift:'BAGL',skipBag:true,label:'大保冷袋'},{min:3500,gift:'PLS',fallback:'KC',label:'小抱枕'}]};
 const CB=Object.fromEntries(CAMPAIGN.combos.map(c=>[c.id,c]));
 const AD=Object.fromEntries(CAMPAIGN.addons.map(a=>[a.id,a]));
-const DEFAULT_CONFIG={staff:{tc:['美玲','淑芬'],ks:['秀英','雅惠']},pt:{'cs-yq':['Cyndi'],'cs-tc':['凱']},discountStep:10,discountCap:100,extraGiftCap:1,durianGiftCap:1,closeMode:'confirm',dealGifts:['BAGS','PLS','KC','PEN'],autoBag:true,tastingBase:1,tastingPer:10,lowStock:3,commission:0.25,adminPin:'2222',costEnc:{"s": "JZlKCLo6q2yB/BsQiWuwCQ==", "i": "ycAL55ssWGoDlLQ3", "d": "uXBvZAA/nT2snhPYqzXLGsbMeRLR6Ipi2GBdfi9hs/vFq8UByN1/xso1nZ4tTNf4P2OoN6ILphB6kHOUs7mjcrHAv5LF0n26z73K3liRXH2sQ7Nf3dstRMAlXK+xJEzr8xdLxKCgMqnSr330h+NSSTTcLpILVhm+qQs6OZhRwSIlSjFQHkdCPEmB963/ff2iBWSMavtm7BRBQSbo5HsRVK5Kn59GOMmeaA6DSSi3EUJttnqYkBtVPf45EfuSNsOtWosv4wDJMU+M9z2QrGOeLprE6WTZ2wJqroGboYXS7vwQ9ZwR7GorQjAizbXWtAJVVGnf9yKNtureXn++G6N+o4AhYlupB68l4xeVr4P8/1hiWIoB/e0K2T1LYcS+o+QTe1BEtIsIs1rhd7AnU7xjxyR2cXU51ZLxoq7Vun5YZ85m1J+6Q6I/Jg/jL+C8wqaSjYPPPh8ku2VCPHFmsQ==", "n": 200000},carry:{ks:{month:'2026-11',amount:234287}}};
-const MOVE_TYPES={in:{label:'進櫃',sign:1,col:'in'},restock:{label:'補貨',sign:1,col:'re'},withdraw:{label:'寄庫提領',sign:1,col:'wd'},deposit:{label:'寄庫',sign:-1,col:'dep'},return:{label:'撤櫃回倉',sign:-1,col:'other'},waste:{label:'銷毀',sign:-1,col:'other'},tasting:{label:'試吃',sign:-1,col:'taste'},gift:{label:'贈品',sign:-1,col:'gift'}};
+const DEFAULT_CONFIG={staff:{tc:['美玲','淑芬'],ks:['秀英','雅惠']},pt:{'cs-yq':['Cyndi'],'cs-tc':['凱']},discountStep:10,discountCap:100,extraGiftCap:1,durianGiftCap:1,closeMode:'confirm',dealGifts:['BAGS','PLS','KC','PEN'],autoBag:true,tastingBase:1,tastingPer:10,lowStock:3,commission:0.25,adminPin:'2222',costEnc:{"s": "Ek3d9lO/uSho7zQg+ofhZw==", "i": "Lf3sBe0ShZqU4VZp", "d": "kcSjDK6RydxpbFrp/HAFy1xVAKez+oADJZQk6VjXpboUCjZZjGDdnD/p2zf2iJK0Kyrg2X/mBFMZ0/aJxynmCN9MrUF86N5q3n8gK2IwY1qz3dA+0MTJy3GqjlDVgGj6n/i7CihCqCryTwTqw12oUdNcVH9qUF4YFDVEbLSYBFfCf7OXknOWb4EZBhyV/ijyeoLJkl/t413aSEsLY57vUSUxbVpg406jBQcxQpi3TAYhFbxauvj6Dttc8hM3jg2zlqK4KA6OlybPVJvnqXFeirduUd189tv1ggvoz6fQ6BjzmCetqo8Homuh9wKyc9rZqy9amLanpY8n0AyHHgzMOPGTX6/J93bj4YEbL+D651e2m+PxsXzPCArIgcNScsH20taP61HEBMMsUGxPpFSVytF5NBGXv8tyHW/u3229zMpBelaASOxrmWp4q90AZychfg9My1GAmmd4xQ3ZTA==", "n": 200000},carry:{ks:{month:'2026-11',amount:234287}}};
+const MOVE_TYPES={in:{label:'進櫃',sign:1,col:'in'},restock:{label:'補貨',sign:1,col:'re'},withdraw:{label:'寄庫提領',sign:1,col:'wd'},deposit:{label:'寄庫',sign:-1,col:'dep'},return:{label:'撤櫃回倉',sign:-1,col:'other'},waste:{label:'銷毀',sign:-1,col:'other'},tasting:{label:'試吃',sign:-1,col:'taste'},gift:{label:'贈品',sign:-1,col:'gift'},linegift:{label:'LINE@贈品',sign:-1,col:'gift'}};
 const CATS=[['combo','雙11組合'],['addon','加購'],['400','400g'],['200','200g'],['ice','冰品甜點'],['goods','周邊']];
 const PAYS=[['cash','現金'],['card','刷卡'],['voucher','商券'],['other','其他']];
 const ISSUES=['擺太高','擺不夠滿','角度歪','結霜嚴重','價卡缺漏','包裝破損','溫度異常','其他'];
@@ -315,7 +318,7 @@ async function openCosts(pin){const e=cfg().costEnc||DEFAULT_CONFIG.costEnc;try{
 async function sealCosts(pin,costs){const salt=crypto.getRandomValues(new Uint8Array(16)),iv=crypto.getRandomValues(new Uint8Array(12)),n=200000;const k=await pinKey(pin,salt,n);const ct=await crypto.subtle.encrypt({name:'AES-GCM',iv},k,new TextEncoder().encode(JSON.stringify({v:1,c:costs})));return {s:tob64(salt),i:tob64(iv),d:tob64(ct),n}}
 const costOf=k=>(S.costs&&S.costs[k])||0;
 function cogs(store,date){let c=0;for(const t of dayTxns(store,date)){if(t.voided)continue;for(const k in t.sold)c+=costOf(k)*t.sold[k];for(const k in t.gifts)c+=costOf(k)*t.gifts[k]}
-  for(const m of S.moves)if(m.store===store&&m.date===date&&['tasting','gift','waste'].includes(m.type))for(const k in m.lines)c+=costOf(k)*m.lines[k];return c}
+  for(const m of S.moves)if(m.store===store&&m.date===date&&['tasting','gift','waste','linegift'].includes(m.type))for(const k in m.lines)c+=costOf(k)*m.lines[k];return c}
 const marginTile=(tot,cg,extra)=>S.costs?'<div class="kpi"><span>商品毛利</span><b>'+money(tot-cg)+'</b><i>毛利率 '+(tot?Math.round((tot-cg)/tot*100):0)+'%'+(extra||'')+'</i></div>':'';
 const sd=()=>S.sdate||today();
 const cprice=id=>{const v=(cfg().cprice||{})[id];return v!=null&&v!==''?num(v):(P[id]?P[id].price:0)};
@@ -363,12 +366,12 @@ function calc(cart,deal,bagQty,disc,store,date,opt={}){
   const bag=bagQty==null?((C.autoBag&&cartHasDurian(cart)&&!hasBag)?1:0):bagQty;
   if(bag>0){gifts.BAGS=(gifts.BAGS||0)+bag;giftList.push({pid:'BAGS',qty:bag,src:'隨單附袋',bag:true})}
   let dealCount=0,dealCost=0;for(const [k,q] of Object.entries(deal.gifts||{})){if(!q)continue;dealCount+=q;dealCost+=P[k].price*q;gifts[k]=(gifts[k]||0)+q;giftList.push({pid:k,qty:q,src:'爭取成交',deal:true})}
-  let durN=0;for(const [k,q] of Object.entries(deal.durian||{})){if(!q)continue;durN+=q;dealCost+=P[k].price*q;gifts[k]=(gifts[k]||0)+q;giftList.push({pid:k,qty:q,src:'送榴槤',deal:true,durian:true})}
+  let durN=0;for(const [k,q] of Object.entries(deal.durian||{})){if(!q)continue;durN+=q;dealCost+=P[k].price*q;gifts[k]=(gifts[k]||0)+q;giftList.push({pid:k,qty:q,src:'送榴槤商品',deal:true,durian:true})}
   if(avail)for(const k of new Set([...Object.keys(sold),...Object.keys(gifts)])){const n=need(k);if(n>avail[k])errors.push(pname(k)+' 庫存不夠：需要 '+n+'，可售只剩 '+Math.max(0,avail[k]))}
   if(!opt.skipRules){
     if(d>C.discountCap)errors.push('折價超過每單上限 '+money(C.discountCap)+'，請找主管');
     if(dealCount>C.extraGiftCap)errors.push('加送小禮超過每單上限 '+C.extraGiftCap+' 個，請找主管');
-    if(durN>(C.durianGiftCap??1))errors.push('送榴槤超過每單上限 '+(C.durianGiftCap??1)+' 盒，請找主管');
+    if(durN>(C.durianGiftCap??1))errors.push('送榴槤商品超過每單上限 '+(C.durianGiftCap??1)+' 件，請找主管');
     if(d>subtotal)errors.push('折價不能大於小計')}
   taxable=subtotal?Math.round(taxable*total/subtotal):0;
   return {items,sold,gifts,giftList,subtotal,disc:d,total,base,errors,warns,hint,taxable,bag,dealCount,dealCost,durN};
@@ -399,27 +402,32 @@ function report(store,date){
   const top=Object.entries(st).filter(([,r])=>r.sold>0).sort((a,b)=>b[1].sold-a[1].sold).slice(0,3).map(([k,r])=>pname(k)+' '+r.sold).join('、');
   let match='尚未收櫃';if(c)match=c.diff===0?'✅ 與帳條吻合':'⚠️ 與帳條差 '+money(c.diff);
   const taste=Object.values(st).reduce((s,r)=>s+r.taste,0),gift=Object.values(st).reduce((s,r)=>s+r.gift,0);
-  const voids=dayTxns(store,date).filter(t=>t.voided).length;
+  const voids=dayTxns(store,date).filter(t=>t.voided).length;const lineG=S.moves.filter(m=>m.store===store&&m.date===date&&m.type==='linegift').reduce((a,m)=>a+Object.values(m.lines).reduce((x,y)=>x+y,0),0);
   let s='【榴槤村日報】'+dlabel(date)+'\n'+sname(store)+'｜櫃姐 '+staff+'\n營業額 '+money(T.total)+'（'+T.count+' 筆）'+match+'\n現金 '+fmt(T.cash)+'｜刷卡 '+fmt(T.card)+'｜商券 '+fmt(T.voucher)+(T.other?'｜其他 '+fmt(T.other):'');
   if(c&&c.counted)s+='\n庫存盤點 '+(c.blindDiff&&c.blindDiff.length?'⚠️ '+c.blindDiff.length+' 項不符：'+c.blindDiff.map(x=>pname(x.pid)+(x.diff>0?' 多 ':' 少 ')+Math.abs(x.diff)).join('、'):'✅ 全部對上');
-  if(top)s+='\n熱銷：'+top;s+='\n試吃 '+taste+'・贈品 '+gift;
-  if(T.dealN)s+='\n爭取成交 '+T.dealN+' 筆：折價 '+money(T.disc)+(T.dealGiftN?'＋加送小禮 '+T.dealGiftN+' 個':'')+(T.dealDurN?'＋送榴槤 '+T.dealDurN+' 盒':'');
+  if(top)s+='\n熱銷：'+top;s+='\n試吃 '+taste+'・贈品 '+gift+(lineG?'（含加 LINE@ 送 '+lineG+'）':'');
+  if(T.dealN)s+='\n爭取成交 '+T.dealN+' 筆：折價 '+money(T.disc)+(T.dealGiftN?'＋加送小禮 '+T.dealGiftN+' 個':'')+(T.dealDurN?'＋送榴槤商品 '+T.dealDurN+' 件':'');
   if(voids)s+='\n⚠️ 作廢 '+voids+' 筆';
   s+='\n當月累積 '+money(mtd(store,date));return s;
 }
 /* ---------- 寄賣盤點計算 ---------- */
 const countsOf=pt=>S.counts.filter(c=>c.store===pt).sort((a,b)=>(a.date+String(a.ts).padStart(15,'0')).localeCompare(b.date+String(b.ts).padStart(15,'0')));
-const cTotal=(c,k)=>{const l=(c.lines||{})[k];return l?num(l.shelf)+num(l.under)+num(l.wh):0};
+const lotsOf=l=>l?[{shelf:l.shelf,under:l.under,wh:l.wh,exp:l.exp},...(l.lots||[])]:[];
+const lotSum=(l,f)=>lotsOf(l).reduce((a,x)=>a+num(x[f]),0);
+const cTotal=(c,k)=>{const l=(c.lines||{})[k];return l?lotSum(l,'shelf')+lotSum(l,'under')+lotSum(l,'wh'):0};
+/* 倉庫（逢泰）庫存表上看到的效期，盤點時可以直接點選 */
+const KNOWN_EXP={HZH400:['2027-12-31','2027-10-31'],LS400:['2027-10-31'],JB400:['2027-10-31'],JF400:['2027-10-31'],SDH400:['2027-05-14'],LGB400:['2027-05-14'],PF1:['2027-10-06'],PF6:['2027-09-12']};
+function expChoices(store,id){const set=new Set(KNOWN_EXP[id]||[]);for(const c of countsOf(store))for(const x of lotsOf((c.lines||{})[id]))if(x.exp)set.add(x.exp);return [...set].sort()}
 const ckey=(date,ts)=>date+'|'+String(ts||0).padStart(15,'0');
 /* 兩次盤點之間的補貨／退回：用日期＋時間排序，盤點當下一起登錄的進貨算到下一段 */
-function movesBetween(pt,prev,curKey){const r={in:{},out:{}};const pk=prev?ckey(prev.date,prev.ts):'';for(const m of S.moves){if(m.store!==pt)continue;const k=ckey(m.date,m.ts);if((pk&&k<=pk)||k>curKey)continue;const T=MOVE_TYPES[m.type];if(!T)continue;sumMap(T.sign>0?r.in:r.out,m.lines)}return r}
+function movesBetween(pt,prev,curKey,excl){const r={in:{},out:{}};const pk=prev?ckey(prev.date,prev.ts):'';for(const m of S.moves){if(m.store!==pt)continue;if(excl&&String(m.id).startsWith(excl))continue;const k=ckey(m.date,m.ts);if((pk&&k<=pk)||k>curKey)continue;const T=MOVE_TYPES[m.type];if(!T)continue;sumMap(T.sign>0?r.in:r.out,m.lines)}return r}
 const csList=extra=>{const ids=CS_ITEMS.map(c=>c.id);for(const k of extra)if(!ids.includes(k))ids.push(k);return ids};
 function consignInterval(pt,cur,prev){const mv=movesBetween(pt,prev,ckey(cur.date,cur.ts));const rows=[];let qty=0,amt=0,noPrice=[];
   for(const id of csList(Object.keys(cur.lines||{}))){const L=(cur.lines||{})[id]||{};const now=cTotal(cur,id),before=prev?cTotal(prev,id):null,inQ=mv.in[id]||0,outQ=mv.out[id]||0;
     if(!now&&!before&&!inQ&&!outQ&&!(cur.lines||{})[id])continue;const sold=prev?before+inQ-outQ-now:null;const pr=cprice(id);
-    if(sold!=null&&sold>0){qty+=sold;amt+=sold*pr;if(!pr)noPrice.push(id)}rows.push({pid:id,before,inQ,outQ,now,shelf:num(L.shelf),under:num(L.under),wh:num(L.wh),exp:L.exp||'',sold,price:pr})}
+    if(sold!=null&&sold>0){qty+=sold;amt+=sold*pr;if(!pr)noPrice.push(id)}rows.push({pid:id,before,inQ,outQ,now,shelf:lotSum(L,'shelf'),under:lotSum(L,'under'),wh:lotSum(L,'wh'),exp:lotsOf(L).map(x=>x.exp).filter(Boolean).join('、')||'',lots:lotsOf(L).filter(x=>num(x.shelf)+num(x.under)+num(x.wh)),sold,price:pr})}
   return {rows,qty,amt,noPrice}}
-function consignExpected(pt,date){const cs=countsOf(pt).filter(c=>c.date<=date);const last=cs[cs.length-1];const mv=movesBetween(pt,last,ckey(date,9e14));const e={};
+function consignExpected(pt,date,excl){const cs=countsOf(pt).filter(c=>c.date<=date&&c.id!==excl);const last=cs[cs.length-1];const mv=movesBetween(pt,last,ckey(date,9e14),excl);const e={};
   for(const id of csList(Object.keys(P)))e[id]=(last?cTotal(last,id):0)+(mv.in[id]||0)-(mv.out[id]||0);return {last,e}}
 function consignMonth(pt,month){const cs=countsOf(pt);let amt=0,qty=0;const parts=[];const noPrice=new Set();for(let i=1;i<cs.length;i++)if(cs[i].date.slice(0,7)===month){const r=consignInterval(pt,cs[i],cs[i-1]);amt+=r.amt;qty+=r.qty;r.noPrice.forEach(x=>noPrice.add(x));parts.push({from:cs[i-1].date,to:cs[i].date,by:cs[i].by,qty:r.qty,amt:r.amt})}
   const st=S.statements.find(s=>s.id===pt+'-'+month);return {amt,qty,parts,noPrice:[...noPrice],n:cs.filter(c=>c.date.slice(0,7)===month).length,statement:st?st.amount:null}}
@@ -452,7 +460,10 @@ const dotDate=d=>d?d.replace(/-/g,'.'):'';
 /* 跟 PT 平常貼 LINE 的格式一樣 */
 function countReport(c){const cs=countsOf(c.store);const i=cs.findIndex(x=>x.id===c.id);const prev=i>0?cs[i-1]:null;const R=consignInterval(c.store,c,prev);
   const [,m,d]=c.date.split('-').map(Number);let s=m+'/'+d+sname(c.store);
-  for(const r of R.rows){if(!r.now)continue;const u=cunit(r.pid);s+='\n'+cname(r.pid)+'：總共'+r.now+u+'，'+r.shelf+u+'在架上，'+r.under+u+'在底下'+(r.wh?'，'+r.wh+u+'在超市倉':'')+'。'+(r.exp?'('+dotDate(r.exp)+')。':'')+'\n'}
+  const part=(x,u)=>num(x.shelf)+u+'在架上，'+num(x.under)+u+'在底下'+(num(x.wh)?'，'+num(x.wh)+u+'在超市倉':'');
+  for(const r of R.rows){if(!r.now)continue;const u=cunit(r.pid);
+    if(r.lots.length>1){s+='\n'+cname(r.pid)+'：總共'+r.now+u+'（'+r.lots.length+' 個效期）';for(const x of r.lots)s+='\n　'+(x.exp?'('+dotDate(x.exp)+') ':'(效期未填) ')+(num(x.shelf)+num(x.under)+num(x.wh))+u+'：'+part(x,u)+'。';s+='\n'}
+    else{const x=r.lots[0]||r;s+='\n'+cname(r.pid)+'：總共'+r.now+u+'，'+part(x,u)+'。'+(x.exp?'('+dotDate(x.exp)+')。':'')+'\n'}}
   const ins=Object.entries(c.inQ||{}).filter(([,q])=>q),outs=Object.entries(c.outQ||{}).filter(([,q])=>q);
   if(ins.length)s+='\n本次進貨：'+ins.map(([k,q])=>cname(k)+q+cunit(k)).join('、');
   if(outs.length)s+='\n本次其他（退回／報廢）：'+outs.map(([k,q])=>cname(k)+q+cunit(k)).join('、');
@@ -604,7 +615,7 @@ function vSell(){if(sd()<today())return vSellPast();const st=stockTable(S.sessio
   return h+'</div>';
 }
 /* ---------- 防呆：按了才告訴她缺什麼，並跳到那一格 ---------- */
-function guardBox(){const g=S.ui.guard;if(!g||!g.list.length)return '';return '<div class="guard" role="alert"><b>'+(g.confirm?'請再確認一次':'還差一點')+'</b>'+g.list.map(x=>'<div>・'+esc(x)+'</div>').join('')+'</div>'}
+function guardBox(){const g=S.ui.guard;if(!g||!g.list.length)return '';return '<div class="guard'+(g.title?' ok':'')+'" role="alert"><b>'+(g.title||(g.confirm?'請再確認一次':'還差一點'))+'</b>'+g.list.map(x=>'<div>・'+esc(x)+'</div>').join('')+'</div>'}
 function blockIf(list,miss,confirmKey){S.ui.guard=list.length?{list,confirm:!miss.length&&!!confirmKey}:null;S.ui.miss=miss;if(list.length){S.ui.jump=miss[0]||'guard';if(navigator.vibrate)try{navigator.vibrate(120)}catch(e){}return true}return false}
 function vCart(){const C=cfg();const R=curCalc();let h='<div class="sh-h"><h2>結帳明細</h2><button class="x" data-act="closesheet" aria-label="關閉">×</button></div>';
   if(!S.cart.length)return h+'<p class="small">購物車是空的。</p>';
@@ -618,21 +629,21 @@ function vCart(){const C=cfg();const R=curCalc();let h='<div class="sh-h"><h2>�
   const st0=stockTable(S.session.store,today());const leftOf=k=>st0[k].avail-(R.sold[k]||0)-(R.gifts[k]||0);const O=S.ui.dopen||(S.ui.dopen={});
   const row=(key,title,sum,body,warn)=>'<div class="acc'+(O[key]?' open':'')+(warn?' need':'')+'" id="acc-'+key+'"><button class="acc-h" data-act="dopen" data-v="'+key+'" aria-expanded="'+(O[key]?'true':'false')+'"><b>'+title+'</b><span class="acc-s'+(sum?' on':'')+'">'+(sum||'沒有')+'</span><span class="chev">'+(O[key]?'︿':'﹀')+'</span></button>'+(O[key]?'<div class="acc-b">'+body+'</div>':'')+'</div>';
   h+='<div class="sec">爭取成交（需要時才打開，總經理每天看得到）</div>';
-  h+=row('disc','① 折價',R.disc?'已折 '+money(R.disc):'','<div class="row"><button class="big-step" data-act="dstep" data-d="-1"'+(S.deal.steps?'':' disabled')+' aria-label="少折">−$'+C.discountStep+'</button><div class="grow c"><b class="dv">'+money(R.disc)+'</b><div class="small">每按一次 $'+C.discountStep+'・上限 '+money(C.discountCap)+'</div></div><button class="big-step gold" data-act="dstep" data-d="1" aria-label="多折">＋$'+C.discountStep+'</button></div>');
-  const smallSum=Object.entries(S.deal.gifts).filter(([,q])=>q).map(([k,q])=>pname(k)+'×'+q).join('、');
-  h+=row('gift','② 加送小禮',smallSum,'<div class="small" style="margin-bottom:6px">每單最多 '+C.extraGiftCap+' 個，點一下加 1 個</div><div class="chips wrap" style="padding:0">'+C.dealGifts.map(k=>{const q=S.deal.gifts[k]||0;const l=leftOf(k);return '<button class="chip'+(q?' on':'')+'" data-act="dgift" data-v="'+k+'"'+(l<1&&!q?' disabled':'')+'>'+esc(pname(k))+(q?' ×'+q:'')+(l<1&&!q?'（沒貨）':'')+'</button>'}).join('')+'</div>'+(smallSum?'<button class="mini" style="margin-top:8px" data-act="dgiftclr">全部取消</button>':''));
   const durSum=Object.entries(S.deal.durian||{}).filter(([,q])=>q).map(([k,q])=>pname(k)+'×'+q).join('、');
-  const durs=SHOP.filter(p=>DURIAN_CATS.includes(p.cat)&&(leftOf(p.id)>0||(S.deal.durian||{})[p.id]));
-  h+=row('dur','③ 送榴槤（盒裝）',durSum,'<div class="small" style="margin-bottom:6px">原本的「贈品」改在這裡。每單最多 '+(C.durianGiftCap??1)+' 盒，金額較高，總經理會特別標出來。</div>'+(durs.length?durs.map(p=>{const q=(S.deal.durian||{})[p.id]||0;return '<div class="line"><div><div class="nm">'+esc(pname(p.id))+'</div><div class="sub">剩 '+leftOf(p.id)+'</div></div><div class="step"><button data-act="ddur" data-v="'+p.id+'" data-d="-1"'+(q?'':' disabled')+' aria-label="減少">−</button><span>'+q+'</span><button data-act="ddur" data-v="'+p.id+'" data-d="1"'+(leftOf(p.id)<1?' disabled':'')+' aria-label="增加">＋</button></div><div></div></div>'}).join(''):'<p class="small">櫃上沒有榴槤庫存</p>'));
+  const durs=['ICSDH','ICMSW'].map(k=>P[k]).concat(SHOP.filter(p=>DURIAN_CATS.includes(p.cat))).filter(p=>p&&(leftOf(p.id)>0||(S.deal.durian||{})[p.id]));
+  h+=row('dur','① 送榴槤商品',durSum,'<div class="small" style="margin-bottom:6px">原本的「贈品」改在這裡。冰淇淋或盒裝榴槤，每單最多 '+(C.durianGiftCap??1)+' 件，金額較高，總經理會特別標出來。</div>'+(durs.length?durs.map(p=>{const q=(S.deal.durian||{})[p.id]||0;return '<div class="line"><div><div class="nm">'+esc(pname(p.id))+'</div><div class="sub">剩 '+leftOf(p.id)+'</div></div><div class="step"><button data-act="ddur" data-v="'+p.id+'" data-d="-1"'+(q?'':' disabled')+' aria-label="減少">−</button><span>'+q+'</span><button data-act="ddur" data-v="'+p.id+'" data-d="1"'+(leftOf(p.id)<1?' disabled':'')+' aria-label="增加">＋</button></div><div></div></div>'}).join(''):'<p class="small">櫃上沒有榴槤庫存</p>'));
+  h+=row('disc','② 折價',R.disc?'已折 '+money(R.disc):'','<div class="row"><button class="big-step" data-act="dstep" data-d="-1"'+(S.deal.steps?'':' disabled')+' aria-label="少折">−$'+C.discountStep+'</button><div class="grow c"><b class="dv">'+money(R.disc)+'</b><div class="small">每按一次 $'+C.discountStep+'・上限 '+money(C.discountCap)+'</div></div><button class="big-step gold" data-act="dstep" data-d="1" aria-label="多折">＋$'+C.discountStep+'</button></div>');
+  const smallSum=Object.entries(S.deal.gifts).filter(([,q])=>q).map(([k,q])=>pname(k)+'×'+q).join('、');
+  h+=row('gift','③ 加送小禮',smallSum,'<div class="small" style="margin-bottom:6px">每單最多 '+C.extraGiftCap+' 個，點一下加 1 個</div><div class="chips wrap" style="padding:0">'+C.dealGifts.map(k=>{const q=S.deal.gifts[k]||0;const l=leftOf(k);return '<button class="chip'+(q?' on':'')+'" data-act="dgift" data-v="'+k+'"'+(l<1&&!q?' disabled':'')+'>'+esc(pname(k))+(q?' ×'+q:'')+(l<1&&!q?'（沒貨）':'')+'</button>'}).join('')+'</div>'+(smallSum?'<button class="mini" style="margin-top:8px" data-act="dgiftclr">全部取消</button>':''));
   if(R.disc||R.dealCount||R.durN){const miss=(S.ui.miss||[]).includes('reason');
-    h+='<div class="reason'+(miss?' need':'')+'" id="reason"><b>為什麼讓利？（一定要點一個）</b><div class="chips wrap" style="padding:6px 0 0">'+['客人議價','湊整數','老客人','其他'].map(r=>'<button class="chip'+(S.deal.reason===r?' on':'')+'" data-act="dreason" data-v="'+r+'">'+r+'</button>').join('')+'</div><div class="small">這單讓利：'+[R.disc?'折價 '+money(R.disc):'',R.dealCount?'小禮 '+R.dealCount+' 個':'',R.durN?'榴槤 '+R.durN+' 盒':''].filter(Boolean).join('＋')+'（讓利約 '+money(R.disc+R.dealCost)+'，以售價計）</div></div>'}
+    h+='<div class="reason'+(miss?' need':'')+'" id="reason"><b>為什麼讓利？（一定要點一個）</b><div class="chips wrap" style="padding:6px 0 0">'+['客人議價','湊整數','老客人','其他'].map(r=>'<button class="chip'+(S.deal.reason===r?' on':'')+'" data-act="dreason" data-v="'+r+'">'+r+'</button>').join('')+'</div><div class="small">這單讓利：'+[R.disc?'折價 '+money(R.disc):'',R.dealCount?'小禮 '+R.dealCount+' 個':'',R.durN?'送榴槤商品 '+R.durN+' 件':''].filter(Boolean).join('＋')+'（讓利約 '+money(R.disc+R.dealCost)+'，以售價計）</div></div>'}
   h+='<div class="sec">金額</div><div class="sum"><span>小計</span><b class="num">'+money(R.subtotal)+'</b></div>'+(R.disc?'<div class="sum"><span>折價</span><b class="num">−'+money(R.disc)+'</b></div>':'')+'<div class="sum big"><span>應收</span><b>'+money(R.total)+'</b></div>';
   const paid=PAYS.reduce((s,[k])=>s+num(S.pay[k]),0),rest=R.total-paid;
   const pm=(S.ui.miss||[]).includes('pay');h+='<div class="sec">付款（可以拆付）</div><div id="paybox" class="'+(pm?'need':'')+'">'+PAYS.map(([k,l])=>'<div class="field"><label for="pay-'+k+'">'+l+'</label><input id="pay-'+k+'" class="in r" inputmode="numeric" placeholder="0" value="'+esc(S.pay[k])+'" data-bind="pay.'+k+'"><button class="mini" data-act="payall" data-v="'+k+'">全額</button></div>').join('')+'</div>';
-  h+=paid===0?'<div class="msg warn">客人怎麼付？點「全額」最快</div>':rest===0?'<div class="msg ok">付款金額正確</div>':'<div class="msg '+(rest>0?'warn':'bad')+'">'+(rest>0?'還差 '+money(rest):'多收 '+money(-rest)+'，請改金額')+'</div>';
+  h+=paid===0?'<div class="msg warn">客人怎麼付？點「全額」最快</div>':rest===0?'<div class="msg ok">付款金額正確</div>':'<div class="msg bad">'+(rest>0?'少收 '+money(rest):'多收 '+money(-rest))+'，請再按一次「全額」按鈕，讓金額正確，才能確認結帳</div>';
   h+='<input id="note" class="in" placeholder="收銀備註（卡別、發票號碼等，選填）" value="'+esc(S.note)+'" data-bind="note" style="margin-top:6px">';
   R.errors.forEach(e=>h+='<div class="msg bad">'+esc(e)+'</div>');
-  return h+guardBox()+'<button class="btn" data-act="checkout">'+(S.ui.confirm==='checkout'?'數量沒錯，確認結帳 ':'確認結帳 ')+money(R.total)+'</button><button class="btn ghost" data-act="clearcart">清空購物車</button>';
+  return h+guardBox()+'<button class="btn" data-act="checkout">'+(S.ui.confirm==='checkout'?'沒錯，確認結帳 ':'結帳 ')+money(R.total)+'</button><button class="btn ghost" data-act="clearcart">清空購物車</button>';
 }
 function txnLines(ts){return ts.map(t=>'<div class="line"><div><div class="nm">#'+t.no+' '+esc(t.time)+(t.voided?'<span class="tag red">已作廢</span>':'')+(t.deal&&t.deal.cost?'<span class="tag">讓利 '+fmt(t.deal.cost)+'</span>':'')+'</div><div class="sub">'+esc(t.itemText)+'・'+esc(t.staff)+'</div><div class="sub">'+PAYS.filter(([k])=>t.pay[k]).map(([k,l])=>l+' '+fmt(t.pay[k])).join('・')+'</div></div><div class="amt">'+money(t.total)+'</div><div></div></div>').join('')}
 function vSellPast(){const d=sd();const ts=dayTxns(S.session.store,d);const T=sysTotals(S.session.store,d);
@@ -646,11 +657,11 @@ function vTxns(){const ts=dayTxns(S.session.store,today());let h='<div class="sh
     if(S.ui.voidId===t.id)h+='<div class="card" style="margin-top:8px"><input id="voidr" class="in" placeholder="作廢原因（必填）" value="'+esc(S.ui.voidReason||'')+'" data-bind="ui.voidReason"><button class="btn bad" data-act="voidok" data-v="'+t.id+'"'+(String(S.ui.voidReason||'').trim()?'':' disabled')+'>確認作廢第 '+t.no+' 筆</button></div>'}
   return h}
 function vTaste(){const d=sd(),past=d<today();const M=S.mv;if(M.type==='gift')M.type='tasting';
-  const todays=S.moves.filter(m=>m.store===S.session.store&&m.date===d&&['tasting','gift','waste'].includes(m.type)).sort((a,b)=>b.ts-a.ts);
+  const todays=S.moves.filter(m=>m.store===S.session.store&&m.date===d&&['tasting','gift','waste','linegift'].includes(m.type)).sort((a,b)=>b.ts-a.ts);
   const logged='<div class="sec">'+(past?dlabel(d):'今天')+'已登錄</div><div class="card">'+(todays.length?todays.map(m=>'<div class="line"><div><b>'+MOVE_TYPES[m.type].label+'</b><span class="tag'+(m.over?' red':'')+'">'+esc(m.reason)+'</span><div class="sub">'+esc(lineTxt(m.lines))+'・'+esc(m.by)+'</div></div><div></div><div class="small">'+esc(m.time||'')+'</div></div>').join(''):'<p class="small">沒有紀錄</p>')+'</div>';
   if(past)return '<h1>試吃・銷毀</h1><div class="msg gold">過去的日期只能查看。</div>'+logged;
-  const st=stockTable(S.session.store,today());const reasons={tasting:['開盒試吃'],waste:['過期','破損','退冰']}[M.type];
-  let h='<h1>試吃・銷毀</h1><p class="small" style="margin-top:-8px">贈品在結帳時選，會自動扣庫存；這裡只登錄試吃和銷毀</p><div class="seg">'+[['tasting','試吃'],['waste','銷毀']].map(([k,l])=>'<button class="'+(M.type===k?'on':'')+'" data-act="mvtype" data-v="'+k+'">'+l+'</button>').join('')+'</div>';
+  const st=stockTable(S.session.store,today());const reasons={tasting:['開盒試吃'],waste:['過期','破損','退冰'],linegift:['加入LINE@']}[M.type];
+  let h='<h1>試吃・銷毀・LINE@</h1><p class="small" style="margin-top:-8px">結帳時送的贈品在結帳頁選；這裡登錄試吃、銷毀、客人加入 LINE@ 送的贈品，都會扣庫存</p><div class="seg">'+[['tasting','試吃'],['waste','銷毀'],['linegift','加入LINE@贈品']].map(([k,l])=>'<button class="'+(M.type===k?'on':'')+'" data-act="mvtype" data-v="'+k+'">'+l+'</button>').join('')+'</div>';
   h+='<div class="chips wrap">'+reasons.map(r=>'<button class="chip sm'+(M.reason===r?' on':'')+'" data-act="mvreason" data-v="'+r+'">'+r+'</button>').join('')+'</div>';
   const list=SHOP.filter(p=>st[p.id].avail>0||M.q[p.id]);let over=[];
   h+='<div class="card">'+(list.length?'':'<p class="small">這個櫃位目前沒有庫存，請行政先登錄進櫃。</p>');
@@ -661,7 +672,7 @@ function vTaste(){const d=sd(),past=d<today();const M=S.mv;if(M.type==='gift')M.
   if(M.type==='waste')h+=uploader('wastefile','拍銷毀照片（必附）')+(M.photo?'<div class="msg ok">已附照片</div>':'');
   h+='<input id="mvnote" class="in'+((S.ui.miss||[]).includes('mvnote')?' need':'')+'" style="margin-top:8px" placeholder="'+(over.length?'超過原因（必填）':'備註（選填）')+'" value="'+esc(M.note)+'" data-bind="mv.note">';
   const ok=total>0&&M.reason&&!bad&&(!over.length||M.note.trim())&&(M.type!=='waste'||M.photo);
-  h+=guardBox()+'<button class="btn" data-act="mvsave">登錄'+({tasting:'試吃',waste:'銷毀'}[M.type])+' '+total+' 件</button>';
+  h+=guardBox()+'<button class="btn" data-act="mvsave">登錄'+({tasting:'試吃',waste:'銷毀',linegift:'LINE@贈品'}[M.type])+' '+total+' 件</button>';
   return h+logged}
 function dailyBlock(store,date,showAll){const ts=dayTxns(store,date);const T=sysTotals(store,date);const st=stockTable(store,date);const m=mtd(store,date);const c=closeOf(store,date);
   const staff=[...new Set(ts.map(t=>t.staff))].join('、')||'—';
@@ -716,25 +727,32 @@ function vClose(){const s=S.session.store,d=sd();const T=sysTotals(s,d);const c=
 /* ---------- 寄賣盤點 PT ---------- */
 function ptInit(){return {date:today(),lines:{},before:[],after:[],issues:[],note:'',all:false}}
 const blank=v=>String(v??'')==='';
-function vPT(){const s=S.session.store;if(!S.pt)S.pt=ptInit();const T=S.pt;const {last,e}=consignExpected(s,T.date);
+function lotRow(id,c,j,L){const pre='pt.lines.'+id+(j?'.lots.'+(j-1):'');const x=j?(L.lots||[])[j-1]||{}:L;const tot=num(x.shelf)+num(x.under)+num(x.wh);const filled=!blank(x.shelf)||!blank(x.under)||!blank(x.wh);
+  const ch=expChoices(S.session.store,id);
+  return (j?'<div class="lot"><div class="nm"><span class="small">第 '+(j+1)+' 個效期</span><button class="lnk" data-act="ptlotdel" data-v="'+id+'|'+(j-1)+'">刪除</button></div>':'')+
+    (j?['shelf','under','wh'].map(f=>numf(pre+'.'+f,c.name+'（第 '+(j+1)+' 個效期）・'+({shelf:'架上',under:'冰箱底',wh:'超市倉'}[f]),null)).join('')+'<div class="t">'+(filled?tot:'')+'</div>':'')+
+    '<div class="cs-e">效期'+ch.map(d=>'<button class="chip sm'+(x.exp===d?' on':'')+'" data-act="ptexp" data-v="'+pre+'|'+d+'">'+dotDate(d)+'</button>').join('')+'<input id="pt-exp-'+id+'-'+j+'" type="date" class="in sm" value="'+esc(x.exp||'')+'" data-bind="'+pre+'.exp" aria-label="'+esc(c.name)+' 效期"></div>'+(j?'</div>':'')}
+function vPT(){const s=S.session.store;if(!S.pt)S.pt=ptInit();const T=S.pt;const {last,e}=consignExpected(s,T.date,T.editId);
   let h=topBar(sname(s),S.session.name+' · 寄賣盤點')+'<div class="main nobar"><h1>'+esc(sname(s))+' 盤點</h1>';
-  h+='<div class="field" style="grid-template-columns:5em minmax(0,1fr)"><label for="ptd">盤點日期</label><input id="ptd" type="date" class="in" value="'+T.date+'" data-act-in="ptdate"></div>';
+  if(T.editId)h+='<div class="msg gold">正在修改 '+dlabel(T.date)+' 已送出的盤點。改好按最下面「儲存修改」。<button class="lnk" data-act="ptcancel">不改了</button></div>';
+  h+='<div class="field" style="grid-template-columns:5em minmax(0,1fr)"><label for="ptd">盤點日期</label>'+(T.editId?'<b>'+dlabel(T.date)+'</b>':'<input id="ptd" type="date" class="in" value="'+T.date+'" max="'+today()+'" data-act-in="ptdate">')+'</div>';
   h+='<p class="small">'+(last?'上次盤點：'+dlabel(last.date)+'・'+esc(last.by):'這是第一次盤點，會當作基準')+'</p>';
   const bp=T.before.map(photoById).filter(Boolean),ap=T.after.map(photoById).filter(Boolean);
   h+='<div class="card"><h3><span class="stepno">1</span>盤點前拍一張冰櫃</h3>'+uploader('ptbefore','拍盤點前照片')+thumbs(bp)+'</div>';
-  if(last&&T.prefill!==last.id){for(const [k,l] of Object.entries(last.lines||{}))if(l.exp){T.lines[k]=T.lines[k]||{};if(!T.lines[k].exp)T.lines[k].exp=l.exp}T.prefill=last.id}
+  if(last&&!T.editId&&T.prefill!==last.id){for(const [k,l] of Object.entries(last.lines||{})){const ls=lotsOf(l);if(!ls.some(x=>x.exp))continue;T.lines[k]=T.lines[k]||{};if(!T.lines[k].exp)T.lines[k].exp=ls[0].exp;if(ls.length>1&&!(T.lines[k].lots||[]).length)T.lines[k].lots=ls.slice(1).map(x=>({exp:x.exp}))}T.prefill=last.id}
   const has=id=>e[id]>0||(last&&(last.lines||{})[id])||T.lines[id];
   const items=CS_ITEMS.filter(c=>T.all||has(c.id));
-  h+='<div class="card"><h3><span class="stepno">2</span>點數量（先點，再補貨）</h3><p class="small" style="margin-top:-4px">跟你的盤點表一樣：架上、冰箱底、超市倉分開填，小計自動加。點格子會跳出數字，點一下就填好並跳下一格。帶貨來補的填「進貨」，收走或報廢的填「其他」。效期會帶上次的。</p>';
+  h+='<div class="card"><h3><span class="stepno">2</span>點數量（先點，再補貨）</h3><p class="small" style="margin-top:-4px">架上、冰箱底、超市倉分開填，小計自動加。點格子跳出數字，點一下就填好並跳下一格。<b>同一個品項有兩種效期</b>，按「＋另一個效期」分開點。效期可以直接點日期按鈕。</p>';
   h+='<div class="cs-h"><div>品項</div><div>架上</div><div>冰箱底</div><div>超市倉</div><div>小計</div></div>';
   let lastG='';
-  for(const c of items){const id=c.id;const L=T.lines[id]||{};const tot=num(L.shelf)+num(L.under)+num(L.wh);const filled=!blank(L.shelf)||!blank(L.under)||!blank(L.wh);
+  for(const c of items){const id=c.id;const L=T.lines[id]||{};const tot=lotSum(L,'shelf')+lotSum(L,'under')+lotSum(L,'wh');const filled=lotsOf(L).some(x=>!blank(x.shelf)||!blank(x.under)||!blank(x.wh));const n=(L.lots||[]).length;
     if(c.g!==lastG){h+='<div class="cs-g '+c.g+'">'+(c.g==='d'?'榴槤':'冰品・甜點')+'</div>';lastG=c.g}
     const sold=last&&filled?e[id]-tot:null;
-    h+='<div class="cs-r'+((S.ui.miss||[]).includes('cr-'+id)?' need':'')+'" id="cr-'+id+'"><div class="nm"><b>'+esc(c.name)+'</b><span class="small">'+(last?'應有 '+e[id]:'')+'</span></div>'+
-      ['shelf','under','wh'].map(f=>numf('pt.lines.'+id+'.'+f,c.name+'・'+({shelf:'架上',under:'冰箱底',wh:'超市倉'}[f]),null)).join('')+
-      '<div class="t">'+(filled?tot:'')+'</div>'+
-      '<div class="cs-x"><label>效期<input id="pt-exp-'+id+'" type="date" class="in sm" value="'+esc(L.exp||'')+'" data-bind="pt.lines.'+id+'.exp" aria-label="'+esc(c.name)+' 效期"></label>'+(sold!=null?'<span class="sold'+(sold<0?' neg':'')+'">'+(sold>0?'賣出 '+sold:sold<0?'多 '+(-sold):'賣出 0')+'</span>':'')+'<div class="io"><label>進貨'+numf('pt.lines.'+id+'.in',c.name+'・本次進貨',null,'sm2')+'</label><label>其他'+numf('pt.lines.'+id+'.out',c.name+'・其他（退回／報廢）',null,'sm2')+'</label></div></div></div>'}
+    h+='<div class="cs-r'+((S.ui.miss||[]).includes('cr-'+id)?' need':'')+'" id="cr-'+id+'"><div class="nm"><b>'+esc(c.name)+'</b><span class="small">'+(last?'應有 '+e[id]:'')+(n?'・共 '+(n+1)+' 個效期，合計 '+tot:'')+'</span></div>'+
+      ['shelf','under','wh'].map(f=>numf('pt.lines.'+id+'.'+f,c.name+(n?'（第 1 個效期）':'')+'・'+({shelf:'架上',under:'冰箱底',wh:'超市倉'}[f]),null)).join('')+
+      '<div class="t">'+(filled?(n?num(L.shelf)+num(L.under)+num(L.wh):tot):'')+'</div>'+lotRow(id,c,0,L);
+    for(let j=1;j<=n;j++)h+=lotRow(id,c,j,L);
+    h+='<div class="cs-x"><button class="mini" data-act="ptlotadd" data-v="'+id+'">＋另一個效期</button>'+(sold!=null?'<span class="sold'+(sold<0?' neg':'')+'">'+(sold>0?'賣出 '+sold:sold<0?'多 '+(-sold):'賣出 0')+'</span>':'')+'<div class="io"><label>進貨'+numf('pt.lines.'+id+'.in',c.name+'・本次進貨',null,'sm2')+'</label><label>其他'+numf('pt.lines.'+id+'.out',c.name+'・其他（退回／報廢）',null,'sm2')+'</label></div></div></div>'}
   h+='<button class="mini" style="margin-top:8px" data-act="ptall">'+(T.all?'只顯示這裡有的品項':'顯示全部 '+CS_ITEMS.length+' 個品項')+'</button></div>';
   h+='<div class="card"><h3><span class="stepno">3</span>盤點後再拍一張</h3><p class="small" style="margin-top:-4px">補完貨、排好之後拍，讓公司看擺放、冰櫃狀況</p>'+uploader('ptafter','拍盤點後照片')+thumbs(ap)+'</div>';
   h+='<div class="card"><h3><span class="stepno">4</span>現場有什麼要回報？</h3><div class="chips wrap">'+ISSUES.map(k=>'<button class="chip sm'+(T.issues.includes(k)?' on':'')+'" data-act="ptissue" data-v="'+k+'">'+k+'</button>').join('')+'</div><input id="ptn" class="in" placeholder="補充說明（選填）" value="'+esc(T.note)+'" data-bind="pt.note"></div>';
@@ -743,9 +761,9 @@ function vPT(){const s=S.session.store;if(!S.pt)S.pt=ptInit();const T=S.pt;const
   const any=Object.values(T.lines).some(L=>!blank(L.shelf)||!blank(L.under)||!blank(L.wh));
   const ok=bp.length&&ap.length&&!missing.length&&any;
 
-  h+=guardBox()+'<button class="btn" data-act="ptsave">'+(S.ui.confirm==='pt'?'我確認過了，送出盤點':'送出盤點・產生 LINE 回報')+'</button>';
-  const hist=countsOf(s).reverse().slice(0,8);
-  h+='<div class="sec">盤點紀錄</div><div class="card">'+(hist.length?hist.map(c=>'<div class="line"><div><b>'+dlabel(c.date)+'</b> <span class="small">'+esc(c.by)+'</span>'+(c.issues&&c.issues.length?'<div class="sub">回報：'+esc(c.issues.join('、'))+'</div>':'')+'</div><div></div><div class="num">'+csList(Object.keys(c.lines||{})).reduce((t,id)=>t+cTotal(c,id),0)+' 件</div></div>').join(''):'<p class="small">還沒有紀錄</p>')+'</div>';
+  h+=guardBox()+'<button class="btn" data-act="ptsave">'+(S.ui.confirm==='pt'?'我確認過了，'+(T.editId?'儲存修改':'送出盤點'):(T.editId?'儲存修改・重新產生 LINE 回報':'送出盤點・產生 LINE 回報'))+'</button>';
+  const hist=countsOf(s).reverse().slice(0,8);h+='<p class="small" style="margin:18px 0 -8px">送出後當天發現錯誤可以按「修改」；過了當天就鎖定，不能再改。</p>';
+  h+='<div class="sec">盤點紀錄</div><div class="card">'+(hist.length?hist.map(c=>'<div class="line"><div><b>'+dlabel(c.date)+'</b> <span class="small">'+esc(c.by)+(c.edited?'・已修改':'')+'</span>'+(c.issues&&c.issues.length?'<div class="sub">回報：'+esc(c.issues.join('、'))+'</div>':'')+'</div><div>'+(c.date===today()&&T.editId!==c.id?'<button class="mini" data-act="ptedit" data-v="'+c.id+'">修改</button>':c.date<today()?'<span class="small">已鎖定</span>':'')+'</div><div class="num">'+csList(Object.keys(c.lines||{})).reduce((t,id)=>t+cTotal(c,id),0)+' 件</div></div>').join(''):'<p class="small">還沒有紀錄</p>')+'</div>';
   if(S.ui.lastCountRep)h+='<div class="sec">剛送出的盤點（跟平常貼 LINE 的格式一樣）</div><pre class="rep">'+esc(S.ui.lastCountRep)+'</pre><button class="btn ghost" data-act="copytxt">複製，貼到 LINE 群組</button>';
   return h+'</div>'}
 
@@ -796,7 +814,7 @@ function vBoss(){const B=S.boss;const d=B.date||latestDate();const showC=B.store
     h+='</div>'}
   h+='</div>';
   const al=alerts(d,B.store);h+='<div class="card"><h3>要注意的事（'+al.length+'）</h3>'+(al.length?al.map(a=>'<div class="msg '+a.lv+'">'+esc(a.t)+'</div>').join(''):'<div class="msg ok">今天沒有異常</div>')+'</div>';
-  h+='<div class="card"><h3>爭取成交：誰讓了多少</h3><div class="scroll"><table><thead><tr><th>櫃位・櫃姐</th><th>交易</th><th>讓利筆數</th><th>折價</th><th>加送小禮</th><th>送榴槤</th><th>讓利金額</th></tr></thead><tbody>';let any=false;
+  h+='<div class="card"><h3>爭取成交：誰讓了多少</h3><div class="scroll"><table><thead><tr><th>櫃位・櫃姐</th><th>交易</th><th>讓利筆數</th><th>折價</th><th>加送小禮</th><th>送榴槤商品</th><th>讓利金額</th></tr></thead><tbody>';let any=false;
   for(const s of stores){const by=staffDeals(s.id,d);for(const [n,b] of Object.entries(by)){any=true;h+='<tr><td>'+esc(s.name.slice(0,4)+'・'+n)+'</td><td>'+b.n+'</td><td class="'+(b.deals/b.n>0.5?'neg':'')+'">'+b.deals+'</td><td>'+fmt(b.disc)+'</td><td>'+b.giftN+'</td><td class="'+(b.durN?'neg':'')+'">'+(b.durN||'')+'</td><td>'+fmt(b.cost)+'</td></tr>'}}
   h+=(any?'':'<tr><td colspan="7" class="l small">這天沒有交易</td></tr>')+'</tbody></table></div>';
   const dl=[];for(const s of stores)for(const t of dayTxns(s.id,d))if(!t.voided&&t.deal&&t.deal.cost)dl.push('<div class="line"><div><b>'+esc(s.name.slice(0,4))+' #'+t.no+'</b> <span class="small">'+esc(t.staff)+'・'+esc(t.deal.reason||'')+'</span><div class="sub">'+esc(t.itemText)+(t.deal.discount?'・折 '+money(t.deal.discount):'')+(Object.keys(t.deal.gifts||{}).length?'・送 '+esc(lineTxt(t.deal.gifts)):'')+(Object.keys(t.deal.durian||{}).length?'・送榴槤 '+esc(lineTxt(t.deal.durian)):'')+'</div></div><div></div><div class="amt">'+money(t.total)+'</div></div>');
@@ -880,7 +898,7 @@ function vSettings(){const c=S.ui.cfg||(S.ui.cfg=clone(cfg()));if(!c.costEdit&&S
   let h='<details class="card"'+(S.ui.setOpen?' open':'')+'><summary data-act="settoggle">設定</summary>';
   for(const s of COUNTERS)h+='<div class="field" style="grid-template-columns:8em minmax(0,1fr)"><label for="sf-'+s.id+'">'+s.name+' 櫃姐</label><input id="sf-'+s.id+'" class="in" value="'+esc((c.staffText||{})[s.id]??(c.staff[s.id]||[]).join('、'))+'" data-bind="ui.cfg.staffText.'+s.id+'" placeholder="用頓號分隔"></div>';
   for(const s of CONSIGNS)h+='<div class="field" style="grid-template-columns:8em minmax(0,1fr)"><label for="pf-'+s.id+'">'+esc(s.name)+' 盤點</label><input id="pf-'+s.id+'" class="in" value="'+esc((c.ptText||{})[s.id]??((c.pt||{})[s.id]||[]).join('、'))+'" data-bind="ui.cfg.ptText.'+s.id+'" placeholder="用頓號分隔"></div>';
-  for(const [k,l] of [['discountCap','每單折價上限（元）'],['discountStep','每按一次折幾元'],['extraGiftCap','每單加送小禮上限（個）'],['durianGiftCap','每單送榴槤上限（盒）'],['tastingBase','試吃：每天基本盒數'],['tastingPer','試吃：每賣幾盒多 1 盒'],['lowStock','低庫存提醒'],['adminPin','行政 PIN']])h+='<div class="field" style="grid-template-columns:11em minmax(0,1fr)"><label for="cf-'+k+'">'+l+'</label><input id="cf-'+k+'" class="in r" inputmode="numeric" value="'+esc(c[k])+'" data-bind="ui.cfg.'+k+'"></div>';
+  for(const [k,l] of [['discountCap','每單折價上限（元）'],['discountStep','每按一次折幾元'],['extraGiftCap','每單加送小禮上限（個）'],['durianGiftCap','每單送榴槤商品上限（件）'],['tastingBase','試吃：每天基本盒數'],['tastingPer','試吃：每賣幾盒多 1 盒'],['lowStock','低庫存提醒'],['adminPin','行政 PIN']])h+='<div class="field" style="grid-template-columns:11em minmax(0,1fr)"><label for="cf-'+k+'">'+l+'</label><input id="cf-'+k+'" class="in r" inputmode="numeric" value="'+esc(c[k])+'" data-bind="ui.cfg.'+k+'"></div>';
   h+='<div class="field" style="grid-template-columns:11em minmax(0,1fr)"><label for="cf-com">百貨抽成 %</label><input id="cf-com" class="in r" inputmode="numeric" value="'+esc(c.commissionPct??Math.round(c.commission*100))+'" data-bind="ui.cfg.commissionPct"></div>';
   h+='<div class="sec">寄賣價（推估寄賣金額用；空白＝用櫃位定價）</div><div class="cpg">'+CS_ITEMS.map(ci=>'<label>'+esc(ci.name)+'<input id="cp-'+ci.id+'" class="in r sm" inputmode="numeric" placeholder="'+(P[ci.id].price||'未設')+'" value="'+esc((c.cprice||{})[ci.id]??'')+'" data-bind="ui.cfg.cprice.'+ci.id+'"></label>').join('')+'</div>';
   h+='<div class="sec">櫃姐可以加送的小禮</div><div class="chips wrap">'+['BAGS','BAGL','PLS','KC','PEN','ICSDH'].map(k=>'<button class="chip sm'+(c.dealGifts.includes(k)?' on':'')+'" data-act="cfggift" data-v="'+k+'">'+esc(pname(k))+'</button>').join('')+'</div>';
@@ -905,7 +923,7 @@ function csvOf(kind){const B=S.boss;const d=B.date||latestDate();const ids=STORE
     for(const t of S.txns.filter(t=>ids.includes(t.store)).sort((a,b)=>(a.date+a.store+String(a.no).padStart(4,'0')).localeCompare(b.date+b.store+String(b.no).padStart(4,'0'))))
       t.items.forEach((i,n)=>rows.push([t.date,t.time,sname(t.store),t.no,t.staff,i.name,i.qty,i.unit,i.total,n?'':t.discount,n?'':t.total,n?'':t.pay.cash,n?'':t.pay.card,n?'':t.pay.voucher,n?'':t.pay.other,n?'':t.giftText,n?'':(t.deal||{}).reason||'',n?'':lineTxt((t.deal||{}).gifts),n?'':t.note,t.voided?'作廢：'+t.voidReason:'']))}
   else if(kind==='move'){rows.push(['日期','店','類型','品項','數量','經手人','原因','備註']);for(const m of S.moves.filter(m=>ids.includes(m.store)).sort((a,b)=>a.date.localeCompare(b.date)))for(const [k,q] of Object.entries(m.lines))rows.push([m.date,sname(m.store),mvLabel(m),cname(k),q,m.by,m.reason,m.note||''])}
-  else if(kind==='count'){rows.push(['日期','寄賣點','盤點人','品項','保存期限','架上','冰箱底','超市倉','小計','本次進貨','其他','回報']);for(const c of S.counts.filter(c=>ids.includes(c.store)).sort((a,b)=>a.date.localeCompare(b.date)))for(const k of csList(Object.keys(c.lines||{})).filter(k=>(c.lines||{})[k]||(c.inQ||{})[k]||(c.outQ||{})[k])){const l=(c.lines||{})[k]||{};rows.push([c.date,sname(c.store),c.by,cname(k),l.exp||'',num(l.shelf),num(l.under),num(l.wh),num(l.shelf)+num(l.under)+num(l.wh),(c.inQ||{})[k]||'',(c.outQ||{})[k]||'',(c.issues||[]).join('、')])}}
+  else if(kind==='count'){rows.push(['日期','寄賣點','盤點人','品項','保存期限','架上','冰箱底','超市倉','小計','本次進貨','其他','回報']);for(const c of S.counts.filter(c=>ids.includes(c.store)).sort((a,b)=>a.date.localeCompare(b.date)))for(const k of csList(Object.keys(c.lines||{})).filter(k=>(c.lines||{})[k]||(c.inQ||{})[k]||(c.outQ||{})[k])){const ls=lotsOf((c.lines||{})[k]);(ls.length?ls:[{}]).forEach((l,j)=>rows.push([c.date,sname(c.store),c.by,cname(k),l.exp||'',num(l.shelf),num(l.under),num(l.wh),num(l.shelf)+num(l.under)+num(l.wh),j?'':(c.inQ||{})[k]||'',j?'':(c.outQ||{})[k]||'',(c.issues||[]).join('、')]))}}
   else{rows.push(['日期','店','品項','前日庫存','今日銷售','贈品','試吃','進貨','補貨','今日合計','其他','可銷售數量','收櫃實點']);for(const s of ids.filter(i=>COUNTERS.some(c=>c.id===i))){const st=stockTable(s,d);const c=closeOf(s,d);for(const p of PRODUCTS){const r=st[p.id];if(!r.any)continue;rows.push([d,sname(s),pname(p.id),r.prev,r.sold,r.gift,r.taste,r.in,r.re,r.out,r.other,r.avail,c&&c.counts?c.counts[p.id]??'':''])}}}
   return {name:({txn:'交易明細',move:'庫存異動',count:'寄賣盤點',sheet:'日銷表-'+d}[kind])+'.csv',text:rows.map(csvLine).join('\r\n')}}
 
@@ -964,21 +982,24 @@ const A={
   async checkout(){const R=curCalc();const paid=PAYS.reduce((s,[k])=>s+num(S.pay[k]),0);const list=[...R.errors],miss=[];
     if((R.disc||R.dealCount||R.durN)&&!S.deal.reason){list.push('有讓利，請點一個「為什麼讓利」');miss.push('reason')}
     if(paid===0){list.push('還沒選付款方式：點現金、刷卡或商券旁邊的「全額」');miss.push('paybox')}
-    else if(paid!==R.total){list.push(paid<R.total?'付款還差 '+money(R.total-paid):'付款多了 '+money(paid-R.total)+'，請改金額');miss.push('paybox')}
+    else if(paid!==R.total){list.push((paid<R.total?'少收 '+money(R.total-paid):'多收 '+money(paid-R.total))+'，請再按一次「全額」按鈕，讓金額正確，才能確認結帳');miss.push('paybox')}
     if(blockIf(list,miss))return render();
     if(S.ui.confirm!=='checkout'){const big=S.cart.filter(i=>i.qty>=5).map(i=>(i.kind==='product'?pname(i.ref):i.kind==='combo'?CB[i.ref].name:AD[i.ref].name)+' ×'+i.qty);const cl=[];
-      if(big.length)cl.push(big.join('、')+'：數量對嗎？');if(R.total>=20000)cl.push('這單 '+money(R.total)+'，金額比較大，請再看一次');if(R.durN)cl.push('這單有送榴槤 '+R.durN+' 盒');
-      if(cl.length){S.ui.confirm='checkout';S.ui.guard={list:cl,confirm:true};S.ui.jump='guard';return render()}}
+      if(big.length)cl.push(big.join('、')+'：數量對嗎？');if(R.total>=20000)cl.push('這單 '+money(R.total)+'，金額比較大，請再看一次');if(R.durN)cl.push('這單有送榴槤商品 '+R.durN+' 件');
+      const buy=S.cart.map(i=>(i.kind==='product'?pname(i.ref):i.kind==='combo'?CB[i.ref].name:AD[i.ref].name)+' ×'+i.qty);
+      const gl=(R.giftList||[]).filter(g=>g.qty).map(g=>pname(g.pid)+' ×'+g.qty+'（'+g.src+'）');const pays=PAYS.filter(([k])=>num(S.pay[k])).map(([k,l])=>l+' '+money(num(S.pay[k])));
+      const list=['買：'+buy.join('、')];if(gl.length)list.push('送：'+gl.join('、'));if(R.disc)list.push('折價 '+money(R.disc));list.push('應收 '+money(R.total)+'，'+pays.join('＋'));
+      S.ui.confirm='checkout';S.ui.guard={title:'請確認購買以下項目',list:[...list,...cl.map(x=>'⚠️ '+x)],confirm:true};S.ui.jump='guard';return render()}
     S.ui.guard=null;S.ui.confirm=null;
     const t=buildTxn({store:S.session.store,date:today(),staff:S.session.name,cart:S.cart,deal:S.deal,bag:S.bagQty,disc:curDisc(),steps:S.deal.steps,reason:S.deal.reason,pay:S.pay,note:S.note});
     if(await Store.save('txns',t)){S.last=t;resetCart();S.sheet='done'}render()},
   voidask(v){S.ui.voidId=v;S.ui.voidReason=''},
   async voidok(v){const t=S.txns.find(x=>x.id===v);if(!t||!String(S.ui.voidReason||'').trim())return;const n={...t,voided:true,voidReason:S.ui.voidReason.trim(),voidBy:S.session.name,voidTs:Date.now()};S.ui.voidId=null;await Store.save('txns',n);toast('第 '+t.no+' 筆已作廢，庫存已回補');render()},
-  mvtype(v){S.mv={type:v,reason:v==='tasting'?'開盒試吃':'',q:{},photo:false,note:''}},
+  mvtype(v){S.mv={type:v,reason:v==='tasting'?'開盒試吃':v==='linegift'?'加入LINE@':'',q:{},photo:false,note:''}},
   mvreason(v){S.mv.reason=v;S.ui.guard=null},
   mvq(v,el){S.mv.q[v]=String(Math.max(0,num(S.mv.q[v])+ +el.dataset.d))},
   async mvsave(){const M=S.mv;const lines={};for(const [k,v] of Object.entries(M.q))if(num(v))lines[k]=num(v);
-    {const st=stockTable(S.session.store,today());const list=[],miss=[];if(!Object.keys(lines).length)list.push('請用 ＋ 點要'+(M.type==='waste'?'銷毀':'試吃')+'的商品數量');
+    {const st=stockTable(S.session.store,today());const list=[],miss=[];if(!Object.keys(lines).length)list.push('請用 ＋ 點要'+({waste:'銷毀',tasting:'試吃',linegift:'送給加 LINE@ 客人'}[M.type])+'的商品數量');
       if(M.type==='waste'&&!M.reason)list.push('請點一個銷毀原因（過期／破損／退冰）');
       const bad=Object.entries(lines).filter(([k,q])=>q>st[k].avail);if(bad.length)list.push(bad.map(([k])=>pname(k)).join('、')+' 數量比可售還多');
       const over=M.type==='tasting'&&Object.entries(lines).some(([k,q])=>q>tasteAllowance(S.session.store,today(),k));if(over&&!M.note.trim()){list.push('試吃超過規則，請在備註寫原因');miss.push('mvnote')}
@@ -1011,23 +1032,37 @@ const A={
   ptall(){S.pt.all=!S.pt.all},
   ptissue(v){const i=S.pt.issues.indexOf(v);if(i>=0)S.pt.issues.splice(i,1);else S.pt.issues.push(v)},
   async ptsave(){const T=S.pt,s=S.session.store;const lines={},inQ={},outQ={};
-    {const {last,e}=consignExpected(s,T.date);const list=[],miss=[];const has=id=>e[id]>0||(last&&(last.lines||{})[id])||T.lines[id];
-      const filled=id=>{const L=T.lines[id]||{};return !blank(L.shelf)||!blank(L.under)||!blank(L.wh)};
+    const lotFilled=x=>!blank(x.shelf)||!blank(x.under)||!blank(x.wh);const filled=id=>lotsOf(T.lines[id]||{}).some(lotFilled);
+    {const {last,e}=consignExpected(s,T.date,T.editId);const list=[],miss=[];
       if(!T.before.length){list.push('第 1 步：還沒拍盤點前的照片');miss.push('up-ptbefore')}
       const left=CS_ITEMS.filter(c=>e[c.id]>0&&!filled(c.id));if(left.length){list.push('第 2 步：還有 '+left.length+' 項沒填（'+left.slice(0,4).map(c=>c.name).join('、')+(left.length>4?'…':'')+'），沒有就填 0');left.forEach(c=>miss.push('cr-'+c.id))}
       if(!CS_ITEMS.some(c=>filled(c.id))&&!left.length){list.push('第 2 步：還沒填任何數量')}
+      const noExp=CS_ITEMS.filter(c=>{const ls=lotsOf(T.lines[c.id]||{});return ls.length>1&&ls.some(x=>lotFilled(x)&&!x.exp)});if(noExp.length){list.push(noExp.map(c=>c.name).join('、')+' 有兩個以上效期，每一個都要選效期');noExp.forEach(c=>miss.push('cr-'+c.id))}
       if(!T.after.length){list.push('第 3 步：還沒拍盤點後的照片');miss.push('up-ptafter')}
       if(blockIf(list,miss))return render();
-      if(last&&S.ui.confirm!=='pt'){const more=CS_ITEMS.filter(c=>filled(c.id)&&(num(T.lines[c.id].shelf)+num(T.lines[c.id].under)+num(T.lines[c.id].wh))>e[c.id]);
-        if(more.length){S.ui.confirm='pt';S.ui.guard={list:[more.map(c=>c.name+' 比應有多 '+(num(T.lines[c.id].shelf)+num(T.lines[c.id].under)+num(T.lines[c.id].wh)-e[c.id])).join('、')+'。是不是點錯，或有補貨沒登錄？這次帶來補的請填在「進貨」，不是加在架上。'],confirm:true};S.ui.jump='guard';return render()}}
+      const tot=id=>{const L=T.lines[id]||{};return lotSum(L,'shelf')+lotSum(L,'under')+lotSum(L,'wh')};
+      if(last&&S.ui.confirm!=='pt'){const more=CS_ITEMS.filter(c=>filled(c.id)&&tot(c.id)>e[c.id]);
+        if(more.length){S.ui.confirm='pt';S.ui.guard={list:[more.map(c=>c.name+' 比應有多 '+(tot(c.id)-e[c.id])).join('、')+'。是不是點錯，或有補貨沒登錄？這次帶來補的請填在「進貨」，不是加在架上。'],confirm:true};S.ui.jump='guard';return render()}}
       S.ui.guard=null;S.ui.confirm=null}
-    for(const [k,l] of Object.entries(T.lines)){if(num(l.in))inQ[k]=num(l.in);if(num(l.out))outQ[k]=num(l.out);if(blank(l.shelf)&&blank(l.under)&&blank(l.wh))continue;lines[k]={shelf:num(l.shelf),under:num(l.under),wh:num(l.wh),exp:l.exp||''}}
-    const ts=Date.now();const c={id:uid('c'),store:s,date:T.date,time:nowTime(),ts,by:S.session.name,lines,inQ,outQ,before:T.before,after:T.after,issues:T.issues,note:T.note.trim()};
-    Store.put('counts',c);c.report=countReport(c);
+    for(const [k,l] of Object.entries(T.lines)){if(num(l.in))inQ[k]=num(l.in);if(num(l.out))outQ[k]=num(l.out);const ls=lotsOf(l).filter(lotFilled);if(!ls.length)continue;
+      const z=x=>({shelf:num(x.shelf),under:num(x.under),wh:num(x.wh),exp:x.exp||''});lines[k]={...z(ls[0])};if(ls.length>1)lines[k].lots=ls.slice(1).map(z)}
+    const old=T.editId?S.counts.find(c=>c.id===T.editId):null;const ts=old?old.ts:Date.now();
+    const c={id:old?old.id:uid('c'),store:s,date:T.date,time:old?old.time:nowTime(),ts,by:old?old.by:S.session.name,lines,inQ,outQ,before:T.before,after:T.after,issues:T.issues,note:T.note.trim()};
+    if(old){c.edited=Date.now();c.editedBy=S.session.name}
+    Store.put('counts',c);c.report=countReport(c)+(old?'\n（'+nowTime()+' 修改）':'');
     if(!(await Store.save('counts',c))){render();return}
-    if(Object.keys(inQ).length)await Store.save('moves',{id:c.id+'-in',store:s,date:T.date,time:c.time,ts:ts+1,type:'restock',by:S.session.name,role:'pt',lines:inQ,reason:'盤點時補貨',note:''});
-    if(Object.keys(outQ).length)await Store.save('moves',{id:c.id+'-out',store:s,date:T.date,time:c.time,ts:ts+2,type:'return',by:S.session.name,role:'pt',lines:outQ,reason:'盤點時登錄：其他（退回／報廢）',note:''});
-    S.ui.lastCountRep=c.report;S.pt=ptInit();toast('盤點已送出');window.scrollTo(0,document.body.scrollHeight);render()},
+    const hadIn=old&&S.moves.some(m=>m.id===c.id+'-in'),hadOut=old&&S.moves.some(m=>m.id===c.id+'-out');
+    if(Object.keys(inQ).length||hadIn)await Store.save('moves',{id:c.id+'-in',store:s,date:T.date,time:c.time,ts:ts+1,type:'restock',by:c.by,role:'pt',lines:inQ,reason:'盤點時補貨',note:''});
+    if(Object.keys(outQ).length||hadOut)await Store.save('moves',{id:c.id+'-out',store:s,date:T.date,time:c.time,ts:ts+2,type:'return',by:c.by,role:'pt',lines:outQ,reason:'盤點時登錄：其他（退回／報廢）',note:''});
+    S.ui.lastCountRep=c.report;S.pt=ptInit();toast(old?'修改已儲存':'盤點已送出');window.scrollTo(0,document.body.scrollHeight);render()},
+  ptedit(v){const c=S.counts.find(x=>x.id===v);if(!c||c.date!==today())return toast('只能修改今天的盤點');const lines={};
+    for(const [k,l] of Object.entries(c.lines||{})){lines[k]={shelf:String(num(l.shelf)),under:String(num(l.under)),wh:num(l.wh)?String(num(l.wh)):'',exp:l.exp||''};if((l.lots||[]).length)lines[k].lots=l.lots.map(x=>({shelf:String(num(x.shelf)),under:String(num(x.under)),wh:num(x.wh)?String(num(x.wh)):'',exp:x.exp||''}))}
+    for(const [k,q] of Object.entries(c.inQ||{})){lines[k]=lines[k]||{};lines[k].in=String(q)}for(const [k,q] of Object.entries(c.outQ||{})){lines[k]=lines[k]||{};lines[k].out=String(q)}
+    S.pt={date:c.date,lines,before:[...(c.before||[])],after:[...(c.after||[])],issues:[...(c.issues||[])],note:c.note||'',all:false,editId:c.id,prefill:'x'};S.ui.lastCountRep=null;window.scrollTo(0,0)},
+  ptcancel(){S.pt=ptInit();S.ui.guard=null},
+  ptlotadd(v){const L=S.pt.lines[v]=S.pt.lines[v]||{};L.lots=L.lots||[];L.lots.push({})},
+  ptlotdel(v){const [id,j]=v.split('|');S.pt.lines[id].lots.splice(+j,1)},
+  ptexp(v){const i=v.lastIndexOf('|');setPath(v.slice(0,i)+'.exp',v.slice(i+1))},
   astore(v){S.adm.store=v;S.adm.q={}},atype(v){S.adm.type=v},
   aq(v,el){S.adm.q[v]=String(Math.max(0,num(S.adm.q[v])+ +el.dataset.d))},
   async asave(){const G=S.adm;const lines={};for(const [k,v] of Object.entries(G.q))if(num(v))lines[k]=num(v);
