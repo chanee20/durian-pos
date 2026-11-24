@@ -279,7 +279,7 @@ addons:[
 thresholds:[{min:3000,gift:'BAGL',skipBag:true,label:'大保冷袋'},{min:3500,gift:'PLS',fallback:'KC',label:'小抱枕'}]};
 const CB=Object.fromEntries(CAMPAIGN.combos.map(c=>[c.id,c]));
 const AD=Object.fromEntries(CAMPAIGN.addons.map(a=>[a.id,a]));
-const DEFAULT_CONFIG={staff:{tc:['美玲','淑芬'],ks:['秀英','雅惠']},pt:{'cs-yq':['Cyndi'],'cs-tc':['凱']},discountStep:10,discountCap:100,extraGiftCap:1,durianGiftCap:1,closeMode:'confirm',dealGifts:['BAGS','PLS','KC','PEN'],autoBag:true,tastingBase:1,tastingPer:10,lowStock:3,commission:0.25,adminPin:'2222',costEnc:{"s": "Ek3d9lO/uSho7zQg+ofhZw==", "i": "Lf3sBe0ShZqU4VZp", "d": "kcSjDK6RydxpbFrp/HAFy1xVAKez+oADJZQk6VjXpboUCjZZjGDdnD/p2zf2iJK0Kyrg2X/mBFMZ0/aJxynmCN9MrUF86N5q3n8gK2IwY1qz3dA+0MTJy3GqjlDVgGj6n/i7CihCqCryTwTqw12oUdNcVH9qUF4YFDVEbLSYBFfCf7OXknOWb4EZBhyV/ijyeoLJkl/t413aSEsLY57vUSUxbVpg406jBQcxQpi3TAYhFbxauvj6Dttc8hM3jg2zlqK4KA6OlybPVJvnqXFeirduUd189tv1ggvoz6fQ6BjzmCetqo8Homuh9wKyc9rZqy9amLanpY8n0AyHHgzMOPGTX6/J93bj4YEbL+D651e2m+PxsXzPCArIgcNScsH20taP61HEBMMsUGxPpFSVytF5NBGXv8tyHW/u3229zMpBelaASOxrmWp4q90AZychfg9My1GAmmd4xQ3ZTA==", "n": 200000},carry:{ks:{month:'2026-11',amount:234287}}};
+const DEFAULT_CONFIG={staff:{tc:['美玲','淑芬'],ks:['秀英','雅惠']},pt:{'cs-yq':['Cyndi'],'cs-tc':['凱']},discountStep:10,discountCap:100,extraGiftCap:1,durianGiftCap:1,closeMode:'confirm',dealGifts:['BAGS','PLS','KC','PEN'],autoBag:true,tastingBase:1,tastingPer:10,lowStock:3,commission:0.25,adminPin:'2222',costEnc:{"s": "F+LSd/2gROyjnzlAhPvIUQ==", "i": "dFN9kl7ocFgeoIlz", "d": "xE9OA1oxJK2yoAvCP22h+XjEU9XP4t6s4OXfXPGocqwKNpYX8wMjZPR8yb4HtSMAskCyYPVebWmvGPljazySI3X7ifT+gNXklmSm8Wz/GUAeoe4hr8906m8LXW7NCxvbXHnbqTzKlczeNQ8D1D6SU8Xe5PT8xWyKb4ovvsLDex4+6G7NgvQnha4v8vL5T9N5TbQGSzYeabXM5UAOut6EONW3IOVNjJOki36czs8DexVtSdN0O1sod88KspxqHkcrvuyVoDYAN15C82KAj4eullwTKnFhFJDdr0Q1KQKPuouO8gOLKsX0pk7/kMCygTN8f4AfGNqgPkrJtgbMMrT4CQG4htCHR8C9U2OlAftmKY3SWyez+gIY+dyo8oZDob0I/seqwTNJ1tXnJINDKGwHSj2QkzJth4jkBLDlN5SzjFHNzhTgt9olx4/eETdExx0Kmq/2vc9aEZJ/amlCAg==", "n": 200000},carry:{ks:{month:'2026-11',amount:234287}}};
 const MOVE_TYPES={in:{label:'進櫃',sign:1,col:'in'},restock:{label:'補貨',sign:1,col:'re'},withdraw:{label:'寄庫提領',sign:1,col:'wd'},deposit:{label:'寄庫',sign:-1,col:'dep'},return:{label:'撤櫃回倉',sign:-1,col:'other'},waste:{label:'銷毀',sign:-1,col:'other'},tasting:{label:'試吃',sign:-1,col:'taste'},gift:{label:'贈品',sign:-1,col:'gift'},linegift:{label:'LINE@贈品',sign:-1,col:'gift'}};
 const CATS=[['combo','雙11組合'],['addon','加購'],['400','400g'],['200','200g'],['ice','冰品甜點'],['goods','周邊']];
 const PAYS=[['cash','現金'],['card','刷卡'],['voucher','商券'],['other','其他']];
@@ -415,8 +415,8 @@ const countsOf=pt=>S.counts.filter(c=>c.store===pt).sort((a,b)=>(a.date+String(a
 const lotsOf=l=>l?[{shelf:l.shelf,under:l.under,wh:l.wh,exp:l.exp},...(l.lots||[])]:[];
 const lotSum=(l,f)=>lotsOf(l).reduce((a,x)=>a+num(x[f]),0);
 const cTotal=(c,k)=>{const l=(c.lines||{})[k];return l?lotSum(l,'shelf')+lotSum(l,'under')+lotSum(l,'wh'):0};
-/* 倉庫（逢泰）庫存表上看到的效期，盤點時可以直接點選 */
-const KNOWN_EXP={HZH400:['2027-12-31','2027-10-31'],LS400:['2027-10-31'],JB400:['2027-10-31'],JF400:['2027-10-31'],SDH400:['2027-05-14'],LGB400:['2027-05-14'],PF1:['2027-10-06'],PF6:['2027-09-12']};
+/* 倉庫（逢泰）庫存表 20261123 的效期，盤點時可以直接點選 */
+const KNOWN_EXP={"HZH200":["2028-06-15"],"HZH400":["2027-10-31","2027-12-31"],"ICMSW":["2028-08-13"],"ICSDH":["2028-08-23","2028-08-24"],"JB200":["2028-06-15"],"JB400":["2027-10-31"],"JF200":["2028-06-15"],"LGB400":["2027-05-14"],"LS400":["2027-10-31"],"MSW200":["2028-06-15"],"PF1":["2027-10-06"],"PF6":["2027-09-12"],"SDH400":["2027-05-14"],"WZW200":["2028-06-15"]};
 function expChoices(store,id){const set=new Set(KNOWN_EXP[id]||[]);for(const c of countsOf(store))for(const x of lotsOf((c.lines||{})[id]))if(x.exp)set.add(x.exp);return [...set].sort()}
 const ckey=(date,ts)=>date+'|'+String(ts||0).padStart(15,'0');
 /* 兩次盤點之間的補貨／退回：用日期＋時間排序，盤點當下一起登錄的進貨算到下一段 */
