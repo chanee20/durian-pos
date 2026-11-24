@@ -242,8 +242,8 @@ const PRODUCTS=[
 {id:'JB200',name:'祖傳金包',spec:'200g',cat:'200',price:530,tax:0},
 {id:'ICSDH',name:'蘇丹皇冰淇淋',spec:'杯',cat:'ice',price:179,tax:1},
 {id:'ICMSW',name:'貓山王冰淇淋',spec:'杯',cat:'ice',price:199,tax:1},
-{id:'PF6',name:'榴槤泡芙',spec:'6入盒',cat:'ice',price:420,tax:1},
-{id:'PF1',name:'冰淇淋泡芙',spec:'單顆',cat:'ice',price:150,tax:1},
+{id:'PF6',name:'豆酥朋泡芙',spec:'6入盒',cat:'ice',price:420,tax:1},
+{id:'PF1',name:'豆酥朋泡芙',spec:'單顆',cat:'ice',price:150,tax:1},
 {id:'BAGS',name:'品牌簡易保冷袋',spec:'個',cat:'goods',price:30,tax:1},
 {id:'BAGL',name:'大保冷袋',spec:'榴槤貓',cat:'goods',price:150,tax:1},
 {id:'PLS',name:'小抱枕',spec:'個',cat:'goods',price:199,tax:1},
@@ -279,7 +279,7 @@ addons:[
 thresholds:[{min:3000,gift:'BAGL',skipBag:true,label:'大保冷袋'},{min:3500,gift:'PLS',fallback:'KC',label:'小抱枕'}]};
 const CB=Object.fromEntries(CAMPAIGN.combos.map(c=>[c.id,c]));
 const AD=Object.fromEntries(CAMPAIGN.addons.map(a=>[a.id,a]));
-const DEFAULT_CONFIG={staff:{tc:['美玲','淑芬'],ks:['秀英','雅惠']},pt:{'cs-yq':['Cyndi'],'cs-tc':['凱']},discountStep:10,discountCap:100,extraGiftCap:1,durianGiftCap:1,closeMode:'confirm',dealGifts:['BAGS','PLS','KC','PEN'],autoBag:true,tastingBase:1,tastingPer:10,lowStock:3,commission:0.25,adminPin:'2222',costEnc:{"s": "F+LSd/2gROyjnzlAhPvIUQ==", "i": "dFN9kl7ocFgeoIlz", "d": "xE9OA1oxJK2yoAvCP22h+XjEU9XP4t6s4OXfXPGocqwKNpYX8wMjZPR8yb4HtSMAskCyYPVebWmvGPljazySI3X7ifT+gNXklmSm8Wz/GUAeoe4hr8906m8LXW7NCxvbXHnbqTzKlczeNQ8D1D6SU8Xe5PT8xWyKb4ovvsLDex4+6G7NgvQnha4v8vL5T9N5TbQGSzYeabXM5UAOut6EONW3IOVNjJOki36czs8DexVtSdN0O1sod88KspxqHkcrvuyVoDYAN15C82KAj4eullwTKnFhFJDdr0Q1KQKPuouO8gOLKsX0pk7/kMCygTN8f4AfGNqgPkrJtgbMMrT4CQG4htCHR8C9U2OlAftmKY3SWyez+gIY+dyo8oZDob0I/seqwTNJ1tXnJINDKGwHSj2QkzJth4jkBLDlN5SzjFHNzhTgt9olx4/eETdExx0Kmq/2vc9aEZJ/amlCAg==", "n": 200000},carry:{ks:{month:'2026-11',amount:234287}}};
+const DEFAULT_CONFIG={staff:{tc:['美玲','淑芬'],ks:['秀英','雅惠']},pt:{'cs-yq':['Cyndi'],'cs-tc':['凱']},discountStep:10,discountCap:100,extraGiftCap:1,durianGiftCap:1,closeMode:'confirm',dealGifts:['BAGS','PLS','KC','PEN'],autoBag:true,tastingBase:1,tastingPer:10,lowStock:3,commission:0.25,adminPin:'2222',costEnc:{"s": "OhdmrSSxuGsIkehMZWUzMw==", "i": "G7IMawjU69kdbRsW", "d": "QQn8UDKnEiCJOUU5RNfwN8jCUmSDS83tc3kDk15tvONf1Esqte8aoSOMJNBWoTViXqFuMvEIpvdPJ34FFr0dfpQjZA1MnByZEVat7s0Bqs6ZyhPapKMzMwrhgKFf5Uh67u7drncMwemlo9G24BIqwSlCy5ciwZDFUbs25HWiSPsxjWYxs9nkzCkkgryQkxfLH/hospuWtBdYH9BEvNeofJZJKSNI2rsexHVPUNF8iFffd63fGbEJ31BTPf7596NhuPLsxNWZ5T8WetFjXgKCmPKngpQ3pA1rxgM8RSEXpMURvTPZPwIw6x3EHWx/jmCo+YmpyiqzWNsYrlGT2QteErK2Zh99kIY2Ehqgac54jB9OKiGb3CooMkojV0DwyA04tTF79TB4Pleex70xRSKomj3GpmLN1/sU6ciBHke4X4DeuHznfhGxzZlbFTuwh1sOmz+49YmZVzxz8brn3A==", "n": 200000},carry:{ks:{month:'2026-11',amount:234287}}};
 const MOVE_TYPES={in:{label:'進櫃',sign:1,col:'in'},restock:{label:'補貨',sign:1,col:'re'},withdraw:{label:'寄庫提領',sign:1,col:'wd'},deposit:{label:'寄庫',sign:-1,col:'dep'},return:{label:'撤櫃回倉',sign:-1,col:'other'},waste:{label:'銷毀',sign:-1,col:'other'},tasting:{label:'試吃',sign:-1,col:'taste'},gift:{label:'贈品',sign:-1,col:'gift'},linegift:{label:'LINE@贈品',sign:-1,col:'gift'}};
 const CATS=[['combo','雙11組合'],['addon','加購'],['400','400g'],['200','200g'],['ice','冰品甜點'],['goods','周邊']];
 const PAYS=[['cash','現金'],['card','刷卡'],['voucher','商券'],['other','其他']];
