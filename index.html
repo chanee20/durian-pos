@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>【測試版】榴槤村快閃 POS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+/* VOICE everyday work tool for counter staff: calm, big, impossible to mis-tap
+   IDEA the paper 日銷表 and the mall receipt: every number lands where the paper had it, filled by the machine
+   PICTURE the product grid itself, with the live total in the green cart bar
+   COLOUR durian-leaf deep green bars (logo ground), white cards, gold for prices and gifts, flesh yellow bars, red for problems
+   TYPE Noto Sans TC 900 for figures and titles + Noto Sans TC text
+   LAYOUT phone: logo bar, chips, grid, sticky cart bar, tab bar; wide: more columns, sheets centred */
+:root{color-scheme:light dark;--bg:light-dark(#eef1ec,#0c1411);--card:light-dark(#ffffff,#141f1a);--ink:light-dark(#13201a,#e7eee9);--mute:light-dark(#56655d,#9fb2a7);--line:light-dark(#dbe2da,#26352e);--green:light-dark(#0f4a35,#46b484);--deep:light-dark(#0f3a2a,#0a271c);--gold:light-dark(#9a6b12,#e2b85c);--gold-soft:light-dark(#fbf3df,#29220f);--flesh:light-dark(#f2d36a,#b89a35);--ok:light-dark(#127a46,#5bd394);--ok-soft:light-dark(#e3f5ea,#11301f);--bad:light-dark(#b42318,#ff8f80);--bad-soft:light-dark(#fdecea,#3a1612);--warn:light-dark(#8f5206,#f3b454);--warn-soft:light-dark(#fff4e0,#33260f)}
+:root[data-theme=light]{color-scheme:light}
+:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 'Noto Sans TC',system-ui,-apple-system,'PingFang TC','Microsoft JhengHei',sans-serif;overflow-x:clip;-webkit-tap-highlight-color:transparent}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+img{max-width:100%}
+.num,td,.kpi b{font-variant-numeric:tabular-nums}
+.top{position:sticky;top:0;z-index:20;background:var(--deep);color:#fff;padding:8px max(16px,env(safe-area-inset-left));display:flex;align-items:center;gap:10px}
+.top .logo{height:38px;width:auto;flex:none}
+.top .who{flex:1;line-height:1.3}
+.top .who b{font-size:16px;display:block}
+.top .who span{font-size:13px;opacity:.82}
+.top button{background:rgba(255,255,255,.14);border:0;color:#fff;border-radius:10px;padding:8px 12px;min-height:44px;font-size:14px}
+.mode{font-size:11px;border-radius:999px;padding:1px 7px;background:rgba(255,255,255,.14);margin-left:6px;font-weight:400;white-space:nowrap}
+.main{padding:14px 16px 180px;max-width:1240px;margin:0 auto}
+.main.nobar{padding-bottom:110px}
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--card);border-top:1px solid var(--line);display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);padding-bottom:env(safe-area-inset-bottom)}
+.tabs button{border:0;background:none;padding:8px 2px 10px;font-size:13px;color:var(--mute);display:flex;flex-direction:column;align-items:center;gap:2px;min-height:58px}
+.tabs svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tabs button.on{color:var(--green);font-weight:700}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:2px 0 12px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chips.wrap{flex-wrap:wrap;overflow:visible}
+.chip{flex:none;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:8px 15px;min-height:44px;font-size:15px}
+.chip.on{background:var(--green);border-color:var(--green);color:#fff;font-weight:700}
+.chip.sm{min-height:40px;padding:6px 12px;font-size:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(152px,1fr));gap:10px}
+.pc{position:relative;text-align:left;border:1px solid var(--line);background:var(--card);border-radius:14px;padding:12px;min-height:122px;display:flex;flex-direction:column;gap:3px}
+.pc:active{transform:scale(.98)}
+.pc .n{font-weight:700;font-size:17px;line-height:1.25}
+.pc .s{font-size:13px;color:var(--mute);line-height:1.35}
+.pc .g{font-size:13px;color:var(--gold);font-weight:500;line-height:1.35}
+.pc .foot{margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:4px 8px;flex-wrap:wrap;padding-top:4px}
+.pc .p{font-size:21px;font-weight:900;color:var(--green);white-space:nowrap}
+.pc .o{font-size:13px;color:var(--mute);text-decoration:line-through;margin-left:6px;font-weight:400}
+.pc .st{font-size:12px;padding:2px 8px;border-radius:999px;background:var(--bg);color:var(--mute);white-space:nowrap}
+.pc .st.low{background:var(--bad-soft);color:var(--bad)}
+.pc .q{position:absolute;top:-7px;left:-7px;min-width:28px;height:28px;border-radius:14px;background:var(--gold);color:#fff;font-weight:700;font-size:14px;display:grid;place-items:center;padding:0 7px}
+.pc.combo{border-color:color-mix(in srgb,var(--gold) 50%,var(--line));background:var(--gold-soft)}
+.pc[disabled]{opacity:.45;cursor:not-allowed;transform:none}
+.pc .lock{font-size:12px;color:var(--warn);font-weight:500}
+.cartbar{position:fixed;left:0;right:0;bottom:calc(58px + env(safe-area-inset-bottom));z-index:25;padding:8px 16px}
+.cartbar button{width:100%;max-width:720px;margin:0 auto;display:flex;align-items:center;gap:12px;border:0;border-radius:14px;background:var(--green);color:#fff;padding:10px 16px;min-height:58px;font-size:17px;font-weight:700;box-shadow:0 6px 18px rgba(0,0,0,.2)}
+.cartbar .cnt{background:rgba(255,255,255,.2);border-radius:999px;padding:2px 10px;font-size:14px}
+.cartbar .tot{margin-left:auto;font-size:22px;font-weight:900}
+.cartbar.empty button{background:var(--card);color:var(--mute);border:1px dashed var(--line);box-shadow:none;font-weight:500;justify-content:center}
+.sheet-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:50;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--card);width:100%;max-width:640px;max-height:94%;overflow:auto;border-radius:20px 20px 0 0;padding:14px 16px calc(20px + env(safe-area-inset-bottom))}
+.sh-h{display:flex;align-items:center;justify-content:space-between;gap:10px;position:sticky;top:-14px;background:var(--card);padding:6px 0 8px;z-index:2}
+.sh-h h2{margin:0;font-size:21px}
+.x{border:0;background:var(--bg);border-radius:12px;min-width:44px;min-height:44px;font-size:22px;line-height:1}
+.line{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.line .nm{font-weight:700}
+.line .sub{font-size:13px;color:var(--mute)}
+.line .amt{font-weight:700;white-space:nowrap;min-width:4.5em;text-align:right}
+.step{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--card)}
+.step button{border:0;background:var(--bg);width:44px;height:44px;font-size:22px;line-height:1}
+.step input,.step span{width:46px;text-align:center;font-weight:700;border:0;background:none;font-size:17px;height:44px;line-height:44px;padding:0}
+.tag{display:inline-block;font-size:12px;border-radius:6px;padding:1px 7px;background:var(--gold-soft);color:var(--gold);margin-left:6px;font-weight:500;white-space:nowrap}
+.tag.red{background:var(--bad-soft);color:var(--bad)}
+.tag.ok{background:var(--ok-soft);color:var(--ok)}
+.tag.gray{background:var(--bg);color:var(--mute)}
+.sec{margin:18px 0 6px;font-size:14px;color:var(--mute);font-weight:700}
+.field{display:grid;grid-template-columns:4.6em minmax(0,1fr) auto;gap:8px;align-items:center;margin:8px 0}
+.field label{font-weight:500}
+.in{width:100%;border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:9px 12px;min-height:46px;font-size:17px}
+.in.r{text-align:right;font-weight:700}
+.in.sm{min-height:42px;padding:6px 8px;font-size:16px}
+.in:focus{outline:2px solid var(--gold);outline-offset:1px}
+button:focus-visible,.chip:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.mini{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:6px 10px;min-height:44px;font-size:14px;white-space:nowrap}
+.mini.on{border-color:var(--green);color:var(--green);font-weight:700}
+.mini.gold{background:var(--gold);border-color:var(--gold);color:#fff;font-weight:700;font-size:16px;padding:6px 16px}
+.sum{display:flex;justify-content:space-between;align-items:baseline;padding:4px 0}
+.sum.big b{font-size:34px;font-weight:900;color:var(--green)}
+.btn{display:block;width:100%;border:0;border-radius:14px;background:var(--green);color:#fff;font-weight:700;font-size:18px;min-height:58px;margin-top:14px}
+.btn.ghost{background:var(--bg);color:var(--ink);border:1px solid var(--line);font-weight:500}
+.btn.bad{background:var(--bad)}
+.btn[disabled]{opacity:.4;cursor:not-allowed}
+.msg{border-radius:10px;padding:8px 12px;font-size:14px;margin:6px 0}
+.msg.bad{background:var(--bad-soft);color:var(--bad)}
+.msg.warn{background:var(--warn-soft);color:var(--warn)}
+.msg.ok{background:var(--ok-soft);color:var(--ok)}
+.msg.gold{background:var(--gold-soft);color:var(--gold)}
+.deal{border:1px dashed color-mix(in srgb,var(--gold) 60%,var(--line));border-radius:14px;padding:10px 12px;background:var(--gold-soft)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px}
+.card h3{margin:0 0 8px;font-size:17px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.row>.grow{flex:1}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{padding:8px 7px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+th{font-size:12px;color:var(--mute);font-weight:500;vertical-align:bottom}
+td.l,th.l{text-align:left}
+td.wrap{white-space:normal;min-width:10em}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.frz td:first-child,.frz th:first-child{position:sticky;left:0;background:var(--card);z-index:1;box-shadow:1px 0 0 var(--line)}
+td.hl{font-weight:900;color:var(--green)}
+td.neg,.neg{color:var(--bad);font-weight:700}
+tr.void td{color:var(--mute);text-decoration:line-through}
+tfoot td{font-weight:700;border-top:2px solid var(--line)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(9.5em,1fr));gap:10px;margin-bottom:12px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.kpi span{font-size:13px;color:var(--mute)}
+.kpi b{display:block;font-size:clamp(22px,4vw,28px);font-weight:900;line-height:1.2;white-space:nowrap}
+.kpi i{font-style:normal;font-size:13px;color:var(--mute)}
+h1{font-size:clamp(24px,4.6vw,34px);line-height:1.15;margin:4px 0 14px;letter-spacing:-.01em;text-wrap:balance}
+.hbar{display:grid;grid-template-columns:minmax(6em,9em) minmax(0,1fr) 3em;gap:8px;align-items:center;margin:6px 0;font-size:14px}
+.hbar .b{height:14px;border-radius:7px;background:var(--flesh)}
+.hbar .v{text-align:right;font-weight:700}
+.seg{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:3px;gap:3px;margin-bottom:12px}
+.seg button{border:0;background:none;border-radius:9px;min-height:42px;font-size:15px;padding:0 4px}
+.seg button.on{background:var(--card);font-weight:700;box-shadow:0 1px 3px rgba(0,0,0,.14);color:var(--green)}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:12px;align-items:start}
+.pr{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.pr .now{font-size:13px;color:var(--mute)}
+.pr .aft{min-width:3.4em;text-align:right;font-weight:700;color:var(--green)}
+.dbar{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:4px;margin-bottom:12px}
+.dbar button{border:0;background:var(--bg);border-radius:10px;min-height:44px;padding:0 12px;font-size:14px;color:var(--green);font-weight:700}
+.dbar button:disabled{opacity:.35}
+.dbar .dl{text-align:center;line-height:1.2}.dbar .dl b{display:block;font-size:17px}.dbar .dl span{font-size:12px;color:var(--mute)}
+.dbar.past{border-color:var(--gold);background:var(--gold-soft)}
+.back2{display:block;margin:-6px 0 12px auto}
+table.hours td,table.hours th{padding:6px}table.hours tr.z td{color:var(--mute);opacity:.6}table.hours tr.pk td{font-weight:800;color:var(--green)}
+.hb{height:10px;background:var(--bg);border-radius:5px;overflow:hidden;min-width:60px}.hb i{display:block;height:100%;background:var(--green);border-radius:5px}
+.cs-h,.cs-r{display:grid;grid-template-columns:minmax(0,1fr) 3.3em 3.3em 3.3em 2.2em;gap:6px;align-items:center}
+.cs-h{font-size:12px;font-weight:700;color:var(--mute);padding:4px 0;border-bottom:1px solid var(--line)}.cs-h div:not(:first-child){text-align:center}
+.cs-g{font-size:12px;font-weight:700;padding:6px 8px;margin:8px 0 0;border-radius:6px}.cs-g.d{background:var(--ok-soft);color:var(--ok)}.cs-g.s{background:var(--gold-soft);color:var(--gold)}
+.cs-r{padding:8px 0;border-bottom:1px solid var(--line)}.cs-r .nm{line-height:1.2}.cs-r .nm b{display:block}.cs-r .in.sm{padding-left:4px;padding-right:6px}
+.cs-r .t{text-align:right;font-weight:900;color:var(--green)}
+.cs-x{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;font-size:12px;color:var(--mute)}
+.cs-x label{display:flex;align-items:center;gap:4px}.cs-x input[type=date]{width:9.6em}.cs-x input:not([type=date]){width:3.3em}
+.cs-x .io{flex-basis:100%;display:flex;gap:14px;padding-left:2.4em}
+.cs-x .sold{margin-left:auto;font-weight:700;color:var(--green);font-size:13px}.cs-x .sold.neg{color:var(--bad)}
+.cpg{display:grid;grid-template-columns:repeat(auto-fill,minmax(9.5em,1fr));gap:6px 10px}.cpg label{display:flex;align-items:center;justify-content:space-between;gap:6px;font-size:13px}.cpg input{width:5em}
+.lnk{border:0;background:none;color:var(--green);font-weight:700;text-decoration:underline;padding:0;font:inherit}
+.need{outline:3px solid var(--bad)!important;outline-offset:2px;border-radius:10px;animation:pulse 1s ease-out 2}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(180,35,24,.5)}100%{box-shadow:0 0 0 12px rgba(180,35,24,0)}}
+.guard{background:var(--bad-soft);border:2px solid var(--bad);color:var(--bad);border-radius:14px;padding:12px 14px;margin-top:14px;font-size:16px;line-height:1.5}.guard b{display:block;font-size:18px;margin-bottom:4px}
+.acc{border:1px solid var(--line);border-radius:14px;margin-bottom:8px;background:var(--card);overflow:hidden}
+.acc-h{width:100%;border:0;background:none;display:flex;align-items:center;gap:10px;min-height:56px;padding:0 14px;font-size:17px;text-align:left;color:var(--ink)}
+.acc-h b{flex:none}.acc-s{flex:1;text-align:right;font-size:14px;color:var(--mute);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.acc-s.on{color:var(--gold);font-weight:700}.chev{color:var(--mute);font-size:14px}
+.acc.open{border-color:var(--gold)}.acc-b{padding:4px 14px 14px}
+.big-step{min-width:72px;min-height:56px;border:1px solid var(--line);border-radius:12px;background:var(--bg);font-size:20px;font-weight:800;color:var(--ink)}.big-step.gold{background:var(--gold);color:#fff;border-color:var(--gold)}.big-step:disabled{opacity:.35}
+.c{text-align:center}.dv{font-size:24px;color:var(--gold)}
+.reason{border:2px solid var(--gold);border-radius:14px;padding:10px 12px;margin:4px 0 8px;background:var(--gold-soft)}
+.ck{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-top:8px}.ck.ok{border-color:var(--ok);background:var(--ok-soft)}.ck.bad{border-color:var(--bad);background:var(--bad-soft)}
+.ck-n{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:16px}.ck-n span{color:var(--mute);font-size:14px}.ck-n .sys{font-size:22px;color:var(--ink)}
+.ck-b{display:flex;gap:8px;margin-top:8px;align-items:center}.ck-b .yes,.ck-b .no{flex:1;min-height:52px;border-radius:12px;border:1px solid var(--line);background:var(--card);font-size:17px;font-weight:700;color:var(--ink)}
+.ck-b .yes.on{background:var(--ok);color:#fff;border-color:var(--ok)}.ck-b .no{flex:.6;color:var(--bad)}.ck-v{flex:1;text-align:center;font-size:26px;font-weight:900}
+.ck-d{margin-top:6px;font-size:14px;color:var(--bad);font-weight:700}
+.nag{display:block;width:100%;text-align:left;border:2px solid var(--warn);background:var(--warn-soft);color:var(--warn);border-radius:12px;padding:12px 14px;font-size:16px;font-weight:700;margin-bottom:10px}
+.numf{min-height:48px;border:1px solid var(--line);border-radius:10px;background:var(--bg);font-size:20px;font-weight:800;color:var(--mute);padding:0}.numf.set{background:var(--card);color:var(--ink);border-color:var(--green)}
+.numf.sm2{min-height:40px;width:3.4em;font-size:17px}.numf.ck-v{flex:1;min-height:56px;font-size:26px}
+.pk-now{display:flex;align-items:baseline;gap:12px;margin:-4px 0 10px}.pk-now b{font-size:34px;color:var(--green)}.pk-now span:first-child{font-size:18px;color:var(--mute)}
+.pkg{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}.pk{min-height:58px;border:1px solid var(--line);border-radius:12px;background:var(--bg);font-size:22px;font-weight:800;color:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
+.pk small{font-size:11px;font-weight:700;margin-top:3px}.pk.hint{border:2px solid var(--gold);background:var(--gold-soft);color:var(--gold)}.pk.on{background:var(--green);color:#fff;border-color:var(--green)}
+.cnt-row{display:grid;grid-template-columns:minmax(0,1fr) 4.2em 4.2em 2.6em;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.cnt-row .t{text-align:right;font-weight:900;color:var(--green)}
+.cnt-row .exp{grid-column:1/-1;display:flex;gap:8px;align-items:center;font-size:13px;color:var(--mute)}
+.cnt-row .exp input{max-width:11em}
+.photos{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px}
+.ph{position:relative;border-radius:10px;overflow:hidden;background:var(--bg);aspect-ratio:1;border:1px solid var(--line);padding:0}
+.ph img{width:100%;height:100%;object-fit:cover;display:block}
+.ph span{position:absolute;left:0;right:0;bottom:0;background:rgba(0,0,0,.55);color:#fff;font-size:11px;padding:2px 6px;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.upl{display:flex;align-items:center;justify-content:center;gap:8px;border:2px dashed var(--line);border-radius:14px;min-height:64px;padding:10px;font-weight:700;color:var(--green);cursor:pointer;background:var(--card)}
+.upl input{position:absolute;width:1px;height:1px;opacity:0}
+.login{min-height:100%;background:var(--deep);color:#fff;padding:24px max(18px,5vw) 40px}
+.login .wrap{max-width:560px;width:100%;margin:0 auto}
+.login .logo{width:150px;height:auto;display:block;margin:4px 0 6px}
+.login h1{color:#fff;font-size:clamp(26px,7vw,36px);font-weight:900;margin:10px 0 4px}
+.login p{opacity:.82;margin:0 0 16px}
+.role{display:flex;align-items:center;gap:14px;width:100%;text-align:left;border:1px solid rgba(255,255,255,.16);border-radius:16px;background:rgba(255,255,255,.07);color:#fff;padding:14px 16px;margin:10px 0;min-height:74px}
+.role b{display:block;font-size:19px}
+.role span{font-size:14px;opacity:.8}
+.role .ic{width:44px;height:44px;border-radius:12px;background:var(--flesh);color:#2a2205;display:grid;place-items:center;font-weight:900;font-size:18px;flex:none}
+.login .chip{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.22);color:#fff;min-height:52px;font-size:17px;padding:10px 18px}
+.login .in{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.25);color:#fff;font-size:22px;letter-spacing:.3em;text-align:center}
+.login .btn{background:var(--flesh);color:#2a2205}
+.back{background:none;border:0;color:#fff;opacity:.85;min-height:44px;padding:0;font-size:15px}
+.small{font-size:13px;color:var(--mute)}
+.toast{position:fixed;left:50%;top:14px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:12px;z-index:90;font-weight:700;box-shadow:0 8px 20px rgba(0,0,0,.25);max-width:90vw}
+.ok-big{text-align:center;padding:10px 0 4px}
+.ok-big .ck{width:64px;height:64px;border-radius:50%;background:var(--ok-soft);color:var(--ok);display:grid;place-items:center;margin:0 auto 8px;font-size:34px;font-weight:900}
+.ok-big b{display:block;font-size:34px;font-weight:900;color:var(--green)}
+pre.rep{white-space:pre-wrap;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px;font:15px/1.6 'Noto Sans TC',sans-serif;margin:8px 0}
+details summary{cursor:pointer;font-weight:700;min-height:44px;display:flex;align-items:center}
+.stepno{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--green);color:#fff;font-size:14px;font-weight:700;margin-right:8px}
+.big-img{width:100%;border-radius:12px;display:block}
+@media(prefers-reduced-motion:no-preference){.pc{transition:transform .08s}.toast{animation:pop .2s ease-out}@keyframes pop{from{opacity:0;transform:translate(-50%,-8px)}}}
+@media(min-width:700px){.sheet-bg{align-items:center}.sheet{border-radius:20px;max-height:90%}.grid{grid-template-columns:repeat(auto-fill,minmax(176px,1fr))}}
+@media(max-width:600px){table{font-size:13px}th,td{padding:7px 5px}.tabs button{font-size:12px}}
+</style>
+</head>
+<body>
+<div id="app"><div class="login"><div class="wrap">榴槤村 POS 載入中…</div></div></div>
+<div id="sheet"></div>
+<div id="toast"></div>
+<script>
+{
+const LOGO='data:image/png;base64,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';
+/* ---------- 基本資料 ---------- */
+const STORES=[{id:'tc',name:'台中新光三越',type:'counter'},{id:'ks',name:'高雄漢神巨蛋',type:'counter'},{id:'cs-yq',name:"遠企 city'super",type:'consign'},{id:'cs-tc',name:'台中大遠百',type:'consign',branch:'3103',counter:'T2122'}];
+const COUNTERS=STORES.filter(s=>s.type==='counter'),CONSIGNS=STORES.filter(s=>s.type==='consign');
+const PRODUCTS=[
+{id:'LS400',name:'老樹貓山王',spec:'400g',cat:'400',price:1380,tax:0},
+{id:'WZW400',name:'貓山王中王',spec:'400g',cat:'400',price:1380,tax:0},
+{id:'HZH400',name:'皇中皇',spec:'400g',cat:'400',price:1680,tax:0},
+{id:'SDH400',name:'蘇丹皇',spec:'400g',cat:'400',price:1000,tax:0},
+{id:'HC400',name:'黑刺',spec:'400g',cat:'400',price:2050,tax:0},
+{id:'JB400',name:'祖傳金包',spec:'400g',cat:'400',price:1000,tax:0},
+{id:'HR400',name:'紅肉',spec:'400g',cat:'400',price:1000,tax:0},
+{id:'JF400',name:'金鳳',spec:'400g',cat:'400',price:1200,tax:0},
+{id:'LGB400',name:'老甘榜',spec:'400g',cat:'400',price:600,tax:0},
+{id:'HZH200',name:'皇中皇',spec:'200g',cat:'200',price:870,tax:0},
+{id:'WZW200',name:'貓山王中王',spec:'200g',cat:'200',price:720,tax:0},
+{id:'MSW200',name:'貓山王',spec:'200g',cat:'200',price:620,tax:0},
+{id:'JF200',name:'金鳳',spec:'200g',cat:'200',price:630,tax:0},
+{id:'JB200',name:'祖傳金包',spec:'200g',cat:'200',price:530,tax:0},
+{id:'ICSDH',name:'蘇丹皇冰淇淋',spec:'杯',cat:'ice',price:179,tax:1},
+{id:'ICMSW',name:'貓山王冰淇淋',spec:'杯',cat:'ice',price:199,tax:1},
+{id:'PF6',name:'榴槤泡芙',spec:'6入盒',cat:'ice',price:420,tax:1},
+{id:'PF1',name:'冰淇淋泡芙',spec:'單顆',cat:'ice',price:150,tax:1},
+{id:'BAGS',name:'品牌簡易保冷袋',spec:'個',cat:'goods',price:30,tax:1},
+{id:'BAGL',name:'大保冷袋',spec:'榴槤貓',cat:'goods',price:150,tax:1},
+{id:'PLS',name:'小抱枕',spec:'個',cat:'goods',price:199,tax:1},
+{id:'PLL',name:'大抱枕',spec:'個',cat:'goods',price:899,tax:1},
+{id:'KC',name:'榴槤寶寶吊飾',spec:'個',cat:'goods',price:199,tax:1},
+{id:'PEN',name:'榴槤造型筆',spec:'支',cat:'goods',price:50,tax:1},
+{id:'GJHC',name:'冠軍黑刺',spec:'盒',cat:'cs',price:0,tax:0},
+{id:'JZHJ',name:'極致黑金',spec:'盒',cat:'cs',price:0,tax:0},
+{id:'ZJ',name:'竹腳',spec:'盒',cat:'cs',price:0,tax:0},
+{id:'NHB',name:'奶皇包',spec:'盒',cat:'cs',price:0,tax:0}];
+/* 寄賣盤點表的品項順序與叫法（照 PT 的 Google 表） */
+const CS_ITEMS=[['GJHC','冠軍黑刺','盒','d'],['JZHJ','極致黑金','盒','d'],['HC400','黑刺','盒','d'],['HZH400','皇中皇','盒','d'],['LS400','老樹','盒','d'],['WZW400','王中王','盒','d'],['ZJ','竹腳','盒','d'],['JF400','金鳳','盒','d'],['SDH400','蘇丹皇','盒','d'],['JB400','金包','盒','d'],['HR400','紅肉','盒','d'],['LGB400','老甘榜','盒','d'],['NHB','奶皇包','盒','s'],['ICSDH','蘇丹皇冰淇淋','杯','s'],['ICMSW','冰淇淋','杯','s'],['PF6','豆酥朋泡芙','盒','s'],['PF1','泡芙','個','s']].map(([id,name,unit,g])=>({id,name,unit,g}));
+const CSI=Object.fromEntries(CS_ITEMS.map(c=>[c.id,c]));
+const cname=id=>CSI[id]?CSI[id].name:pname(id);
+const cunit=id=>CSI[id]?CSI[id].unit:'個';
+const SHOP=PRODUCTS.filter(p=>p.cat!=='cs');
+const P=Object.fromEntries(PRODUCTS.map(p=>[p.id,p]));
+const DURIAN_CATS=['400','200'];
+const CAMPAIGN={name:'雙11',start:'2026-11-01',end:'2026-11-30',
+combos:[
+{id:'C1',name:'豪華皇中皇組',price:2990,orig:3360,items:{HZH400:2},gifts:{ICSDH:6,BAGL:1},bag:true},
+{id:'C2',name:'老甘榜雙盒',price:999,orig:1200,items:{LGB400:2},gifts:{}},
+{id:'C3',name:'皇中皇＋老甘榜',price:1990,orig:2280,items:{HZH400:1,LGB400:1},gifts:{ICSDH:1}},
+{id:'C4',name:'金包＋金鳳 200g',price:999,orig:1160,items:{JB200:1,JF200:1},gifts:{ICSDH:1}},
+{id:'C5',name:'王中王＋金鳳 200g',price:1111,orig:1350,items:{WZW200:1,JF200:1},gifts:{ICSDH:1}},
+{id:'C6',name:'金包＋金鳳＋王中王 200g',price:1590,orig:1880,items:{JB200:1,JF200:1,WZW200:1},gifts:{ICSDH:1}}],
+addons:[
+{id:'A1',name:'榴槤寶寶吊飾',price:11,orig:199,items:{KC:1},req:'any',perCombo:true,noThreshold:true},
+{id:'A2',name:'老甘榜 400g',price:459,orig:600,items:{LGB400:1},req:['C1']},
+{id:'A3',name:'冰淇淋 2 杯',price:299,orig:358,items:{ICSDH:2},req:'any'},
+{id:'A4',name:'冰淇淋 6 杯',price:699,orig:1074,items:{ICSDH:6},req:'any'},
+{id:'A5',name:'榴槤泡芙 6 入',price:369,orig:420,items:{PF6:1},req:'any'}],
+thresholds:[{min:3000,gift:'BAGL',skipBag:true,label:'大保冷袋'},{min:3500,gift:'PLS',fallback:'KC',label:'小抱枕'}]};
+const CB=Object.fromEntries(CAMPAIGN.combos.map(c=>[c.id,c]));
+const AD=Object.fromEntries(CAMPAIGN.addons.map(a=>[a.id,a]));
+const DEFAULT_CONFIG={staff:{tc:['美玲','淑芬'],ks:['秀英','雅惠']},pt:{'cs-yq':['Cyndi'],'cs-tc':['凱']},discountStep:10,discountCap:100,extraGiftCap:1,durianGiftCap:1,closeMode:'confirm',dealGifts:['BAGS','PLS','KC','PEN'],autoBag:true,tastingBase:1,tastingPer:10,lowStock:3,commission:0.25,adminPin:'2222',costEnc:{"s": "gS9Q8ZNbgYNf1vRkregElw==", "i": "LDvUoGwa1SgluUPn", "d": "/ZHfplKZy4SQeUuIj347fQ+7cS5hfjGjg16fSA3/5nBKhILUjkvWOMGO/K53Z1TdEFIRJ8FCTrhcsOzv0x2sU2Wb1A35juU5lc61ahhtFAL+J+l+GcMcw0yYQp3B/AH/XPlrCx+aPR4LRXir5eqU2FoopD7RCw6PuhfF8Q9hkjfkkVVHOGGaCINZ/9BuLiIFq6XvZQdq0sIDj95gKDemC93yVEywYF5lJ4Y6ukYLTSFdoPUROOzeUzPzxrDIepztoiJJHfSA6okN+o555HUpvDbAb+Cf/KISHqRHSsJeQ3ZOyA2T2Qt5kXyNuH175eC4IBwKnRbUpzO7d8CPHNuyTbeaOKfDd4GAp+EMnZtn8UnAxH1xHDea/r55X0GV0YTzlfUelgQUiKoz3tdM4aSuUOaTBjlx3ESAfP37SzQ+ZEXaB90nH5NTs99Tiyfu0KkeiOIrdcC20oxcgL7HsQ==", "n": 200000},carry:{ks:{month:'2026-11',amount:234287}}};
+const MOVE_TYPES={in:{label:'進櫃',sign:1,col:'in'},restock:{label:'補貨',sign:1,col:'re'},withdraw:{label:'寄庫提領',sign:1,col:'wd'},deposit:{label:'寄庫',sign:-1,col:'dep'},return:{label:'撤櫃回倉',sign:-1,col:'other'},waste:{label:'銷毀',sign:-1,col:'other'},tasting:{label:'試吃',sign:-1,col:'taste'},gift:{label:'贈品',sign:-1,col:'gift'}};
+const CATS=[['combo','雙11組合'],['addon','加購'],['400','400g'],['200','200g'],['ice','冰品甜點'],['goods','周邊']];
+const PAYS=[['cash','現金'],['card','刷卡'],['voucher','商券'],['other','其他']];
+const ISSUES=['擺太高','擺不夠滿','角度歪','結霜嚴重','價卡缺漏','包裝破損','溫度異常','其他'];
+const SLOTS=[];for(let h=10;h<=22;h++)SLOTS.push(h);
+const COLLS=['txns','moves','closes','counts','photos','statements'];
+
+/* ---------- 工具 ---------- */
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=n=>(Math.round(+n||0)).toLocaleString('en-US');
+const money=n=>(n<0?'−$':'$')+fmt(Math.abs(n));
+const pad=n=>String(n).padStart(2,'0');
+const today=()=>{const d=new Date();return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())};
+const nowTime=()=>{const d=new Date();return pad(d.getHours())+':'+pad(d.getMinutes())};
+const WD='日一二三四五六';
+const dlabel=d=>{const [y,m,dd]=d.split('-').map(Number);return m+'/'+dd+'（'+WD[new Date(y,m-1,dd).getDay()]+'）'};
+const uid=k=>k+'-'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const pname=id=>{const p=P[id];if(!p)return id;return p.name+(p.cat==='400'||p.cat==='200'||p.id==='PF6'||p.id==='PF1'?' '+p.spec:'')};
+const sname=id=>(STORES.find(s=>s.id===id)||{}).name||id;
+const num=v=>{const n=parseInt(String(v??'').replace(/[^\d]/g,''),10);return isNaN(n)?0:n};
+const sumMap=(a,b,k=1)=>{for(const x in b)a[x]=(a[x]||0)+b[x]*k;return a};
+const active=d=>d>=CAMPAIGN.start&&d<=CAMPAIGN.end;
+const lineTxt=m=>Object.entries(m||{}).map(([k,q])=>pname(k)+'×'+q).join('、');
+const clone=o=>JSON.parse(JSON.stringify(o));
+
+/* ---------- 狀態 ---------- */
+const S={sdate:null,mode:'local',txns:[],moves:[],closes:[],counts:[],photos:[],statements:[],config:clone(DEFAULT_CONFIG),session:null,login:{step:'role'},tab:'sell',cat:'combo',cart:[],deal:{steps:0,reason:'',gifts:{},durian:{}},bagQty:null,pay:{cash:'',card:'',voucher:'',other:''},note:'',sheet:null,ui:{},mv:{type:'tasting',reason:'開盒試吃',q:{},photo:false,note:''},adm:{store:'ks',type:'in',date:today(),q:{},note:''},close:{},boss:{date:null,store:'all'},sheetDate:null,last:null,pt:null,ph:{kind:'開櫃',note:''}};
+try{const s=JSON.parse(localStorage.getItem('dpos-session2')||'null');if(s&&s.role&&s.role!=='boss')S.session=s}catch(e){}
+window.__S=S;
+const saveSession=()=>{try{localStorage.setItem('dpos-session2',JSON.stringify(S.session))}catch(e){}};
+const cfg=()=>S.config;
+/* ---------- 成本：加密存放，只有輸入總經理 PIN 才解得開；櫃姐／PT／行政端完全拿不到 ---------- */
+const b64=x=>Uint8Array.from(atob(x),c=>c.charCodeAt(0)),tob64=u=>btoa(String.fromCharCode(...new Uint8Array(u)));
+async function pinKey(pin,salt,n){const base=await crypto.subtle.importKey('raw',new TextEncoder().encode(String(pin)),'PBKDF2',false,['deriveKey']);return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:n,hash:'SHA-256'},base,{name:'AES-GCM',length:256},false,['encrypt','decrypt'])}
+async function openCosts(pin){const e=cfg().costEnc||DEFAULT_CONFIG.costEnc;try{const k=await pinKey(pin,b64(e.s),e.n);const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:b64(e.i)},k,b64(e.d));return JSON.parse(new TextDecoder().decode(pt)).c}catch(err){return null}}
+async function sealCosts(pin,costs){const salt=crypto.getRandomValues(new Uint8Array(16)),iv=crypto.getRandomValues(new Uint8Array(12)),n=200000;const k=await pinKey(pin,salt,n);const ct=await crypto.subtle.encrypt({name:'AES-GCM',iv},k,new TextEncoder().encode(JSON.stringify({v:1,c:costs})));return {s:tob64(salt),i:tob64(iv),d:tob64(ct),n}}
+const costOf=k=>(S.costs&&S.costs[k])||0;
+function cogs(store,date){let c=0;for(const t of dayTxns(store,date)){if(t.voided)continue;for(const k in t.sold)c+=costOf(k)*t.sold[k];for(const k in t.gifts)c+=costOf(k)*t.gifts[k]}
+  for(const m of S.moves)if(m.store===store&&m.date===date&&['tasting','gift','waste'].includes(m.type))for(const k in m.lines)c+=costOf(k)*m.lines[k];return c}
+const marginTile=(tot,cg,extra)=>S.costs?'<div class="kpi"><span>商品毛利</span><b>'+money(tot-cg)+'</b><i>毛利率 '+(tot?Math.round((tot-cg)/tot*100):0)+'%'+(extra||'')+'</i></div>':'';
+const sd=()=>S.sdate||today();
+const cprice=id=>{const v=(cfg().cprice||{})[id];return v!=null&&v!==''?num(v):(P[id]?P[id].price:0)};
+
+/* ---------- 庫存與金額計算 ---------- */
+function stockTable(store,date){
+  const R={};PRODUCTS.forEach(p=>R[p.id]={prev:0,sold:0,gift:0,taste:0,in:0,re:0,wd:0,dep:0,other:0});
+  for(const t of S.txns){if(t.store!==store||t.voided||t.date>date)continue;const prev=t.date<date;
+    for(const k in t.sold){if(!R[k])continue;prev?R[k].prev-=t.sold[k]:R[k].sold+=t.sold[k]}
+    for(const k in t.gifts){if(!R[k])continue;prev?R[k].prev-=t.gifts[k]:R[k].gift+=t.gifts[k]}}
+  for(const m of S.moves){if(m.store!==store||m.date>date)continue;const T=MOVE_TYPES[m.type];if(!T)continue;
+    for(const k in m.lines){if(!R[k])continue;const q=m.lines[k];if(m.date<date)R[k].prev+=T.sign*q;else R[k][T.col]+=q}}
+  for(const k in R){const r=R[k];r.out=r.sold+r.gift+r.taste;r.avail=r.prev+r.in+r.re+r.wd-r.dep-r.sold-r.gift-r.taste-r.other;r.any=!!(r.prev||r.sold||r.gift||r.taste||r.in||r.re||r.wd||r.dep||r.other)}
+  return R;
+}
+function cartHasDurian(cart){return cart.some(it=>{const comps=it.kind==='product'?{[it.ref]:1}:(it.kind==='combo'?CB[it.ref].items:AD[it.ref].items);return Object.keys(comps).some(k=>DURIAN_CATS.includes(P[k].cat))})}
+function calc(cart,deal,bagQty,disc,store,date,opt={}){
+  const C=cfg();const avail=opt.skipStock?null:Object.fromEntries(Object.entries(stockTable(store,date)).map(([k,v])=>[k,v.avail]));
+  const on=active(date);let comboCount=0;const comboIds={};const errors=[],warns=[];
+  cart.forEach(it=>{if(it.kind==='combo'){comboCount+=it.qty;comboIds[it.ref]=(comboIds[it.ref]||0)+it.qty}});
+  const items=[],sold={},auto={};let subtotal=0,noThr=0,taxable=0;
+  for(const it of cart){let name,unit,comps,def;
+    if(it.kind==='product'){def=P[it.ref];name=pname(it.ref);unit=def.price;comps={[it.ref]:1}}
+    else if(it.kind==='combo'){def=CB[it.ref];name=def.name;unit=def.price;comps=def.items;sumMap(auto,def.gifts,it.qty);if(!on)errors.push('「'+def.name+'」不在活動期間')}
+    else{def=AD[it.ref];name='加購 '+def.name;unit=def.price;comps=def.items;
+      const ok=def.req==='any'?comboCount>0:def.req.some(r=>comboIds[r]);
+      if(!on)errors.push('加購不在活動期間');
+      else if(!ok)errors.push('「'+def.name+'」要搭配'+(def.req==='any'?'任一雙11組合':def.req.map(r=>CB[r].name).join('、'))+'才能加購');
+      if(def.perCombo&&it.qty>comboCount)errors.push('「'+def.name+'」每組限購 1 個（目前 '+comboCount+' 組）');
+      if(def.noThreshold)noThr+=unit*it.qty}
+    const total=unit*it.qty;subtotal+=total;sumMap(sold,comps,it.qty);
+    const listVal=Object.entries(comps).reduce((s,[k,q])=>s+P[k].price*q,0)||1;
+    for(const [k,q] of Object.entries(comps))if(P[k].tax)taxable+=total*P[k].price*q/listVal;
+    items.push({kind:it.kind,ref:it.ref,name,qty:it.qty,unit,total,comps})}
+  const d=Math.max(0,disc);const total=subtotal-d;const base=total-noThr;
+  const giftList=Object.entries(auto).map(([pid,qty])=>({pid,qty,src:'組合贈品'}));
+  const gifts={...auto};const need=k=>(sold[k]||0)+(gifts[k]||0);
+  const hasBag=cart.some(it=>it.kind==='combo'&&CB[it.ref].bag);let hint='';
+  if(on&&items.length){for(const th of CAMPAIGN.thresholds){
+    if(base>=th.min){if(th.skipBag&&hasBag){warns.push('組合已含大保冷袋，滿 '+fmt(th.min)+' 不重複送');continue}
+      let pid=th.gift;if(avail&&avail[pid]-need(pid)<1&&th.fallback){warns.push(th.label+'已送完，改送'+pname(th.fallback));pid=th.fallback}
+      if(avail&&avail[pid]-need(pid)<1){warns.push('滿 '+fmt(th.min)+' 的贈品已送完');continue}
+      gifts[pid]=(gifts[pid]||0)+1;giftList.push({pid,qty:1,src:'滿 '+fmt(th.min)})}
+    else if(!hint&&!(th.skipBag&&hasBag))hint='再買 '+money(th.min-base)+' 送'+th.label}}
+  const bag=bagQty==null?((C.autoBag&&cartHasDurian(cart)&&!hasBag)?1:0):bagQty;
+  if(bag>0){gifts.BAGS=(gifts.BAGS||0)+bag;giftList.push({pid:'BAGS',qty:bag,src:'隨單附袋',bag:true})}
+  let dealCount=0,dealCost=0;for(const [k,q] of Object.entries(deal.gifts||{})){if(!q)continue;dealCount+=q;dealCost+=P[k].price*q;gifts[k]=(gifts[k]||0)+q;giftList.push({pid:k,qty:q,src:'爭取成交',deal:true})}
+  let durN=0;for(const [k,q] of Object.entries(deal.durian||{})){if(!q)continue;durN+=q;dealCost+=P[k].price*q;gifts[k]=(gifts[k]||0)+q;giftList.push({pid:k,qty:q,src:'送榴槤',deal:true,durian:true})}
+  if(avail)for(const k of new Set([...Object.keys(sold),...Object.keys(gifts)])){const n=need(k);if(n>avail[k])errors.push(pname(k)+' 庫存不夠：需要 '+n+'，可售只剩 '+Math.max(0,avail[k]))}
+  if(!opt.skipRules){
+    if(d>C.discountCap)errors.push('折價超過每單上限 '+money(C.discountCap)+'，請找主管');
+    if(dealCount>C.extraGiftCap)errors.push('加送小禮超過每單上限 '+C.extraGiftCap+' 個，請找主管');
+    if(durN>(C.durianGiftCap??1))errors.push('送榴槤超過每單上限 '+(C.durianGiftCap??1)+' 盒，請找主管');
+    if(d>subtotal)errors.push('折價不能大於小計')}
+  taxable=subtotal?Math.round(taxable*total/subtotal):0;
+  return {items,sold,gifts,giftList,subtotal,disc:d,total,base,errors,warns,hint,taxable,bag,dealCount,dealCost,durN};
+}
+function buildTxn(o){
+  const R=calc(o.cart,o.deal||{gifts:{}},o.bag==null?null:o.bag,o.disc||0,o.store,o.date,{skipStock:o.skipStock,skipRules:o.skipStock});
+  const no=o.no||S.txns.filter(t=>t.store===o.store&&t.date===o.date).length+1;
+  return {id:o.id||uid('t'),store:o.store,storeName:sname(o.store),date:o.date,time:o.time||nowTime(),ts:o.ts||Date.now(),staff:o.staff,no,
+    items:R.items.map(i=>({kind:i.kind,ref:i.ref,name:i.name,qty:i.qty,unit:i.unit,total:i.total})),sold:R.sold,gifts:R.gifts,giftList:R.giftList,
+    subtotal:R.subtotal,discount:R.disc,discountReason:R.disc?(o.reason||''):'',total:R.total,taxable:R.taxable,bag:R.bag,
+    deal:{discount:R.disc,steps:o.steps||0,reason:R.disc||R.dealCount||R.durN?(o.reason||''):'',gifts:Object.fromEntries(Object.entries((o.deal||{}).gifts||{}).filter(([,q])=>q)),durian:Object.fromEntries(Object.entries((o.deal||{}).durian||{}).filter(([,q])=>q)),giftCost:Math.round(R.dealCost*10)/10,cost:Math.round((R.disc+R.dealCost)*10)/10},
+    itemText:R.items.map(i=>i.name+'×'+i.qty).join('＋'),giftText:R.giftList.map(g=>pname(g.pid)+'×'+g.qty).join('、'),
+    detail:[...Object.entries(R.sold).map(([k,q])=>({pid:k,name:pname(k),qty:q,type:'銷售',price:P[k].price})),...Object.entries(R.gifts).map(([k,q])=>({pid:k,name:pname(k),qty:q,type:'贈品',price:P[k].price}))],
+    pay:{cash:num(o.pay.cash),card:num(o.pay.card),voucher:num(o.pay.voucher),other:num(o.pay.other)},note:o.note||'',voided:false};
+}
+const dayTxns=(store,date)=>S.txns.filter(t=>t.store===store&&t.date===date).sort((a,b)=>a.no-b.no);
+function sysTotals(store,date){const o={total:0,cash:0,card:0,voucher:0,other:0,count:0,taxable:0,disc:0,discN:0,deal:0,dealN:0,dealGiftN:0};
+  for(const t of dayTxns(store,date)){if(t.voided)continue;o.total+=t.total;o.count++;o.taxable+=t.taxable||0;if(t.discount){o.disc+=t.discount;o.discN++}
+    const dg=Object.values((t.deal||{}).gifts||{}).reduce((s,v)=>s+v,0),dd=Object.values((t.deal||{}).durian||{}).reduce((s,v)=>s+v,0);if(t.discount||dg||dd){o.dealN++;o.deal+=((t.deal||{}).cost)||t.discount;o.dealGiftN+=dg;o.dealDurN=(o.dealDurN||0)+dd}
+    for(const [k] of PAYS)o[k]+=t.pay[k]||0}return o}
+function mtd(store,date){const m=date.slice(0,7);let s=0;for(const t of S.txns)if(t.store===store&&!t.voided&&t.date.slice(0,7)===m&&t.date<=date)s+=t.total;const c=(cfg().carry||{})[store];if(c&&c.month===m)s+=num(c.amount);return s}
+const closeOf=(store,date)=>S.closes.find(c=>c.store===store&&c.date===date);
+function tasteAllowance(store,date,pid){const r=stockTable(store,date)[pid];return cfg().tastingBase+Math.floor(r.sold/cfg().tastingPer)-r.taste}
+function staffDeals(store,date){const by={};for(const t of dayTxns(store,date)){if(t.voided)continue;const b=by[t.staff]||(by[t.staff]={n:0,deals:0,disc:0,giftN:0,durN:0,cost:0});b.n++;const dg=Object.values((t.deal||{}).gifts||{}).reduce((s,v)=>s+v,0),dd=Object.values((t.deal||{}).durian||{}).reduce((s,v)=>s+v,0);if(t.discount||dg||dd){b.deals++;b.disc+=t.discount;b.giftN+=dg;b.durN+=dd;b.cost+=((t.deal||{}).cost)||t.discount}}return by}
+function report(store,date){
+  const T=sysTotals(store,date),c=closeOf(store,date),st=stockTable(store,date);
+  const staff=[...new Set(dayTxns(store,date).map(t=>t.staff))].join('、')||'—';
+  const top=Object.entries(st).filter(([,r])=>r.sold>0).sort((a,b)=>b[1].sold-a[1].sold).slice(0,3).map(([k,r])=>pname(k)+' '+r.sold).join('、');
+  let match='尚未收櫃';if(c)match=c.diff===0?'✅ 與帳條吻合':'⚠️ 與帳條差 '+money(c.diff);
+  const taste=Object.values(st).reduce((s,r)=>s+r.taste,0),gift=Object.values(st).reduce((s,r)=>s+r.gift,0);
+  const voids=dayTxns(store,date).filter(t=>t.voided).length;
+  let s='【榴槤村日報】'+dlabel(date)+'\n'+sname(store)+'｜櫃姐 '+staff+'\n營業額 '+money(T.total)+'（'+T.count+' 筆）'+match+'\n現金 '+fmt(T.cash)+'｜刷卡 '+fmt(T.card)+'｜商券 '+fmt(T.voucher)+(T.other?'｜其他 '+fmt(T.other):'');
+  if(c&&c.counted)s+='\n庫存盤點 '+(c.blindDiff&&c.blindDiff.length?'⚠️ '+c.blindDiff.length+' 項不符：'+c.blindDiff.map(x=>pname(x.pid)+(x.diff>0?' 多 ':' 少 ')+Math.abs(x.diff)).join('、'):'✅ 全部對上');
+  if(top)s+='\n熱銷：'+top;s+='\n試吃 '+taste+'・贈品 '+gift;
+  if(T.dealN)s+='\n爭取成交 '+T.dealN+' 筆：折價 '+money(T.disc)+(T.dealGiftN?'＋加送小禮 '+T.dealGiftN+' 個':'')+(T.dealDurN?'＋送榴槤 '+T.dealDurN+' 盒':'');
+  if(voids)s+='\n⚠️ 作廢 '+voids+' 筆';
+  s+='\n當月累積 '+money(mtd(store,date));return s;
+}
+/* ---------- 寄賣盤點計算 ---------- */
+const countsOf=pt=>S.counts.filter(c=>c.store===pt).sort((a,b)=>(a.date+String(a.ts).padStart(15,'0')).localeCompare(b.date+String(b.ts).padStart(15,'0')));
+const cTotal=(c,k)=>{const l=(c.lines||{})[k];return l?num(l.shelf)+num(l.under)+num(l.wh):0};
+const ckey=(date,ts)=>date+'|'+String(ts||0).padStart(15,'0');
+/* 兩次盤點之間的補貨／退回：用日期＋時間排序，盤點當下一起登錄的進貨算到下一段 */
+function movesBetween(pt,prev,curKey){const r={in:{},out:{}};const pk=prev?ckey(prev.date,prev.ts):'';for(const m of S.moves){if(m.store!==pt)continue;const k=ckey(m.date,m.ts);if((pk&&k<=pk)||k>curKey)continue;const T=MOVE_TYPES[m.type];if(!T)continue;sumMap(T.sign>0?r.in:r.out,m.lines)}return r}
+const csList=extra=>{const ids=CS_ITEMS.map(c=>c.id);for(const k of extra)if(!ids.includes(k))ids.push(k);return ids};
+function consignInterval(pt,cur,prev){const mv=movesBetween(pt,prev,ckey(cur.date,cur.ts));const rows=[];let qty=0,amt=0,noPrice=[];
+  for(const id of csList(Object.keys(cur.lines||{}))){const L=(cur.lines||{})[id]||{};const now=cTotal(cur,id),before=prev?cTotal(prev,id):null,inQ=mv.in[id]||0,outQ=mv.out[id]||0;
+    if(!now&&!before&&!inQ&&!outQ&&!(cur.lines||{})[id])continue;const sold=prev?before+inQ-outQ-now:null;const pr=cprice(id);
+    if(sold!=null&&sold>0){qty+=sold;amt+=sold*pr;if(!pr)noPrice.push(id)}rows.push({pid:id,before,inQ,outQ,now,shelf:num(L.shelf),under:num(L.under),wh:num(L.wh),exp:L.exp||'',sold,price:pr})}
+  return {rows,qty,amt,noPrice}}
+function consignExpected(pt,date){const cs=countsOf(pt).filter(c=>c.date<=date);const last=cs[cs.length-1];const mv=movesBetween(pt,last,ckey(date,9e14));const e={};
+  for(const id of csList(Object.keys(P)))e[id]=(last?cTotal(last,id):0)+(mv.in[id]||0)-(mv.out[id]||0);return {last,e}}
+function consignMonth(pt,month){const cs=countsOf(pt);let amt=0,qty=0;const parts=[];const noPrice=new Set();for(let i=1;i<cs.length;i++)if(cs[i].date.slice(0,7)===month){const r=consignInterval(pt,cs[i],cs[i-1]);amt+=r.amt;qty+=r.qty;r.noPrice.forEach(x=>noPrice.add(x));parts.push({from:cs[i-1].date,to:cs[i].date,by:cs[i].by,qty:r.qty,amt:r.amt})}
+  const st=S.statements.find(s=>s.id===pt+'-'+month);return {amt,qty,parts,noPrice:[...noPrice],n:cs.filter(c=>c.date.slice(0,7)===month).length,statement:st?st.amount:null}}
+/* ---------- 百貨（city'super）月對帳單 ---------- */
+const cat2=id=>(CSI[id]&&CSI[id].g==='d')||(P[id]&&DURIAN_CATS.includes(P[id].cat))?'free':'tax';
+function parseStmt(txt){const o={days:{},warn:[]};const t=String(txt||'');const g=re=>{const m=t.match(re);return m?num(m[1]):null};
+  const ym=t.match(/資料年月[:：]\s*(\d{4})\s*年\s*(\d{1,2})\s*月/);if(ym)o.month=ym[1]+'-'+pad(+ym[2]);
+  const br=t.match(/分店[:：]\s*([^\s(（]+)[(（](\d+)[)）]/);if(br){o.branchName=br[1];o.branch=br[2]}
+  const ct=t.match(/專櫃[:：]\s*([A-Z]\d+)/);if(ct)o.counter=ct[1];
+  o.amount=g(/銷貨營業額[:：]\s*([\d,]+)/);o.commission=g(/抽成額[:：]\s*([\d,]+)/);o.deduct=g(/代扣項目合計[:：]\s*([\d,]+)/);o.payable=g(/應收\(付\)付款[:：]\s*([\d,]+)/);
+  const lines=t.split(/\r?\n/).map(l=>l.replace(/^[-=\s]+(?=\d)/,'').trim());
+  /* 方法一：一行一天（電腦版 PDF 複製） */
+  const rowDays={};for(const l of lines){if(/[:：]/.test(l))continue;const m=l.match(/^(\d{1,2})\s+([\d,]+)\s+([\d,]+)\s+([\d,]+)\s+([\d,]+)\s+([\d,]+)\s+([\d,]+)\s+([\d,]+)$/);if(!m)continue;const v=m.slice(1).map(num);if(v[0]<1||v[0]>31||v.slice(1,7).reduce((x,y)=>x+y,0)!==v[7])continue;rowDays[v[0]]={tax:v[1],free:v[2]+v[3]+v[4]+v[5]+v[6]}}
+  /* 方法二：一欄一欄（手機或預覽程式複製出來常是這樣） */
+  const groups=[];let cur=[];for(const l of lines){if(/^\d[\d,]*$/.test(l)&&!/[:：]/.test(l))cur.push(num(l));else{if(cur.length)groups.push(cur);cur=[]}}if(cur.length)groups.push(cur);
+  const colDays={};for(let i=0;i<groups.length;i++){const g0=groups[i];if(!g0.length||g0[0]<1||g0[0]>31||!g0.every((v,j)=>v===g0[0]+j))continue;const k=g0.length;const cols=groups.slice(i+1,i+8);if(cols.length<7||cols.some(c=>c.length<k))continue;
+    let ok=true;const tmp={};for(let j=0;j<k;j++){const c=cols.map(x=>x[j]);if(c.slice(0,6).reduce((x,y)=>x+y,0)!==c[6]){ok=false;break}tmp[g0[j]]={tax:c[0],free:c[1]+c[2]+c[3]+c[4]+c[5]}}if(ok){Object.assign(colDays,tmp);i+=7}}
+  o.days=Object.keys(colDays).length>Object.keys(rowDays).length?colDays:rowDays;
+  const rt=t.match(/抽成率\s+(\d+)/);if(rt)o.rate=+rt[1];
+  const n=Object.keys(o.days).length;const sum=Object.values(o.days).reduce((x,d)=>x+d.tax+d.free,0);o.n=n;o.sum=sum;
+  if(!n)o.warn.push('沒有讀到每日金額，請確認貼上的是對帳單第 1 頁');
+  if(o.amount!=null&&n&&sum!==o.amount)o.warn.push('每日加起來 '+fmt(sum)+'，跟「銷貨營業額」'+fmt(o.amount)+' 不同，可能有幾天沒讀到，請檢查下面的表');
+  return o}
+const stmtOf=(pt,month)=>S.statements.find(x=>x.id===pt+'-'+month);
+function stmtDay(pt,date){const st=stmtOf(pt,date.slice(0,7));if(!st||!st.days)return null;const d=st.days[String(+date.slice(8))];return d?{tax:num(d.tax),free:num(d.free)}:{tax:0,free:0}}
+const addDay=(d,n)=>{const [y,m,dd]=d.split('-').map(Number);const x=new Date(y,m-1,dd+n);return x.getFullYear()+'-'+pad(x.getMonth()+1)+'-'+pad(x.getDate())};
+function stmtRange(pt,from,to){const r={tax:0,free:0,missing:[]};for(let d=addDay(from,1);d<=to;d=addDay(d,1)){const v=stmtDay(pt,d);if(!v){if(!r.missing.includes(d.slice(0,7)))r.missing.push(d.slice(0,7));continue}r.tax+=v.tax;r.free+=v.free}return r}
+function intervalCat(R){const o={tax:0,free:0};for(const r of R.rows)if(r.sold>0)o[cat2(r.pid)]+=r.sold*r.price;return o}
+const dotDate=d=>d?d.replace(/-/g,'.'):'';
+/* 跟 PT 平常貼 LINE 的格式一樣 */
+function countReport(c){const cs=countsOf(c.store);const i=cs.findIndex(x=>x.id===c.id);const prev=i>0?cs[i-1]:null;const R=consignInterval(c.store,c,prev);
+  const [,m,d]=c.date.split('-').map(Number);let s=m+'/'+d+sname(c.store);
+  for(const r of R.rows){if(!r.now)continue;const u=cunit(r.pid);s+='\n'+cname(r.pid)+'：總共'+r.now+u+'，'+r.shelf+u+'在架上，'+r.under+u+'在底下'+(r.wh?'，'+r.wh+u+'在超市倉':'')+'。'+(r.exp?'('+dotDate(r.exp)+')。':'')+'\n'}
+  const ins=Object.entries(c.inQ||{}).filter(([,q])=>q),outs=Object.entries(c.outQ||{}).filter(([,q])=>q);
+  if(ins.length)s+='\n本次進貨：'+ins.map(([k,q])=>cname(k)+q+cunit(k)).join('、');
+  if(outs.length)s+='\n本次其他（退回／報廢）：'+outs.map(([k,q])=>cname(k)+q+cunit(k)).join('、');
+  if(prev){const sold=R.rows.filter(r=>r.sold>0);s+='\n自 '+dlabel(prev.date)+' 推估賣出 '+R.qty+' 件'+(sold.length?'：'+sold.map(r=>cname(r.pid)+r.sold).join('、'):'')+'，約 '+money(R.amt);const neg=R.rows.filter(r=>r.sold<0);if(neg.length)s+='\n⚠️ 比應有的多：'+neg.map(r=>cname(r.pid)+(-r.sold)).join('、')+'（可能有補貨沒登錄）'}
+  else s+='\n（第一次盤點，作為基準）';
+  if(c.issues&&c.issues.length)s+='\n⚠️ 現場回報：'+c.issues.join('、')+(c.note?'（'+c.note+'）':'');else if(c.note)s+='\n備註：'+c.note;return s.replace(/\n{3,}/g,'\n\n')}
+function alerts(date,storeF){const out=[];
+  for(const st of COUNTERS){if(storeF!=='all'&&storeF!==st.id)continue;const ts=dayTxns(st.id,date),c=closeOf(st.id,date);
+    if(c&&c.diff!==0)out.push({lv:'bad',t:st.name+'：營業額系統 '+money(c.sys.total)+'，帳條 '+money(c.receipt.total)+'，差 '+money(c.diff)});
+    if(c&&c.blindDiff)for(const x of c.blindDiff)out.push({lv:'bad',t:st.name+' 庫存不符 '+pname(x.pid)+'：實點 '+x.count+'，系統 '+x.sys+'（'+(x.diff>0?'多 ':'少 ')+Math.abs(x.diff)+'）'});
+    if(!c&&ts.length&&(date<today()||nowTime()>='22:30'))out.push({lv:'warn',t:st.name+'：還沒收櫃對帳'});
+    for(const t of ts){if(t.voided)out.push({lv:'warn',t:st.name+' 第 '+t.no+' 筆作廢 '+money(t.total)+'（'+t.voidReason+'・'+t.voidBy+'）'})}
+    for(const m of S.moves)if(m.store===st.id&&m.date===date){if(m.over)out.push({lv:'bad',t:st.name+' 試吃超過規則：'+lineTxt(m.lines)+'（'+m.note+'・'+m.by+'）'});
+      if(m.type==='waste')out.push({lv:'warn',t:st.name+' 銷毀：'+lineTxt(m.lines)+'（'+m.reason+'）'})}
+    const sk=stockTable(st.id,date);for(const k in sk)if(sk[k].avail<0)out.push({lv:'bad',t:st.name+' '+pname(k)+' 可售變負數（'+sk[k].avail+'），請行政補登進櫃'})}
+  for(const pt of CONSIGNS){if(storeF!=='all'&&storeF!==pt.id)continue;for(const c of S.counts)if(c.store===pt.id&&c.date===date&&c.issues&&c.issues.length)out.push({lv:'warn',t:pt.name+' 盤點回報：'+c.issues.join('、')+(c.note?'（'+c.note+'）':'')})}
+  return out}
+
+/* ---------- 示範資料 ---------- */
+function demoData(){
+  const ks='ks',D='2026-11-19',st='秀英';const txns=[],moves=[];
+  moves.push({id:'demo-ks-open',store:ks,date:'2026-11-18',ts:1,type:'in',by:'行政',role:'admin',lines:{LS400:18,HZH400:18,SDH400:27,JB400:10,LGB400:14,HZH200:12,WZW200:14,JF200:17,JB200:10,ICSDH:43,ICMSW:18,PF6:60,BAGS:36,PLS:9,BAGL:17,KC:25},reason:'期初庫存（依 11/19 日銷表的前日庫存）'});
+  moves.push({id:'demo-tc-open',store:'tc',date:'2026-11-19',ts:2,type:'in',by:'行政',role:'admin',lines:{HZH400:20,LS400:20,WZW400:10,LGB400:20,JB400:10,JF400:6,HZH200:10,WZW200:12,JF200:12,JB200:12,ICSDH:48,ICMSW:24,PF6:20,BAGS:40,BAGL:20,PLS:10,KC:30,PEN:20},reason:'示範：台中開櫃進貨'});
+  moves.push({id:'demo-tc-re2',store:'tc',date:'2026-11-19',time:'16:40',ts:3,type:'restock',by:'行政',role:'admin',lines:{LS400:6,ICSDH:12},reason:'示範：櫃上老樹快沒了，第二批補貨',seq:2});
+  const T=(n,time,cart,disc,reason,pay)=>txns.push(buildTxn({id:'demo-ks-'+n,no:n,store:ks,date:D,time,ts:n+10,staff:st,cart,bag:1,disc,steps:disc/10,reason,pay,skipStock:true}));
+  T(1,'13:05',[{kind:'product',ref:'LS400',qty:2}],100,'客人議價',{card:2660});
+  T(2,'14:20',[{kind:'product',ref:'ICSDH',qty:1},{kind:'product',ref:'ICMSW',qty:1}],78,'湊整數',{cash:300});
+  txns[1].bag=0;txns[1].gifts={};txns[1].giftList=[];txns[1].detail=txns[1].detail.filter(d=>d.type==='銷售');txns[1].giftText='';
+  T(3,'15:10',[{kind:'product',ref:'LS400',qty:1}],0,'',{cash:1380});
+  T(4,'16:30',[{kind:'product',ref:'LS400',qty:2}],100,'客人議價',{voucher:2660});
+  T(5,'18:00',[{kind:'product',ref:'WZW200',qty:2}],250,'客人議價',{cash:1190});
+  T(6,'19:40',[{kind:'product',ref:'LS400',qty:1}],0,'',{card:1380});
+  moves.push({id:'demo-ks-taste',store:ks,date:D,ts:20,type:'tasting',by:st,role:'staff',lines:{LS400:1,HZH400:1},reason:'開盒試吃',over:false,note:''});
+  moves.push({id:'demo-ks-pr',store:ks,date:D,ts:21,type:'gift',by:st,role:'staff',lines:{LS400:1,HZH400:1},reason:'公關',note:''});
+  const closes=[{id:'close-ks-'+D,store:ks,storeName:sname(ks),date:D,staff:st,time:'21:47',ts:30,receipt:{total:9570,cash:2870,card:4040,voucher:2660,other:0},sys:{total:9570,cash:2870,card:4040,voucher:2660,other:0,count:6},diff:0,counted:true,counts:{LS400:10,HZH400:16,SDH400:27,JB400:10,LGB400:14,HZH200:12,WZW200:12,JF200:17,JB200:10,ICSDH:42,ICMSW:17,PF6:60,BAGS:31,PLS:9,BAGL:17,KC:25},blindDiff:[]}];
+  const counts=[
+    {id:'demo-cs-yq-1117',store:'cs-yq',date:'2026-11-17',time:'11:32',ts:40,by:'Cyndi',lines:{JF400:{shelf:1,under:0},JB400:{shelf:7,under:0},LS400:{shelf:9,under:0},SDH400:{shelf:20,under:0},LGB400:{shelf:11,under:0},HZH400:{shelf:14,under:0},PF6:{shelf:11,under:0},ICSDH:{shelf:28,under:0}},before:[],after:[],issues:[],note:'示範：照 11/17 LINE 回報（未分架上／底下）'},
+    {id:'demo-cs-tc-1119',store:'cs-tc',date:'2026-11-19',time:'21:55',ts:41,by:'凱',lines:{HZH400:{shelf:8,under:8,exp:'2027-10-31'},LS400:{shelf:8,under:2,exp:'2027-10-31'},SDH400:{shelf:6,under:3,exp:'2027-05-14'},JB400:{shelf:10,under:3,exp:'2027-10-31'},LGB400:{shelf:4,under:8,exp:'2027-05-14'},ICSDH:{shelf:18,under:23,exp:'2028-08-24'},PF6:{shelf:3,under:9,exp:''},PF1:{shelf:18,under:2,exp:'2027-01-05'}},before:[],after:[],issues:[],note:'示範：照 11/19 LINE 回報'}];
+  const statements=[{id:'cs-tc-2026-10',store:'cs-tc',month:'2026-10',days:{"1":{"tax":0,"free":0},"2":{"tax":0,"free":850},"3":{"tax":0,"free":2230},"4":{"tax":0,"free":2680},"5":{"tax":0,"free":0},"6":{"tax":0,"free":0},"7":{"tax":0,"free":2530},"8":{"tax":0,"free":0},"9":{"tax":0,"free":0},"10":{"tax":456,"free":4260},"11":{"tax":0,"free":0},"12":{"tax":170,"free":0},"13":{"tax":170,"free":0},"14":{"tax":340,"free":0},"15":{"tax":0,"free":0},"16":{"tax":341,"free":2980},"17":{"tax":511,"free":2680},"18":{"tax":0,"free":850},"19":{"tax":170,"free":4060},"20":{"tax":0,"free":0},"21":{"tax":143,"free":8400},"22":{"tax":0,"free":3060},"23":{"tax":0,"free":0},"24":{"tax":0,"free":0},"25":{"tax":170,"free":600},"26":{"tax":456,"free":2280},"27":{"tax":0,"free":0},"28":{"tax":0,"free":0},"29":{"tax":0,"free":0},"30":{"tax":170,"free":0},"31":{"tax":0,"free":0}},amount:40557,commission:8111,deduct:12318,payable:20252,rate:20,ts:50,note:'取自 city\'super 台中(3103) T2122 10 月對帳單'}];
+  return {txns,moves,closes,counts,photos:[],statements};
+}
+
+/* ---------- 儲存：雲端同步／Google 試算表／本機 ---------- */
+const Store={db:null,assets:undefined,
+  async boot(){
+    if(typeof google!=='undefined'&&google.script&&google.script.run){S.mode='gas';await this.gasPull();setInterval(()=>this.gasPull().then(schedule),20000);return}
+    if(window.claude&&typeof window.claude.use==='function'){
+      try{const db=await Promise.race([window.claude.use('db'),new Promise(r=>setTimeout(()=>r(null),6000))]);
+        if(db){this.db=db;S.mode='db';this.sub();return}}catch(e){}}
+    S.mode='local';this.localLoad();
+  },
+  sub(){const db=this.db;const t=setTimeout(()=>{S.ui.slow=true;schedule()},10000);
+    COLLS.forEach(k=>db.collection(k).onSnapshot(s=>{S[k]=s.docs.map(d=>d.data());if(!s.metadata.fromCache){clearTimeout(t);S.ui.slow=false}schedule()},e=>{S.ui.dberr=e.code;schedule()}));
+    db.doc('config/main').onSnapshot(s=>{S.config=Object.assign(clone(DEFAULT_CONFIG),s.exists?s.data():{});schedule()},()=>{});
+  },
+  gasCall(fn,...a){return new Promise((res,rej)=>google.script.run.withSuccessHandler(res).withFailureHandler(rej)[fn](...a))},
+  async gasPull(){try{const d=await this.gasCall('getAll');COLLS.forEach(k=>S[k]=d[k]||[]);if(d.config)S.config=Object.assign(clone(DEFAULT_CONFIG),d.config)}catch(e){toast('雲端讀取失敗：'+(e.message||e))}},
+  localLoad(){try{const d=JSON.parse(localStorage.getItem('dpos-data2')||'null');if(d&&d.txns){COLLS.forEach(k=>S[k]=d[k]||[]);if(d.config)S.config=Object.assign(clone(DEFAULT_CONFIG),d.config);return}}catch(e){}
+    const d=demoData();COLLS.forEach(k=>S[k]=d[k]);this.localSave()},
+  localSave(){try{const o={config:S.config};COLLS.forEach(k=>o[k]=S[k]);localStorage.setItem('dpos-data2',JSON.stringify(o))}catch(e){}},
+  put(kind,obj){const a=S[kind];const i=a.findIndex(x=>x.id===obj.id);if(i>=0)a[i]=obj;else a.push(obj)},
+  async save(kind,obj){if(kind==='moves')obj.linesText=lineTxt(obj.lines);if(obj.store)obj.storeName=sname(obj.store);obj=clone(obj);this.put(kind,obj);
+    try{if(S.mode==='db')await this.db.collection(kind).doc(obj.id).set(obj);
+      else if(S.mode==='gas')await this.gasCall('saveRecord',kind,obj);
+      else this.localSave();return true}
+    catch(e){toast('沒有存到雲端，請再按一次（'+(e.code||e.message||e)+'）');return false}},
+  async saveConfig(c){S.config=c;try{if(S.mode==='db')await this.db.doc('config/main').set(clone(c));else if(S.mode==='gas')await this.gasCall('saveConfig',c);else this.localSave();toast('設定已儲存')}catch(e){toast('設定沒有存到：'+(e.code||e.message))}},
+  async getAssets(){if(this.assets!==undefined)return this.assets;this.assets=null;try{if(window.claude&&window.claude.use)this.assets=await Promise.race([window.claude.use('assets'),new Promise(r=>setTimeout(()=>r(null),4000))])}catch(e){}return this.assets},
+  async addPhoto(file,meta){
+    let src;
+    if(S.mode==='db'){const as=await this.getAssets();
+      if(as){try{const b=await shrink(file,1600,.8);const r=await as.upload(b,{type:'image/jpeg'});src={asset:r.id}}catch(e){}}
+      if(!src){let b=await shrink(file,900,.6);let d=await toData(b);if(d.length>240000){b=await shrink(file,700,.5);d=await toData(b)}src={data:d}}}
+    else if(S.mode==='gas'){const d=await toData(await shrink(file,1280,.75));const r=await this.gasCall('savePhoto',d,meta.store+'_'+meta.date+'_'+meta.kind);src={url:r.url}}
+    else{src={data:await toData(await shrink(file,800,.6))}}
+    const rec={id:uid('p'),ts:Date.now(),time:nowTime(),...meta,src};if(await this.save('photos',rec))return rec;return null},
+  async loadDemo(){const d=demoData();for(const k of COLLS)for(const o of d[k])await this.save(k,o);toast('已載入示範資料')},
+  async resetLocal(){COLLS.forEach(k=>S[k]=[]);S.config=clone(DEFAULT_CONFIG);this.localSave()}
+};
+async function shrink(file,max,q){const bmp=await createImageBitmap(file);const s=Math.min(1,max/Math.max(bmp.width,bmp.height));const c=document.createElement('canvas');c.width=Math.round(bmp.width*s);c.height=Math.round(bmp.height*s);c.getContext('2d').drawImage(bmp,0,0,c.width,c.height);return await new Promise(r=>c.toBlob(r,'image/jpeg',q))}
+const toData=b=>new Promise(r=>{const fr=new FileReader();fr.onload=()=>r(fr.result);fr.readAsDataURL(b)});
+const photoSrc=p=>p.src?(p.src.asset?'/_blob/'+p.src.asset:(p.src.url||p.src.data)):'';
+const photoById=id=>S.photos.find(p=>p.id===id);
+
+/* ---------- 畫面骨架 ---------- */
+const $app=document.getElementById('app'),$sheet=document.getElementById('sheet'),$toast=document.getElementById('toast');
+let tTimer;function toast(m){$toast.innerHTML='<div class="toast">'+esc(m)+'</div>';clearTimeout(tTimer);tTimer=setTimeout(()=>$toast.innerHTML='',2800)}
+let pend=false;function schedule(){if(pend)return;pend=true;requestAnimationFrame(()=>{pend=false;render()})}
+const ICON={sell:'<svg viewBox="0 0 24 24"><path d="M4 7h16l-1.5 11a2 2 0 0 1-2 1.8H7.5a2 2 0 0 1-2-1.8z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>',taste:'<svg viewBox="0 0 24 24"><path d="M4 12h16"/><path d="M6 12a6 6 0 0 0 12 0"/><path d="M9 5c0 1.5 1 2 1 3.5M13 5c0 1.5 1 2 1 3.5"/></svg>',sheet:'<svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>',photo:'<svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.5"/><path d="M8 6l1.5-2h5L16 6"/></svg>',close:'<svg viewBox="0 0 24 24"><path d="M5 12l4 4 10-10"/><path d="M4 20h16"/></svg>',hours:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>'};
+function render(){
+  const ae=document.activeElement;const fid=ae&&ae.id;let sel=null;try{sel=fid&&ae.selectionStart!=null?[ae.selectionStart,ae.selectionEnd]:null}catch(e){}
+  const sy=window.scrollY;const shEl=$sheet.querySelector('.sheet');const ss=shEl?shEl.scrollTop:0;
+  const r=S.session&&S.session.role;
+  $app.innerHTML=!r?vLogin():r==='staff'?vStaff():r==='admin'?vAdmin():r==='pt'?vPT():vBoss();
+  $sheet.innerHTML=S.sheet?'<div class="sheet-bg" data-act="bgclose"><div class="sheet" role="dialog" aria-modal="true">'+vSheet()+'</div></div>':'';
+  const sh2=$sheet.querySelector('.sheet');if(sh2)sh2.scrollTop=S.ui.pkTop?0:ss;S.ui.pkTop=false;window.scrollTo(0,sy);
+  if(S.ui.jump){const j=S.ui.jump;S.ui.jump=null;const el=j==='guard'?document.querySelector('.guard'):document.getElementById(j);if(el){el.scrollIntoView({block:'center',behavior:'smooth'});if(el.tagName==='INPUT')el.focus({preventScroll:true})}return}
+  if(fid){const el=document.getElementById(fid);if(el&&el.type!=='file'){el.focus({preventScroll:true});if(sel)try{el.setSelectionRange(sel[0],sel[1])}catch(e){}}}
+}
+const modeTag=()=>'<span class="mode">'+({db:'雲端同步',gas:'Google 試算表',local:'示範・本機'}[S.mode])+'</span>';
+function topBar(title,sub,btn='換人'){return '<div class="top"><img class="logo" src="'+LOGO+'" alt="榴槤村"><div class="who"><b>'+esc(title)+modeTag()+'</b><span>'+esc(sub)+'</span></div><button data-act="logout">'+btn+'</button></div>'}
+function uploader(id,label){return '<label class="upl'+((S.ui.miss||[]).includes('up-'+id)?' need':'')+'" id="up-'+id+'" for="'+id+'">📷 '+esc(label)+'<input id="'+id+'" type="file" accept="image/*" multiple data-act-in="upload"></label>'}
+function thumbs(list){if(!list.length)return '';return '<div class="photos" style="margin-top:8px">'+list.map(p=>'<button class="ph" data-act="viewph" data-v="'+p.id+'"><img src="'+esc(photoSrc(p))+'" alt="'+esc(p.kind)+'照片" loading="lazy"><span>'+esc(p.kind+'・'+(p.time||''))+'</span></button>').join('')+'</div>'}
+
+/* ---------- 登入 ---------- */
+function vLogin(){const L=S.login;let h='<div class="login"><div class="wrap"><img class="logo" src="'+LOGO+'" alt="榴槤村 Durian Village">';
+  if(L.step==='role'){h+='<h1>櫃位 POS</h1><p>選你的身分開始</p>'+
+    '<button class="role" data-act="role" data-v="staff"><span class="ic">櫃</span><span><b>櫃姐</b><span>結帳、試吃銷毀、日銷表、時段、照片、收櫃</span></span></button>'+
+    '<button class="role" data-act="role" data-v="pt"><span class="ic">盤</span><span><b>寄賣盤點</b><span>city\'super 等寄賣點盤點與拍照</span></span></button>'+
+    '<button class="role" data-act="role" data-v="admin"><span class="ic">行</span><span><b>行政（進櫃）</b><span>登錄進櫃、補貨、撤櫃，需要 PIN</span></span></button>'+
+    '<button class="role" data-act="role" data-v="boss"><span class="ic">總</span><span><b>總經理</b><span>每日／月統計、庫存對帳、寄賣對帳，需要 PIN</span></span></button>'}
+  else if(L.step==='store'){const list=L.role==='pt'?CONSIGNS:COUNTERS;h+='<button class="back" data-act="lback">‹ 返回</button><h1>哪一個'+(L.role==='pt'?'寄賣點':'櫃位')+'？</h1><p>今天 '+dlabel(today())+'</p><div class="chips wrap">'+list.map(s=>'<button class="chip" data-act="lstore" data-v="'+s.id+'">'+esc(s.name)+'</button>').join('')+'</div>'}
+  else if(L.step==='name'){const names=(L.role==='pt'?cfg().pt:cfg().staff)[L.store]||[];h+='<button class="back" data-act="lback">‹ 返回</button><h1>'+esc(sname(L.store))+'</h1><p>你是誰？</p><div class="chips wrap">'+names.map(n=>'<button class="chip" data-act="lname" data-v="'+esc(n)+'">'+esc(n)+'</button>').join('')+'</div>'+(names.length?'':'<p>還沒有名單，請總經理在設定新增。</p>')}
+  else if(L.step==='pin'){const isB=L.role==='boss';h+='<button class="back" data-act="lback">‹ 返回</button><h1>'+(isB?'總經理':'行政（進櫃）')+'</h1><p>輸入 PIN 碼'+(isB?'':'（示範：'+DEFAULT_CONFIG.adminPin+'）')+'</p><input id="pin" class="in" type="password" inputmode="numeric" autocomplete="off" maxlength="8" value="'+esc(L.pin||'')+'" data-bind="login.pin" aria-label="PIN 碼"><button class="btn" data-act="pinok">進入</button>'+(L.err?'<div class="msg bad">'+esc(L.err)+'</div>':'')}
+  return h+'<p class="small" style="color:#cfe0d6;margin-top:28px">示範資料取自 11/19 漢神巨蛋日銷表、11/17 遠企與 11/19 台中大遠百的 LINE 盤點回報；櫃姐名字為示範。</p></div></div>';
+}
+
+/* ---------- 櫃姐 ---------- */
+function dateBar(){const d=sd(),t=today();const past=d<t;
+  return '<div class="dbar'+(past?' past':'')+'"><button data-act="sdmove" data-v="-1" aria-label="前一天">‹ 前一天</button><div class="dl"><b>'+dlabel(d)+'</b><span>'+(past?'查看過去的資料':'今天')+'</span></div>'+(past?'<button data-act="sdmove" data-v="1" aria-label="後一天">後一天 ›</button>':'<button disabled>後一天 ›</button>')+'</div>'+(past?'<button class="mini back2" data-act="sdtoday">回到今天</button>':'')}
+function staffNag(){const s=S.session.store,t=today();if(sd()!==t||S.tab==='close')return '';let h='';
+  const [y,m,d]=t.split('-').map(Number);const yd=new Date(y,m-1,d-1);const ys=yd.getFullYear()+'-'+pad(yd.getMonth()+1)+'-'+pad(yd.getDate());
+  if(dayTxns(s,ys).length&&!closeOf(s,ys))h+='<button class="nag" data-act="nagclose" data-v="'+ys+'">⚠️ '+dlabel(ys)+' 還沒收櫃，點這裡補收櫃 ›</button>';
+  if(dayTxns(s,t).length&&!closeOf(s,t)&&nowTime()>='21:00')h+='<button class="nag" data-act="nagclose" data-v="'+t+'">下班前記得收櫃（對帳條＋點庫存），點這裡 ›</button>';
+  return h}
+function vStaff(){const s=S.session;const tabs=[['sell','結帳'],['taste','試吃銷毀'],['sheet','日銷表'],['hours','時段'],['photo','照片'],['close','收櫃']];
+  const body={sell:vSell,taste:vTaste,sheet:vDaily,hours:vHours,photo:vPhoto,close:vClose}[S.tab]();const live=S.tab==='sell'&&sd()===today();
+  return topBar(sname(s.store),s.name+' · '+dlabel(today()))+'<div class="main'+(live?'':' nobar')+'">'+(S.ui.slow?'<div class="msg warn">雲端資料還沒連上，畫面可能不是最新。</div>':'')+dateBar()+staffNag()+body+'</div>'+
+    (live?cartBar():'')+'<nav class="tabs">'+tabs.map(([k,l])=>'<button class="'+(S.tab===k?'on':'')+'" data-act="tab" data-v="'+k+'">'+ICON[k]+l+'</button>').join('')+'</nav>';
+}
+const curDisc=()=>S.deal.steps*cfg().discountStep;
+const curCalc=()=>calc(S.cart,S.deal,S.bagQty,curDisc(),S.session.store,today());
+function cartBar(){const R=curCalc();const n=S.cart.reduce((s,i)=>s+i.qty,0);
+  if(!n)return '<div class="cartbar empty"><button disabled>點上面的商品加入購物車</button></div>';
+  return '<div class="cartbar"><button data-act="opencart"><span>結帳</span><span class="cnt">'+n+' 項</span><span class="tot">'+money(R.total)+'</span></button></div>'}
+function vSell(){if(sd()<today())return vSellPast();const st=stockTable(S.session.store,today());const R=curCalc();const on=active(today());
+  const left=k=>st[k].avail-((R.sold[k]||0)+(R.gifts[k]||0));const inCart=(kind,ref)=>(S.cart.find(i=>i.kind===kind&&i.ref===ref)||{}).qty||0;
+  const ts=dayTxns(S.session.store,today()).filter(t=>!t.voided);const tot=ts.reduce((s,t)=>s+t.total,0);
+  let h='<div class="row" style="margin-bottom:10px"><div class="grow small">'+(on?'雙11 活動・'+CAMPAIGN.start.slice(5).replace('-','/')+'–'+CAMPAIGN.end.slice(5).replace('-','/'):'目前沒有活動')+'</div><button class="mini" data-act="sheet" data-v="txns">今日 '+ts.length+' 筆・'+money(tot)+' ›</button></div>';
+  h+='<div class="chips" role="tablist">'+CATS.map(([k,l])=>'<button class="chip'+(S.cat===k?' on':'')+'" data-act="cat" data-v="'+k+'">'+l+'</button>').join('')+'</div><div class="grid">';
+  const combos=CAMPAIGN.combos.reduce((s,c)=>s+inCart('combo',c.id),0);
+  const foot=(price,orig,stTxt,low)=>'<span class="foot"><span class="p">'+money(price)+(orig?'<span class="o">'+money(orig)+'</span>':'')+'</span><span class="st'+(low?' low':'')+'">'+stTxt+'</span></span>';
+  if(S.cat==='combo')for(const c of CAMPAIGN.combos){const can=Math.min(...Object.entries(c.items).map(([k,q])=>Math.floor(left(k)/q)));const q=inCart('combo',c.id);
+    h+='<button class="pc combo" data-act="add" data-k="combo" data-v="'+c.id+'"'+(!on||can<1?' disabled':'')+'>'+(q?'<span class="q">'+q+'</span>':'')+'<span class="n">'+esc(c.name)+'</span><span class="s">'+lineTxt(c.items)+'</span>'+(Object.keys(c.gifts).length?'<span class="g">送 '+lineTxt(c.gifts)+'</span>':'')+foot(c.price,c.orig,'可做 '+Math.max(0,can),can<=cfg().lowStock)+'</button>'}
+  else if(S.cat==='addon')for(const a of CAMPAIGN.addons){const ok=a.req==='any'?combos>0:a.req.some(r=>inCart('combo',r));const can=Math.min(...Object.entries(a.items).map(([k,q])=>Math.floor(left(k)/q)));const q=inCart('addon',a.id);
+    h+='<button class="pc" data-act="add" data-k="addon" data-v="'+a.id+'"'+(!on||!ok||can<1?' disabled':'')+'>'+(q?'<span class="q">'+q+'</span>':'')+'<span class="n">'+esc(a.name)+'</span>'+(ok?'<span class="s">'+(a.noThreshold?'不計入滿額門檻':'指定套組加購')+'</span>':'<span class="lock">要先點'+(a.req==='any'?'雙11組合':a.req.map(r=>CB[r].name).join('、'))+'</span>')+foot(a.price,a.orig,'剩 '+Math.max(0,can),false)+'</button>'}
+  else for(const p of PRODUCTS.filter(p=>p.cat===S.cat)){const l=left(p.id),q=inCart('product',p.id);
+    h+='<button class="pc" data-act="add" data-k="product" data-v="'+p.id+'"'+(l<1?' disabled':'')+'>'+(q?'<span class="q">'+q+'</span>':'')+'<span class="n">'+esc(p.name)+'</span><span class="s">'+esc(p.spec)+'</span>'+foot(p.price,0,'剩 '+l,l<=cfg().lowStock)+'</button>'}
+  return h+'</div>';
+}
+/* ---------- 防呆：按了才告訴她缺什麼，並跳到那一格 ---------- */
+function guardBox(){const g=S.ui.guard;if(!g||!g.list.length)return '';return '<div class="guard" role="alert"><b>'+(g.confirm?'請再確認一次':'還差一點')+'</b>'+g.list.map(x=>'<div>・'+esc(x)+'</div>').join('')+'</div>'}
+function blockIf(list,miss,confirmKey){S.ui.guard=list.length?{list,confirm:!miss.length&&!!confirmKey}:null;S.ui.miss=miss;if(list.length){S.ui.jump=miss[0]||'guard';if(navigator.vibrate)try{navigator.vibrate(120)}catch(e){}return true}return false}
+function vCart(){const C=cfg();const R=curCalc();let h='<div class="sh-h"><h2>結帳明細</h2><button class="x" data-act="closesheet" aria-label="關閉">×</button></div>';
+  if(!S.cart.length)return h+'<p class="small">購物車是空的。</p>';
+  S.cart.forEach((it,i)=>{const r=R.items[i];const sub=it.kind==='product'?money(r.unit)+' / '+P[it.ref].spec:'內含 '+lineTxt(r.comps);
+    h+='<div class="line"><div><div class="nm">'+esc(r.name)+'</div><div class="sub">'+esc(sub)+'</div></div><div class="step"><button data-act="qty" data-i="'+i+'" data-d="-1" aria-label="減少">−</button><input id="q'+i+'" inputmode="numeric" value="'+it.qty+'" data-act-in="qtyset" data-i="'+i+'" aria-label="數量"><button data-act="qty" data-i="'+i+'" data-d="1" aria-label="增加">＋</button></div><div class="amt">'+money(r.total)+'</div></div>'});
+  h+='<div class="sec">活動贈品（自動，扣庫存）</div>';
+  const auto=R.giftList.filter(g=>!g.deal&&!g.bag);h+=auto.length?auto.map(g=>'<div class="line"><div><span class="nm">'+esc(pname(g.pid))+'</span><span class="tag">'+esc(g.src)+'</span></div><div class="num">× '+g.qty+'</div><div></div></div>').join(''):'<div class="small">這筆沒有活動贈品</div>';
+  if(R.hint)h+='<div class="msg gold">'+esc(R.hint)+'</div>';
+  R.warns.forEach(w=>h+='<div class="msg warn">'+esc(w)+'</div>');
+  h+='<div class="line"><div><span class="nm">附簡易保冷袋</span><div class="sub">包材，扣庫存，不算讓利</div></div><div class="step"><button data-act="bag" data-d="-1" aria-label="減少">−</button><span>'+R.bag+'</span><button data-act="bag" data-d="1" aria-label="增加">＋</button></div><div></div></div>';
+  const st0=stockTable(S.session.store,today());const leftOf=k=>st0[k].avail-(R.sold[k]||0)-(R.gifts[k]||0);const O=S.ui.dopen||(S.ui.dopen={});
+  const row=(key,title,sum,body,warn)=>'<div class="acc'+(O[key]?' open':'')+(warn?' need':'')+'" id="acc-'+key+'"><button class="acc-h" data-act="dopen" data-v="'+key+'" aria-expanded="'+(O[key]?'true':'false')+'"><b>'+title+'</b><span class="acc-s'+(sum?' on':'')+'">'+(sum||'沒有')+'</span><span class="chev">'+(O[key]?'︿':'﹀')+'</span></button>'+(O[key]?'<div class="acc-b">'+body+'</div>':'')+'</div>';
+  h+='<div class="sec">爭取成交（需要時才打開，總經理每天看得到）</div>';
+  h+=row('disc','① 折價',R.disc?'已折 '+money(R.disc):'','<div class="row"><button class="big-step" data-act="dstep" data-d="-1"'+(S.deal.steps?'':' disabled')+' aria-label="少折">−$'+C.discountStep+'</button><div class="grow c"><b class="dv">'+money(R.disc)+'</b><div class="small">每按一次 $'+C.discountStep+'・上限 '+money(C.discountCap)+'</div></div><button class="big-step gold" data-act="dstep" data-d="1" aria-label="多折">＋$'+C.discountStep+'</button></div>');
+  const smallSum=Object.entries(S.deal.gifts).filter(([,q])=>q).map(([k,q])=>pname(k)+'×'+q).join('、');
+  h+=row('gift','② 加送小禮',smallSum,'<div class="small" style="margin-bottom:6px">每單最多 '+C.extraGiftCap+' 個，點一下加 1 個</div><div class="chips wrap" style="padding:0">'+C.dealGifts.map(k=>{const q=S.deal.gifts[k]||0;const l=leftOf(k);return '<button class="chip'+(q?' on':'')+'" data-act="dgift" data-v="'+k+'"'+(l<1&&!q?' disabled':'')+'>'+esc(pname(k))+(q?' ×'+q:'')+(l<1&&!q?'（沒貨）':'')+'</button>'}).join('')+'</div>'+(smallSum?'<button class="mini" style="margin-top:8px" data-act="dgiftclr">全部取消</button>':''));
+  const durSum=Object.entries(S.deal.durian||{}).filter(([,q])=>q).map(([k,q])=>pname(k)+'×'+q).join('、');
+  const durs=SHOP.filter(p=>DURIAN_CATS.includes(p.cat)&&(leftOf(p.id)>0||(S.deal.durian||{})[p.id]));
+  h+=row('dur','③ 送榴槤（盒裝）',durSum,'<div class="small" style="margin-bottom:6px">原本的「贈品」改在這裡。每單最多 '+(C.durianGiftCap??1)+' 盒，金額較高，總經理會特別標出來。</div>'+(durs.length?durs.map(p=>{const q=(S.deal.durian||{})[p.id]||0;return '<div class="line"><div><div class="nm">'+esc(pname(p.id))+'</div><div class="sub">剩 '+leftOf(p.id)+'</div></div><div class="step"><button data-act="ddur" data-v="'+p.id+'" data-d="-1"'+(q?'':' disabled')+' aria-label="減少">−</button><span>'+q+'</span><button data-act="ddur" data-v="'+p.id+'" data-d="1"'+(leftOf(p.id)<1?' disabled':'')+' aria-label="增加">＋</button></div><div></div></div>'}).join(''):'<p class="small">櫃上沒有榴槤庫存</p>'));
+  if(R.disc||R.dealCount||R.durN){const miss=(S.ui.miss||[]).includes('reason');
+    h+='<div class="reason'+(miss?' need':'')+'" id="reason"><b>為什麼讓利？（一定要點一個）</b><div class="chips wrap" style="padding:6px 0 0">'+['客人議價','湊整數','老客人','其他'].map(r=>'<button class="chip'+(S.deal.reason===r?' on':'')+'" data-act="dreason" data-v="'+r+'">'+r+'</button>').join('')+'</div><div class="small">這單讓利：'+[R.disc?'折價 '+money(R.disc):'',R.dealCount?'小禮 '+R.dealCount+' 個':'',R.durN?'榴槤 '+R.durN+' 盒':''].filter(Boolean).join('＋')+'（讓利約 '+money(R.disc+R.dealCost)+'，以售價計）</div></div>'}
+  h+='<div class="sec">金額</div><div class="sum"><span>小計</span><b class="num">'+money(R.subtotal)+'</b></div>'+(R.disc?'<div class="sum"><span>折價</span><b class="num">−'+money(R.disc)+'</b></div>':'')+'<div class="sum big"><span>應收</span><b>'+money(R.total)+'</b></div>';
+  const paid=PAYS.reduce((s,[k])=>s+num(S.pay[k]),0),rest=R.total-paid;
+  const pm=(S.ui.miss||[]).includes('pay');h+='<div class="sec">付款（可以拆付）</div><div id="paybox" class="'+(pm?'need':'')+'">'+PAYS.map(([k,l])=>'<div class="field"><label for="pay-'+k+'">'+l+'</label><input id="pay-'+k+'" class="in r" inputmode="numeric" placeholder="0" value="'+esc(S.pay[k])+'" data-bind="pay.'+k+'"><button class="mini" data-act="payall" data-v="'+k+'">全額</button></div>').join('')+'</div>';
+  h+=paid===0?'<div class="msg warn">客人怎麼付？點「全額」最快</div>':rest===0?'<div class="msg ok">付款金額正確</div>':'<div class="msg '+(rest>0?'warn':'bad')+'">'+(rest>0?'還差 '+money(rest):'多收 '+money(-rest)+'，請改金額')+'</div>';
+  h+='<input id="note" class="in" placeholder="收銀備註（卡別、發票號碼等，選填）" value="'+esc(S.note)+'" data-bind="note" style="margin-top:6px">';
+  R.errors.forEach(e=>h+='<div class="msg bad">'+esc(e)+'</div>');
+  return h+guardBox()+'<button class="btn" data-act="checkout">'+(S.ui.confirm==='checkout'?'數量沒錯，確認結帳 ':'確認結帳 ')+money(R.total)+'</button><button class="btn ghost" data-act="clearcart">清空購物車</button>';
+}
+function txnLines(ts){return ts.map(t=>'<div class="line"><div><div class="nm">#'+t.no+' '+esc(t.time)+(t.voided?'<span class="tag red">已作廢</span>':'')+(t.deal&&t.deal.cost?'<span class="tag">讓利 '+fmt(t.deal.cost)+'</span>':'')+'</div><div class="sub">'+esc(t.itemText)+'・'+esc(t.staff)+'</div><div class="sub">'+PAYS.filter(([k])=>t.pay[k]).map(([k,l])=>l+' '+fmt(t.pay[k])).join('・')+'</div></div><div class="amt">'+money(t.total)+'</div><div></div></div>').join('')}
+function vSellPast(){const d=sd();const ts=dayTxns(S.session.store,d);const T=sysTotals(S.session.store,d);
+  return '<div class="msg gold">這是 '+dlabel(d)+' 的資料，只能查看。結帳一律記在今天。</div><div class="kpis"><div class="kpi"><span>營業額</span><b>'+money(T.total)+'</b><i>'+T.count+' 筆</i></div><div class="kpi"><span>收櫃</span><b>'+(closeOf(S.session.store,d)?'已收櫃':'未收櫃')+'</b></div></div><div class="card"><h3>交易（'+ts.length+'）</h3>'+(ts.length?txnLines([...ts].reverse()):'<p class="small">這天沒有交易</p>')+'</div>'}
+function vDone(){const t=S.last;if(!t)return '';return '<div class="ok-big"><div class="ck">✓</div><div>第 '+t.no+' 筆完成</div><b>'+money(t.total)+'</b><div class="small">'+PAYS.filter(([k])=>t.pay[k]).map(([k,l])=>l+' '+fmt(t.pay[k])).join('・')+'</div></div>'+
+  t.items.map(i=>'<div class="line"><div class="nm">'+esc(i.name)+'</div><div>× '+i.qty+'</div><div class="amt">'+money(i.total)+'</div></div>').join('')+
+  (t.giftList.length?'<div class="small" style="margin-top:8px">贈品：'+t.giftList.map(g=>esc(pname(g.pid))+'×'+g.qty).join('、')+'</div>':'')+(t.deal&&t.deal.cost?'<div class="small">爭取成交讓利 '+money(t.deal.cost)+'（'+esc(t.deal.reason)+'）</div>':'')+'<button class="btn" data-act="closesheet">下一位客人</button>'}
+function vTxns(){const ts=dayTxns(S.session.store,today());let h='<div class="sh-h"><h2>今日交易 '+ts.filter(t=>!t.voided).length+' 筆</h2><button class="x" data-act="closesheet" aria-label="關閉">×</button></div>';
+  if(!ts.length)return h+'<p class="small">今天還沒有交易。</p>';
+  for(const t of [...ts].reverse()){h+='<div class="line"><div><div class="nm">#'+t.no+' '+esc(t.time)+(t.voided?'<span class="tag red">已作廢</span>':'')+(t.deal&&t.deal.cost?'<span class="tag">讓利 '+fmt(t.deal.cost)+'</span>':'')+'</div><div class="sub">'+esc(t.itemText)+'・'+esc(t.staff)+'</div><div class="sub">'+PAYS.filter(([k])=>t.pay[k]).map(([k,l])=>l+' '+fmt(t.pay[k])).join('・')+'</div></div><div class="amt">'+money(t.total)+'</div><div>'+(t.voided?'':'<button class="mini" data-act="voidask" data-v="'+t.id+'">作廢</button>')+'</div></div>';
+    if(S.ui.voidId===t.id)h+='<div class="card" style="margin-top:8px"><input id="voidr" class="in" placeholder="作廢原因（必填）" value="'+esc(S.ui.voidReason||'')+'" data-bind="ui.voidReason"><button class="btn bad" data-act="voidok" data-v="'+t.id+'"'+(String(S.ui.voidReason||'').trim()?'':' disabled')+'>確認作廢第 '+t.no+' 筆</button></div>'}
+  return h}
+function vTaste(){const d=sd(),past=d<today();const M=S.mv;if(M.type==='gift')M.type='tasting';
+  const todays=S.moves.filter(m=>m.store===S.session.store&&m.date===d&&['tasting','gift','waste'].includes(m.type)).sort((a,b)=>b.ts-a.ts);
+  const logged='<div class="sec">'+(past?dlabel(d):'今天')+'已登錄</div><div class="card">'+(todays.length?todays.map(m=>'<div class="line"><div><b>'+MOVE_TYPES[m.type].label+'</b><span class="tag'+(m.over?' red':'')+'">'+esc(m.reason)+'</span><div class="sub">'+esc(lineTxt(m.lines))+'・'+esc(m.by)+'</div></div><div></div><div class="small">'+esc(m.time||'')+'</div></div>').join(''):'<p class="small">沒有紀錄</p>')+'</div>';
+  if(past)return '<h1>試吃・銷毀</h1><div class="msg gold">過去的日期只能查看。</div>'+logged;
+  const st=stockTable(S.session.store,today());const reasons={tasting:['開盒試吃'],waste:['過期','破損','退冰']}[M.type];
+  let h='<h1>試吃・銷毀</h1><p class="small" style="margin-top:-8px">贈品在結帳時選，會自動扣庫存；這裡只登錄試吃和銷毀</p><div class="seg">'+[['tasting','試吃'],['waste','銷毀']].map(([k,l])=>'<button class="'+(M.type===k?'on':'')+'" data-act="mvtype" data-v="'+k+'">'+l+'</button>').join('')+'</div>';
+  h+='<div class="chips wrap">'+reasons.map(r=>'<button class="chip sm'+(M.reason===r?' on':'')+'" data-act="mvreason" data-v="'+r+'">'+r+'</button>').join('')+'</div>';
+  const list=SHOP.filter(p=>st[p.id].avail>0||M.q[p.id]);let over=[];
+  h+='<div class="card">'+(list.length?'':'<p class="small">這個櫃位目前沒有庫存，請行政先登錄進櫃。</p>');
+  for(const p of list){const q=num(M.q[p.id]);const allow=M.type==='tasting'?tasteAllowance(S.session.store,today(),p.id):null;if(M.type==='tasting'&&q>allow)over.push(p.id);
+    h+='<div class="pr"><div><b>'+esc(pname(p.id))+'</b><div class="now">可售 '+st[p.id].avail+(allow!=null?'・今日還可開 '+Math.max(0,allow):'')+'</div></div><div class="step"><button data-act="mvq" data-v="'+p.id+'" data-d="-1" aria-label="減少">−</button><input id="mv-'+p.id+'" inputmode="numeric" value="'+(q||'')+'" placeholder="0" data-bind="mv.q.'+p.id+'" aria-label="數量"><button data-act="mvq" data-v="'+p.id+'" data-d="1" aria-label="增加">＋</button></div><div class="aft'+(q>st[p.id].avail?' neg':'')+'">'+(q?'→ '+(st[p.id].avail-q):'')+'</div></div>'}
+  h+='</div>';const total=Object.values(M.q).reduce((s,v)=>s+num(v),0);const bad=Object.entries(M.q).some(([k,v])=>num(v)>st[k].avail);
+  if(over.length)h+='<div class="msg bad">試吃超過規則（每天基本 '+cfg().tastingBase+' 盒，每賣 '+cfg().tastingPer+' 盒可多開 1 盒）：'+over.map(pname).join('、')+'。請寫原因，會通知總經理。</div>';
+  if(M.type==='waste')h+=uploader('wastefile','拍銷毀照片（必附）')+(M.photo?'<div class="msg ok">已附照片</div>':'');
+  h+='<input id="mvnote" class="in'+((S.ui.miss||[]).includes('mvnote')?' need':'')+'" style="margin-top:8px" placeholder="'+(over.length?'超過原因（必填）':'備註（選填）')+'" value="'+esc(M.note)+'" data-bind="mv.note">';
+  const ok=total>0&&M.reason&&!bad&&(!over.length||M.note.trim())&&(M.type!=='waste'||M.photo);
+  h+=guardBox()+'<button class="btn" data-act="mvsave">登錄'+({tasting:'試吃',waste:'銷毀'}[M.type])+' '+total+' 件</button>';
+  return h+logged}
+function dailyBlock(store,date,showAll){const ts=dayTxns(store,date);const T=sysTotals(store,date);const st=stockTable(store,date);const m=mtd(store,date);const c=closeOf(store,date);
+  const staff=[...new Set(ts.map(t=>t.staff))].join('、')||'—';
+  let h='<div class="kpis"><div class="kpi"><span>總金額合計</span><b>'+money(T.total)+'</b><i>'+T.count+' 筆</i></div><div class="kpi"><span>昨日總金額累積</span><b>'+money(m-T.total)+'</b></div><div class="kpi"><span>當月總金額累積</span><b>'+money(m)+'</b></div></div>';
+  h+='<div class="card"><h3>銷售明細・值班 '+esc(staff)+'</h3><div class="scroll"><table class="frz"><thead><tr><th>項次</th><th class="l">品項</th><th>數量</th><th>金額</th><th>現金</th><th>刷卡</th><th>商券</th><th>其他</th><th class="l">收銀／備註</th></tr></thead><tbody>';
+  if(!ts.length)h+='<tr><td colspan="9" class="l small">這天沒有交易</td></tr>';
+  for(const t of ts){const q=t.items.reduce((s,i)=>s+i.qty,0)+Object.values(t.gifts).reduce((s,v)=>s+v,0);
+    h+='<tr class="'+(t.voided?'void':'')+'"><td>'+t.no+'</td><td class="l wrap">'+esc(t.itemText)+(t.giftList.length?'＋贈 '+esc(t.giftText):'')+'</td><td>'+q+'</td><td>'+fmt(t.total)+'</td>'+PAYS.map(([k])=>'<td>'+(t.pay[k]?fmt(t.pay[k]):'')+'</td>').join('')+'<td class="l wrap">'+esc([t.staff,t.deal&&t.deal.cost?'讓利 '+fmt(t.deal.cost)+'（'+t.deal.reason+'）':'',t.note,t.voided?'作廢：'+t.voidReason:''].filter(Boolean).join('・'))+'</td></tr>'}
+  h+='</tbody><tfoot><tr><td></td><td class="l">合計</td><td></td><td>'+fmt(T.total)+'</td>'+PAYS.map(([k])=>'<td>'+fmt(T[k])+'</td>').join('')+'<td></td></tr></tfoot></table></div></div>';
+  const rows=SHOP.filter(p=>showAll||st[p.id].any);const cnt=c&&c.counts;
+  h+='<div class="card"><div class="row"><h3 class="grow" style="margin:0">庫存</h3><button class="mini" data-act="toggleall">'+(showAll?'只看有庫存的':'顯示全部品項')+'</button></div><div class="scroll" style="margin-top:8px"><table class="frz"><thead><tr><th>品項</th><th>前日庫存</th><th>今日銷售</th><th>贈品</th><th>試吃</th><th>進貨</th><th>補貨</th><th>今日合計</th><th>其他</th><th>可銷售數量</th>'+(cnt?'<th>收櫃實點</th>':'')+'</tr></thead><tbody>'+
+    rows.map(p=>{const r=st[p.id];const z=v=>v?v:'';const cv=cnt?cnt[p.id]:undefined;return '<tr><td>'+esc(pname(p.id))+'</td><td>'+r.prev+'</td><td>'+z(r.sold)+'</td><td>'+z(r.gift)+'</td><td>'+z(r.taste)+'</td><td>'+z(r.in)+'</td><td>'+z(r.re)+'</td><td>'+z(r.out)+'</td><td>'+z(r.other)+'</td><td class="'+(r.avail<0?'neg':'hl')+'">'+r.avail+'</td>'+(cnt?'<td class="'+(cv!=null&&cv!==r.avail?'neg':'')+'">'+(cv??'')+'</td>':'')+'</tr>'}).join('')+
+    '</tbody></table></div><p class="small">今日合計＝今日銷售＋贈品＋試吃。進貨＝開櫃進櫃，補貨＝當天第二、三次補貨，其他＝銷毀、撤櫃回倉。全部自動計算。</p></div>';
+  return h}
+function vDaily(){const d=sd();return '<h1>日銷表</h1><p class="small" style="margin-top:-8px">'+esc(sname(S.session.store))+'・'+dlabel(d)+'</p>'+dailyBlock(S.session.store,d,S.ui.all)}
+/* 時段：結帳當下自動記時間，不用另外輸入 */
+function hourStats(stores,dates){const by={};const days=new Set();for(const t of S.txns){if(t.voided||!stores.includes(t.store)||!dates(t.date))continue;days.add(t.date);const h=parseInt(String(t.time||'0').slice(0,2),10);const b=by[h]||(by[h]={n:0,amt:0});b.n++;b.amt+=t.total}
+  const hs=[...new Set([...SLOTS,...Object.keys(by).map(Number)])].sort((a,b)=>a-b);return {rows:hs.map(h=>({h,n:(by[h]||{}).n||0,amt:(by[h]||{}).amt||0})),days:days.size}}
+function hourTable(H,avg){const mx=Math.max(1,...H.rows.map(r=>r.amt));const nz=H.rows.filter(r=>r.n);if(!nz.length)return '<p class="small">沒有交易</p>';const peak=[...nz].sort((a,b)=>b.amt-a.amt)[0];
+  return '<div class="scroll"><table class="hours"><thead><tr><th class="l">時段</th><th>單數</th>'+(avg?'<th>平均每天</th>':'')+'<th>金額</th><th class="l" style="width:34%"></th></tr></thead><tbody>'+H.rows.map(r=>'<tr class="'+(r.h===peak.h?'pk':'')+(r.n?'':' z')+'"><td class="l">'+pad(r.h)+':00–'+pad(r.h+1)+':00</td><td>'+(r.n||'')+'</td>'+(avg?'<td>'+(r.n?(r.n/H.days).toFixed(1):'')+'</td>':'')+'<td>'+(r.amt?fmt(r.amt):'')+'</td><td class="l"><div class="hb"><i style="width:'+(r.amt/mx*100)+'%"></i></div></td></tr>').join('')+'</tbody></table></div><p class="small">最多：'+pad(peak.h)+':00–'+pad(peak.h+1)+':00，'+peak.n+' 單、'+money(peak.amt)+(avg?'（'+H.days+' 個營業日加總）':'')+'</p>'}
+function vHours(){const d=sd(),s=S.session.store;const ts=dayTxns(s,d);const H=hourStats([s],x=>x===d);
+  let h='<h1>時段銷售</h1><p class="small" style="margin-top:-8px">'+esc(sname(s))+'・'+dlabel(d)+'・時間是按下結帳那一刻自動記的</p>';
+  h+='<div class="card">'+hourTable(H)+'</div>';
+  h+='<div class="sec">每一單的時間（'+ts.filter(t=>!t.voided).length+' 單）</div><div class="card">'+(ts.length?'<div class="scroll"><table><thead><tr><th class="l">時間</th><th>#</th><th class="l">品項</th><th>金額</th><th class="l">櫃姐</th></tr></thead><tbody>'+ts.map(t=>'<tr class="'+(t.voided?'void':'')+'"><td class="l">'+esc(t.time)+'</td><td>'+t.no+'</td><td class="l wrap">'+esc(t.itemText)+'</td><td>'+fmt(t.total)+'</td><td class="l">'+esc(t.staff)+'</td></tr>').join('')+'</tbody></table></div>':'<p class="small">這天沒有交易</p>')+'</div>';
+  return h}
+function vPhoto(){const s=S.session.store,d=sd();const list=S.photos.filter(p=>p.store===s&&p.date===d).sort((a,b)=>b.ts-a.ts);
+  if(d<today())return '<h1>櫃位照片</h1><div class="msg gold">'+dlabel(d)+' 的照片，只能查看；要上傳請回到今天。</div>'+(list.length?thumbs(list):'<p class="small">這天沒有照片</p>');
+  let h='<h1>櫃位照片</h1><p class="small" style="margin-top:-8px">開櫃、陳列、撤櫃都拍一張，總經理和行銷看得到</p><div class="chips wrap">'+['開櫃','陳列','活動','撤櫃','其他'].map(k=>'<button class="chip sm'+(S.ph.kind===k?' on':'')+'" data-act="phkind" data-v="'+k+'">'+k+'</button>').join('')+'</div>';
+  h+='<input id="phn" class="in" placeholder="說明（選填）" value="'+esc(S.ph.note)+'" data-bind="ph.note" style="margin-bottom:10px">'+uploader('phfile','拍照或選照片（'+S.ph.kind+'）');
+  if(S.ui.uploading)h+='<div class="msg gold">上傳中…</div>';
+  h+='<div class="sec">今天的照片（'+list.length+'）</div>'+(list.length?thumbs(list):'<p class="small">今天還沒有照片</p>');return h}
+function vClose(){const s=S.session.store,d=sd();const T=sysTotals(s,d);const c=closeOf(s,d);const F=S.close;
+  let h='<h1>收櫃對帳</h1><p class="small" style="margin-top:-8px">兩件事都要對：營業額、庫存</p>'+(d<today()?'<div class="msg gold">你在 '+dlabel(d)+'。'+(c?'這天已收櫃，可以看結果或修正。':'這天沒有收櫃，可以補收櫃（用當天的帳條和庫存）。')+'</div>':'');
+  if(c)h+='<div class="msg '+(c.diff===0&&!(c.blindDiff||[]).length?'ok':'bad')+'">'+esc(c.staff)+' 已在 '+esc(c.time||'')+' 收櫃。可以修改後重新送出。</div>';
+  h+='<div class="card"><h3><span class="stepno">1</span>營業額：照百貨清機帳條輸入</h3><div class="scroll"><table><thead><tr><th>項目</th><th>帳條</th><th>系統</th><th>差</th></tr></thead><tbody>';
+  for(const [k,l] of [['total','當日營業額'],...PAYS]){const v=F[k];const has=String(v??'')!=='';const df=has?num(v)-T[k]:null;
+    h+='<tr><td>'+l+'</td><td style="width:42%"><input id="cl-'+k+'" class="in r'+((S.ui.miss||[]).includes('cl-'+k)?' need':'')+'" inputmode="numeric" placeholder="0" value="'+esc(v??'')+'" data-bind="close.'+k+'"></td><td>'+fmt(T[k])+'</td><td class="'+(df?'neg':'')+'">'+(df==null?'':df===0?'✓':(df>0?'+':'')+fmt(df))+'</td></tr>'}
+  h+='</tbody></table></div><p class="small">系統 '+T.count+' 筆。應稅合計（冰品、周邊）系統算 '+fmt(T.taxable)+'，可對帳條的「應稅合計」。</p></div>';
+  const st=stockTable(s,d);const items=SHOP.filter(p=>st[p.id].any);const blind=F.blind||{};const wrong=F.wrong||{};const filled=items.filter(p=>String(blind[p.id]??'')!=='').length;const conf=cfg().closeMode!=='blind';
+  h+='<div class="card"><h3><span class="stepno">2</span>庫存：看一下櫃上的數量</h3><p class="small" style="margin-top:-4px">'+(conf?'每一項看實際數量，<b>對</b>就點「對」；<b>不對</b>就點「不對」，再點實際的數字。':'點中間的格子選數字，點了會自動跳下一項；沒有就點「沒有」。')+'</p>';
+  for(const p of items){const sys=st[p.id].avail;const v=blind[p.id];const set=String(v??'')!=='';const cnt=num(v);const df=set?cnt-sys:0;const need=(S.ui.miss||[]).includes('it-'+p.id);
+    h+='<div class="ck'+(need?' need':'')+(set?(df?' bad':' ok'):'')+'" id="it-'+p.id+'"><div class="ck-n"><b>'+esc(pname(p.id))+'</b>'+(conf?'<span>應有 <b class="sys">'+sys+'</b></span>':'')+'</div>';
+    if(conf&&!wrong[p.id]){h+='<div class="ck-b"><button class="yes'+(set&&!df?' on':'')+'" data-act="ckyes" data-v="'+p.id+'">✓ 對</button><button class="no" data-act="ckno" data-v="'+p.id+'">不對</button></div>'}
+    else{h+='<div class="ck-b"><button class="big-step" data-act="ckq" data-v="'+p.id+'" data-d="-1" aria-label="減少"'+(set&&cnt<=0?' disabled':'')+'>−</button>'+numf('close.blind.'+p.id,pname(p.id)+'・實際數量',conf?sys:null,'ck-v')+'<button class="big-step" data-act="ckq" data-v="'+p.id+'" data-d="1" aria-label="增加">＋</button>'+(conf?'':'<button class="no" data-act="ckzero" data-v="'+p.id+'">沒有</button>')+'</div>'+(conf?'<div class="ck-d">'+(df?'實際 '+cnt+'，比應有'+(df>0?'多 ':'少 ')+Math.abs(df):'跟應有一樣')+' <button class="lnk" data-act="ckback" data-v="'+p.id+'">改回「對」</button></div>':'')}
+    h+='</div>'}
+  h+='<div class="small" style="margin-top:6px">已確認 '+filled+' / '+items.length+' 項</div></div>';
+  h+=guardBox()+'<button class="btn" data-act="closeok">'+(S.ui.confirm==='close'?'我確認過了，送出收櫃':'送出收櫃・產生 LINE 日報')+'</button>';
+  if(c&&S.ui.showRep){if((c.blindDiff||[]).length)h+='<div class="msg bad">庫存有 '+c.blindDiff.length+' 項跟系統不同，請再點一次確認；確定沒點錯就照實送出，總經理會看到。</div>';
+    h+='<div class="sec">LINE 日報</div><pre class="rep">'+esc(report(s,d))+'</pre><button class="btn ghost" data-act="copyrep" data-v="'+s+'|'+d+'">複製日報</button>'}
+  return h}
+
+/* ---------- 寄賣盤點 PT ---------- */
+function ptInit(){return {date:today(),lines:{},before:[],after:[],issues:[],note:'',all:false}}
+const blank=v=>String(v??'')==='';
+function vPT(){const s=S.session.store;if(!S.pt)S.pt=ptInit();const T=S.pt;const {last,e}=consignExpected(s,T.date);
+  let h=topBar(sname(s),S.session.name+' · 寄賣盤點')+'<div class="main nobar"><h1>'+esc(sname(s))+' 盤點</h1>';
+  h+='<div class="field" style="grid-template-columns:5em minmax(0,1fr)"><label for="ptd">盤點日期</label><input id="ptd" type="date" class="in" value="'+T.date+'" data-act-in="ptdate"></div>';
+  h+='<p class="small">'+(last?'上次盤點：'+dlabel(last.date)+'・'+esc(last.by):'這是第一次盤點，會當作基準')+'</p>';
+  const bp=T.before.map(photoById).filter(Boolean),ap=T.after.map(photoById).filter(Boolean);
+  h+='<div class="card"><h3><span class="stepno">1</span>盤點前拍一張冰櫃</h3>'+uploader('ptbefore','拍盤點前照片')+thumbs(bp)+'</div>';
+  if(last&&T.prefill!==last.id){for(const [k,l] of Object.entries(last.lines||{}))if(l.exp){T.lines[k]=T.lines[k]||{};if(!T.lines[k].exp)T.lines[k].exp=l.exp}T.prefill=last.id}
+  const has=id=>e[id]>0||(last&&(last.lines||{})[id])||T.lines[id];
+  const items=CS_ITEMS.filter(c=>T.all||has(c.id));
+  h+='<div class="card"><h3><span class="stepno">2</span>點數量（先點，再補貨）</h3><p class="small" style="margin-top:-4px">跟你的盤點表一樣：架上、冰箱底、超市倉分開填，小計自動加。點格子會跳出數字，點一下就填好並跳下一格。帶貨來補的填「進貨」，收走或報廢的填「其他」。效期會帶上次的。</p>';
+  h+='<div class="cs-h"><div>品項</div><div>架上</div><div>冰箱底</div><div>超市倉</div><div>小計</div></div>';
+  let lastG='';
+  for(const c of items){const id=c.id;const L=T.lines[id]||{};const tot=num(L.shelf)+num(L.under)+num(L.wh);const filled=!blank(L.shelf)||!blank(L.under)||!blank(L.wh);
+    if(c.g!==lastG){h+='<div class="cs-g '+c.g+'">'+(c.g==='d'?'榴槤':'冰品・甜點')+'</div>';lastG=c.g}
+    const sold=last&&filled?e[id]-tot:null;
+    h+='<div class="cs-r'+((S.ui.miss||[]).includes('cr-'+id)?' need':'')+'" id="cr-'+id+'"><div class="nm"><b>'+esc(c.name)+'</b><span class="small">'+(last?'應有 '+e[id]:'')+'</span></div>'+
+      ['shelf','under','wh'].map(f=>numf('pt.lines.'+id+'.'+f,c.name+'・'+({shelf:'架上',under:'冰箱底',wh:'超市倉'}[f]),null)).join('')+
+      '<div class="t">'+(filled?tot:'')+'</div>'+
+      '<div class="cs-x"><label>效期<input id="pt-exp-'+id+'" type="date" class="in sm" value="'+esc(L.exp||'')+'" data-bind="pt.lines.'+id+'.exp" aria-label="'+esc(c.name)+' 效期"></label>'+(sold!=null?'<span class="sold'+(sold<0?' neg':'')+'">'+(sold>0?'賣出 '+sold:sold<0?'多 '+(-sold):'賣出 0')+'</span>':'')+'<div class="io"><label>進貨'+numf('pt.lines.'+id+'.in',c.name+'・本次進貨',null,'sm2')+'</label><label>其他'+numf('pt.lines.'+id+'.out',c.name+'・其他（退回／報廢）',null,'sm2')+'</label></div></div></div>'}
+  h+='<button class="mini" style="margin-top:8px" data-act="ptall">'+(T.all?'只顯示這裡有的品項':'顯示全部 '+CS_ITEMS.length+' 個品項')+'</button></div>';
+  h+='<div class="card"><h3><span class="stepno">3</span>盤點後再拍一張</h3><p class="small" style="margin-top:-4px">補完貨、排好之後拍，讓公司看擺放、冰櫃狀況</p>'+uploader('ptafter','拍盤點後照片')+thumbs(ap)+'</div>';
+  h+='<div class="card"><h3><span class="stepno">4</span>現場有什麼要回報？</h3><div class="chips wrap">'+ISSUES.map(k=>'<button class="chip sm'+(T.issues.includes(k)?' on':'')+'" data-act="ptissue" data-v="'+k+'">'+k+'</button>').join('')+'</div><input id="ptn" class="in" placeholder="補充說明（選填）" value="'+esc(T.note)+'" data-bind="pt.note"></div>';
+  if(S.ui.uploading)h+='<div class="msg gold">照片上傳中…</div>';
+  const need=items.filter(c=>e[c.id]>0);const missing=need.filter(c=>{const L=T.lines[c.id]||{};return blank(L.shelf)&&blank(L.under)&&blank(L.wh)});
+  const any=Object.values(T.lines).some(L=>!blank(L.shelf)||!blank(L.under)||!blank(L.wh));
+  const ok=bp.length&&ap.length&&!missing.length&&any;
+
+  h+=guardBox()+'<button class="btn" data-act="ptsave">'+(S.ui.confirm==='pt'?'我確認過了，送出盤點':'送出盤點・產生 LINE 回報')+'</button>';
+  const hist=countsOf(s).reverse().slice(0,8);
+  h+='<div class="sec">盤點紀錄</div><div class="card">'+(hist.length?hist.map(c=>'<div class="line"><div><b>'+dlabel(c.date)+'</b> <span class="small">'+esc(c.by)+'</span>'+(c.issues&&c.issues.length?'<div class="sub">回報：'+esc(c.issues.join('、'))+'</div>':'')+'</div><div></div><div class="num">'+csList(Object.keys(c.lines||{})).reduce((t,id)=>t+cTotal(c,id),0)+' 件</div></div>').join(''):'<p class="small">還沒有紀錄</p>')+'</div>';
+  if(S.ui.lastCountRep)h+='<div class="sec">剛送出的盤點（跟平常貼 LINE 的格式一樣）</div><pre class="rep">'+esc(S.ui.lastCountRep)+'</pre><button class="btn ghost" data-act="copytxt">複製，貼到 LINE 群組</button>';
+  return h+'</div>'}
+
+/* ---------- 行政（進櫃） ---------- */
+const ADM_TYPES={counter:[['in','進櫃'],['restock','補貨'],['return','撤櫃回倉']],consign:[['restock','補貨'],['return','退回']]};
+const mvLabel=m=>{const isC=(STORES.find(s=>s.id===m.store)||{}).type==='consign';if(isC)return MOVE_TYPES[m.type].sign>0?'補貨':(m.type==='return'?'退回':MOVE_TYPES[m.type].label);return MOVE_TYPES[m.type].label+(m.type==='restock'&&m.seq?'（第 '+m.seq+' 批）':'')};
+const restockSeq=(store,date)=>S.moves.filter(m=>m.store===store&&m.date===date&&(m.type==='in'||m.type==='restock')).length+1;
+function vAdmin(){const G=S.adm;const isC=STORES.find(s=>s.id===G.store).type==='consign';
+  const types=ADM_TYPES[isC?'consign':'counter'];if(!types.some(([k])=>k===G.type))G.type=types[0][0];
+  const st=isC?null:stockTable(G.store,G.date);const ex=isC?consignExpected(G.store,G.date).e:null;
+  const sign=MOVE_TYPES[G.type].sign;const label=types.find(([k])=>k===G.type)[1];const seq=restockSeq(G.store,G.date);
+  let h=topBar('行政（進櫃）',dlabel(today()),'登出')+'<div class="main nobar"><h1>登錄進櫃與補貨</h1>';
+  h+='<div class="chips wrap">'+STORES.map(s=>'<button class="chip sm'+(G.store===s.id?' on':'')+'" data-act="astore" data-v="'+s.id+'">'+esc(s.name)+(s.type==='consign'?'（寄賣）':'')+'</button>').join('')+'</div>';
+  h+='<div class="seg">'+types.map(([k,l])=>'<button class="'+(G.type===k?'on':'')+'" data-act="atype" data-v="'+k+'">'+l+'</button>').join('')+'</div>';
+  h+='<p class="small" style="margin-top:-6px">'+(isC?(G.type==='restock'?'送貨到寄賣點。PT 盤點時順手補的，PT 在盤點頁填「進貨」就好，這裡不用再登一次。':'從寄賣點收回的貨。'):({in:'開櫃第一批貨。',restock:'櫃上沒貨、當天再送第二、三批時用。這是 '+dlabel(G.date)+' 的第 '+seq+' 批（含進櫃）。',return:'撤櫃時把剩下的貨帶回倉庫。'}[G.type]))+'</p>';
+  h+='<div class="field" style="grid-template-columns:5.5em minmax(0,1fr)"><label for="gd">'+label+'日期</label><input id="gd" type="date" class="in" value="'+G.date+'" data-act-in="adate"></div>';
+  h+='<div class="card"><div class="pr" style="font-size:13px;color:var(--mute)"><div>品項・目前'+(isC?'應有':'可售')+'</div><div>數量</div><div>登錄後</div></div>';
+  const ids=isC?CS_ITEMS.map(c=>c.id):SHOP.map(p=>p.id);
+  let total=0,bad=false;for(const id of ids){const now=isC?ex[id]:st[id].avail;const q=num(G.q[id]);total+=q;const after=now+sign*q;if(after<0)bad=true;
+    h+='<div class="pr"><div><b>'+esc(isC?cname(id):pname(id))+'</b><div class="now">'+(isC?'應有 ':'可售 ')+now+'</div></div><div class="step"><button data-act="aq" data-v="'+id+'" data-d="-1" aria-label="減少">−</button><input id="g-'+id+'" inputmode="numeric" placeholder="0" value="'+(q||'')+'" data-bind="adm.q.'+id+'" aria-label="數量"><button data-act="aq" data-v="'+id+'" data-d="1" aria-label="增加">＋</button></div><div class="aft'+(after<0?' neg':'')+'">'+(q?after:'')+'</div></div>'}
+  h+='</div><input id="gn" class="in" placeholder="備註（例：畢哥指示、冰箱較小）" value="'+esc(G.note)+'" data-bind="adm.note">';
+  if(bad)h+='<div class="msg bad">登錄後會變負數，請確認數量。</div>';
+  h+=guardBox()+'<button class="btn" data-act="asave">登錄'+label+(G.type==='restock'&&!isC?'（第 '+seq+' 批）':'')+' '+total+' 件到 '+esc(sname(G.store))+'</button>';
+  const hist=S.moves.filter(m=>m.store===G.store&&['in','restock','deposit','withdraw','return'].includes(m.type)).sort((a,b)=>(b.date+String(b.ts).padStart(15,'0')).localeCompare(a.date+String(a.ts).padStart(15,'0'))).slice(0,15);
+  h+='<div class="sec">'+esc(sname(G.store))+' 登錄紀錄</div><div class="card">'+(hist.length?hist.map(m=>'<div class="line"><div><b>'+esc(mvLabel(m))+'</b> <span class="small">'+dlabel(m.date)+(m.time?' '+esc(m.time):'')+'・'+esc(m.by)+(m.role==='pt'?'（盤點時）':'')+'</span><div class="sub">'+esc(Object.entries(m.lines).map(([k,q])=>(isC?cname(k):pname(k))+'×'+q).join('、'))+'</div>'+(m.reason?'<div class="sub">'+esc(m.reason)+'</div>':'')+'</div><div></div><div class="num">'+Object.values(m.lines).reduce((s,v)=>s+v,0)+' 件</div></div>').join(''):'<p class="small">還沒有紀錄</p>')+'</div>';
+  return h+'</div>'}
+
+/* ---------- 總經理 ---------- */
+function latestDate(){const ds=S.txns.map(t=>t.date).filter(d=>d<=today()).sort();return ds.length?ds[ds.length-1]:today()}
+function vBoss(){const B=S.boss;const d=B.date||latestDate();const showC=B.store==='all'||COUNTERS.some(s=>s.id===B.store),showP=B.store==='all'||CONSIGNS.some(s=>s.id===B.store);
+  const stores=COUNTERS.filter(s=>B.store==='all'||B.store===s.id);
+  let tot=0,cnt=0,cg=0,mt=0,deal=0,dealN=0;for(const s of stores){const T=sysTotals(s.id,d);tot+=T.total;cnt+=T.count;cg+=cogs(s.id,d);mt+=mtd(s.id,d);deal+=T.deal;dealN+=T.dealN}
+  const active=stores.filter(s=>closeOf(s.id,d)||dayTxns(s.id,d).length);
+  const moneyOK=active.filter(s=>{const c=closeOf(s.id,d);return c&&c.diff===0}).length,stockOK=active.filter(s=>{const c=closeOf(s.id,d);return c&&c.counted&&!(c.blindDiff||[]).length}).length;
+  let h=topBar('總經理',dlabel(d),'登出')+'<div class="main nobar">';
+  h+='<div class="seg">'+[['day','每日'],['month','月統計']].map(([k,l])=>'<button class="'+((B.view||'day')===k?'on':'')+'" data-act="bview" data-v="'+k+'">'+l+'</button>').join('')+'</div>';
+  if(B.view==='month')return h+vMonth(d)+'</div>';
+  h+='<div class="row" style="margin-bottom:6px"><input id="bd" type="date" class="in" style="max-width:11em" value="'+d+'" data-act-in="bdate" aria-label="日期"><div class="chips" style="padding:0">'+[['all','全部'],...STORES.map(s=>[s.id,s.name])].map(([k,l])=>'<button class="chip sm'+(B.store===k?' on':'')+'" data-act="bstore" data-v="'+k+'">'+esc(l)+'</button>').join('')+'</div></div>';
+  if(showC){
+  h+='<h1>'+dlabel(d)+' 總銷售額 '+money(tot)+(active.length?'：營業額 '+moneyOK+'/'+active.length+' 店對上，庫存 '+stockOK+'/'+active.length+' 店對上':'，沒有營業')+'</h1>';
+  h+='<div class="kpis"><div class="kpi"><span>總銷售額</span><b>'+money(tot)+'</b><i>'+cnt+' 筆・客單 '+money(cnt?tot/cnt:0)+'</i></div>'+marginTile(tot,cg,'（含贈品試吃）')+'<div class="kpi"><span>爭取成交讓利</span><b>'+money(deal)+'</b><i>'+dealN+' 筆（折價＋贈送品售價）</i></div><div class="kpi"><span>當月累積</span><b>'+money(mt)+'</b><i>'+d.slice(5,7)+' 月</i></div></div>';
+  h+='<div class="cols">';
+  for(const s of stores){const T=sysTotals(s.id,d),c=closeOf(s.id,d);if(!c&&!dayTxns(s.id,d).length){h+='<div class="card"><h3>'+s.name+'</h3><p class="small" style="margin:0">這天沒有交易</p></div>';continue}
+    const staff=[...new Set(dayTxns(s.id,d).map(t=>t.staff))].join('、')||'—';const bd=c?(c.blindDiff||[]):[];
+    h+='<div class="card"><div class="row"><h3 class="grow" style="margin:0">'+s.name+'</h3>'+(c?(c.diff===0?'<span class="tag ok">營業額 ✓</span>':'<span class="tag red">營業額差 '+money(c.diff)+'</span>')+(c.counted?(bd.length?'<span class="tag red">庫存 '+bd.length+' 項不符</span>':'<span class="tag ok">庫存 ✓</span>'):''):'<span class="tag gray">未收櫃</span>')+'</div><div class="small">值班 '+esc(staff)+'</div>';
+    h+='<table style="margin-top:6px"><thead><tr><th>項目</th><th>系統</th><th>帳條</th></tr></thead><tbody>'+[['total','營業額'],...PAYS].map(([k,l])=>{const r=c?c.receipt[k]:null;return '<tr><td>'+l+'</td><td>'+fmt(T[k])+'</td><td class="'+(c&&r!==T[k]?'neg':'')+'">'+(c?fmt(r):'—')+'</td></tr>'}).join('')+'</tbody></table>';
+    if(bd.length)h+='<div class="sec">庫存不符</div>'+bd.map(x=>'<div class="msg bad">'+esc(pname(x.pid))+'：實點 '+x.count+'，系統 '+x.sys+'（'+(x.diff>0?'多 ':'少 ')+Math.abs(x.diff)+'，約 '+money(Math.abs(x.diff)*P[x.pid].price)+' 售價）</div>').join('');
+    h+='</div>'}
+  h+='</div>';
+  const al=alerts(d,B.store);h+='<div class="card"><h3>要注意的事（'+al.length+'）</h3>'+(al.length?al.map(a=>'<div class="msg '+a.lv+'">'+esc(a.t)+'</div>').join(''):'<div class="msg ok">今天沒有異常</div>')+'</div>';
+  h+='<div class="card"><h3>爭取成交：誰讓了多少</h3><div class="scroll"><table><thead><tr><th>櫃位・櫃姐</th><th>交易</th><th>讓利筆數</th><th>折價</th><th>加送小禮</th><th>送榴槤</th><th>讓利金額</th></tr></thead><tbody>';let any=false;
+  for(const s of stores){const by=staffDeals(s.id,d);for(const [n,b] of Object.entries(by)){any=true;h+='<tr><td>'+esc(s.name.slice(0,4)+'・'+n)+'</td><td>'+b.n+'</td><td class="'+(b.deals/b.n>0.5?'neg':'')+'">'+b.deals+'</td><td>'+fmt(b.disc)+'</td><td>'+b.giftN+'</td><td class="'+(b.durN?'neg':'')+'">'+(b.durN||'')+'</td><td>'+fmt(b.cost)+'</td></tr>'}}
+  h+=(any?'':'<tr><td colspan="7" class="l small">這天沒有交易</td></tr>')+'</tbody></table></div>';
+  const dl=[];for(const s of stores)for(const t of dayTxns(s.id,d))if(!t.voided&&t.deal&&t.deal.cost)dl.push('<div class="line"><div><b>'+esc(s.name.slice(0,4))+' #'+t.no+'</b> <span class="small">'+esc(t.staff)+'・'+esc(t.deal.reason||'')+'</span><div class="sub">'+esc(t.itemText)+(t.deal.discount?'・折 '+money(t.deal.discount):'')+(Object.keys(t.deal.gifts||{}).length?'・送 '+esc(lineTxt(t.deal.gifts)):'')+(Object.keys(t.deal.durian||{}).length?'・送榴槤 '+esc(lineTxt(t.deal.durian)):'')+'</div></div><div></div><div class="amt">'+money(t.total)+'</div></div>');
+  h+=(dl.length?'<details style="margin-top:6px"><summary>每一筆讓利明細（'+dl.length+'）</summary>'+dl.join('')+'</details>':'')+'<p class="small">讓利筆數超過一半標紅。上限在「設定」調整：目前每單折價 '+money(cfg().discountCap)+'、小禮 '+cfg().extraGiftCap+' 個。</p></div>';
+  const agg={};for(const s of stores){const st=stockTable(s.id,d);for(const k in st)agg[k]=(agg[k]||0)+st[k].sold}
+  const top=Object.entries(agg).filter(([,v])=>v>0).sort((a,b)=>b[1]-a[1]).slice(0,8);const mx=top.length?top[0][1]:1;
+  h+='<div class="cols"><div class="card"><h3>熱銷（盒／杯／個）</h3>'+(top.length?top.map(([k,v])=>'<div class="hbar"><span>'+esc(pname(k))+'</span><div><div class="b" style="width:'+(v/mx*100)+'%"></div></div><span class="v">'+v+'</span></div>').join(''):'<p class="small">這天沒有銷售</p>')+'</div>';
+  h+='<div class="card"><h3>LINE 日報預覽</h3>'+(active.map(s=>'<pre class="rep">'+esc(report(s.id,d))+'</pre>').join('')||'<p class="small">這天沒有營業</p>')+(active.length?'<button class="btn ghost" data-act="copyrep" data-v="'+B.store+'|'+d+'">複製日報</button>':'')+'</div></div>';
+  h+='<div class="card"><h3>'+dlabel(d)+' 時段銷售</h3>'+hourTable(hourStats(stores.map(s=>s.id),x=>x===d))+'<p class="small">時間是櫃姐按下結帳那一刻自動記的；如果她們事後才補打，時間會不準。</p></div>';
+  h+='<div class="card"><h3>櫃位庫存（可銷售數量）</h3><div class="scroll"><table class="frz"><thead><tr><th>品項</th>'+stores.map(s=>'<th>'+s.name.slice(0,4)+'<br>今日售</th><th>'+s.name.slice(0,4)+'<br>可售</th>').join('')+'</tr></thead><tbody>';
+  const sts=stores.map(s=>stockTable(s.id,d));for(const p of PRODUCTS){if(!sts.some(st=>st[p.id].any))continue;h+='<tr><td>'+esc(pname(p.id))+'</td>'+sts.map(st=>{const r=st[p.id];return '<td>'+(r.sold||'')+'</td><td class="'+(r.avail<=cfg().lowStock?'neg':'hl')+'">'+r.avail+'</td>'}).join('')+'</tr>'}
+  h+='</tbody></table></div><p class="small">紅字＝低於 '+cfg().lowStock+' 或負數</p></div>';
+  for(const s of stores){const o=(S.ui.open||{})['ds-'+s.id];h+='<details class="card"'+(o?' open':'')+'><summary data-act="dtoggle" data-v="ds-'+s.id+'">'+s.name+' 日銷表與交易明細</summary>'+(o?dailyBlock(s.id,d,S.ui.all):'')+'</details>'}}
+  if(showP)h+=vConsignBoss(d);
+  const pics=S.photos.filter(p=>p.date===d&&(B.store==='all'||p.store===B.store)).sort((a,b)=>b.ts-a.ts);
+  h+='<div class="card"><h3>'+dlabel(d)+' 照片（'+pics.length+'）</h3>'+(pics.length?thumbs(pics):'<p class="small">這天沒有照片</p>')+'</div>';
+  h+='<div class="card"><h3>匯出 Excel（CSV）</h3><div class="row"><button class="mini" data-act="csv" data-v="txn">交易明細</button><button class="mini" data-act="csv" data-v="move">庫存異動</button><button class="mini" data-act="csv" data-v="sheet">'+dlabel(d)+' 日銷表</button><button class="mini" data-act="csv" data-v="count">寄賣盤點</button></div><p class="small">用 Excel 或 Google 試算表開啟。正式版會自動寫入雲端試算表。</p></div>';
+  h+=vSettings();return h+'</div>'}
+function consignTable(pt,cur,prev){const R=consignInterval(pt,cur,prev);
+  return '<div class="scroll"><table class="frz"><thead><tr><th>品項</th><th>效期</th><th>架上</th><th>冰箱底</th><th>超市倉</th><th>本次小計</th><th>上次</th><th>期間進貨</th><th>其他</th><th>推估賣出</th><th>金額</th></tr></thead><tbody>'+R.rows.map(r=>'<tr><td>'+esc(cname(r.pid))+'</td><td>'+esc(dotDate(r.exp))+'</td><td>'+(r.shelf||'')+'</td><td>'+(r.under||'')+'</td><td>'+(r.wh||'')+'</td><td class="hl">'+r.now+'</td><td>'+(r.before??'—')+'</td><td>'+(r.inQ||'')+'</td><td>'+(r.outQ||'')+'</td><td class="'+(r.sold!=null&&r.sold<0?'neg':'')+'">'+(r.sold??'—')+'</td><td>'+(r.sold>0?(r.price?fmt(r.sold*r.price):'<span class="neg">未設價</span>'):'')+'</td></tr>').join('')+'</tbody><tfoot><tr><td>合計</td><td></td><td></td><td></td><td></td><td>'+R.rows.reduce((s,r)=>s+r.now,0)+'</td><td></td><td></td><td></td><td>'+(prev?R.qty:'—')+'</td><td>'+(prev?fmt(R.amt):'')+'</td></tr></tfoot></table></div>'+
+    '<p class="small">'+(prev?'自 '+dlabel(prev.date)+' 到 '+dlabel(cur.date)+'。推估賣出＝上次＋期間進貨−其他−本次。負數代表比應有的多，可能有補貨沒登錄。':'第一次盤點，下次盤點後才算得出賣出數量。')+(R.noPrice.length?' <b class="neg">'+R.noPrice.map(cname).join('、')+' 還沒設寄賣價，金額沒算進去，請到「設定」填。</b>':'')+'</p>'}
+function consignRecon(pt,month){const M=consignMonth(pt.id,month);const st=stmtOf(pt.id,month);const hasDays=st&&st.days&&Object.keys(st.days).length;
+  let h='<button class="btn ghost" style="margin-top:4px" data-act="stopen" data-v="'+pt.id+'|'+month+'">'+(st?'修改':'輸入／貼上')+' '+Number(month.slice(5))+' 月百貨對帳單</button>';
+  const cs=countsOf(pt.id);const ivs=[];for(let i=1;i<cs.length;i++)if(cs[i].date.slice(0,7)===month){const R=consignInterval(pt.id,cs[i],cs[i-1]);const e=intervalCat(R);const r=stmtRange(pt.id,cs[i-1].date,cs[i].date);ivs.push({from:cs[i-1].date,to:cs[i].date,by:cs[i].by,qty:R.qty,e,r,noPrice:R.noPrice})}
+  if(st){const tax=hasDays?Object.values(st.days).reduce((x,d)=>x+num(d.tax),0):null,free=hasDays?Object.values(st.days).reduce((x,d)=>x+num(d.free),0):null;const tot=hasDays?tax+free:num(st.amount);
+    h+='<table style="margin-top:10px"><thead><tr><th class="l">'+Number(month.slice(5))+' 月</th><th>冰品等（應稅）</th><th>榴槤（免稅）</th><th>合計</th></tr></thead><tbody>';
+    const eT=ivs.reduce((x,v)=>x+v.e.tax,0),eF=ivs.reduce((x,v)=>x+v.e.free,0);
+    h+='<tr><td class="l">百貨對帳單</td><td>'+(hasDays?fmt(tax):'—')+'</td><td>'+(hasDays?fmt(free):'—')+'</td><td class="hl">'+fmt(tot)+'</td></tr>';
+    h+='<tr><td class="l">PT 盤點推估</td><td>'+fmt(eT)+'</td><td>'+fmt(eF)+'</td><td>'+fmt(eT+eF)+'</td></tr></tbody></table>';
+    if(st.commission!=null||st.payable!=null)h+='<p class="small">抽成 '+(st.rate?st.rate+'%・':'')+money(num(st.commission))+'・代扣費用 '+money(num(st.deduct))+'・<b>百貨應付我們 '+money(num(st.payable))+'</b>'+(tot&&st.payable!=null?'（實拿 '+Math.round(num(st.payable)/tot*100)+'%）':'')+'</p>'}
+  if(ivs.length){h+='<div class="sec">每一次盤點區間的核對</div><div class="scroll"><table><thead><tr><th class="l">區間</th><th>盤點推估</th><th>對帳單</th><th>差</th></tr></thead><tbody>'+ivs.map(v=>{const est=v.e.tax+v.e.free,got=v.r.tax+v.r.free;const miss=v.r.missing.length;const df=got-est;
+      return '<tr><td class="l">'+dlabel(v.from).replace(/（.）/,'')+'→'+dlabel(v.to).replace(/（.）/,'')+'<div class="small">'+esc(v.by)+'・賣出 '+v.qty+' 件</div></td><td>'+fmt(est)+'</td><td>'+(miss?'<span class="small">缺 '+v.r.missing.map(m=>Number(m.slice(5))+'月').join('、')+'對帳單</span>':fmt(got))+'</td><td class="'+(!miss&&Math.abs(df)>Math.max(200,est*0.1)?'neg':'')+'">'+(miss?'':df===0?'✓':(df>0?'+':'')+fmt(df))+'</td></tr>'}).join('')+'</tbody></table></div><p class="small">對帳單算的是「上次盤點隔天」到「這次盤點當天」。差超過 10%（或 $200）標紅：百貨多＝可能有補貨沒登錄、或寄賣價設錯；百貨少＝可能貨不見、或盤點點錯。</p>'}
+  else h+='<p class="small">這個月還沒有兩次以上的盤點，先看對帳單每天的金額。</p>';
+  if(hasDays){const cd=new Set(cs.map(c=>c.date));const days=Object.keys(st.days).map(Number).sort((a,b)=>a-b);const mx=Math.max(1,...days.map(d=>num(st.days[d].tax)+num(st.days[d].free)));
+    h+='<details'+((S.ui.open||{})['sd-'+pt.id]?' open':'')+'><summary data-act="dtoggle" data-v="sd-'+pt.id+'">每日金額（'+days.filter(d=>num(st.days[d].tax)+num(st.days[d].free)).length+' 天有營業額）</summary><table class="hours"><thead><tr><th class="l">日</th><th>應稅</th><th>免稅</th><th>合計</th><th class="l" style="width:30%"></th></tr></thead><tbody>'+days.map(d=>{const x=st.days[d];const t=num(x.tax)+num(x.free);const ds=month+'-'+pad(d);return '<tr class="'+(t?'':'z')+'"><td class="l">'+Number(month.slice(5))+'/'+d+(cd.has(ds)?' <span class="tag">盤點</span>':'')+'</td><td>'+(num(x.tax)?fmt(x.tax):'')+'</td><td>'+(num(x.free)?fmt(x.free):'')+'</td><td>'+(t?fmt(t):'')+'</td><td class="l"><div class="hb"><i style="width:'+(t/mx*100)+'%"></i></div></td></tr>'}).join('')+'</tbody></table></details>'}
+  if(M.noPrice.length)h+='<div class="msg warn">'+M.noPrice.map(cname).join('、')+' 沒有寄賣價，推估金額少算了，請到「設定」填。</div>';
+  return h}
+function vStmt(){const E=S.ui.stEdit;if(!E)return '';const pt=STORES.find(x=>x.id===E.pt);const D=E.draft;const [y,m]=E.month.split('-').map(Number);const nd=new Date(y,m,0).getDate();
+  let h='<div class="sh-h"><h2>'+esc(pt.name)+' '+m+' 月對帳單</h2><button class="x" data-act="closesheet" aria-label="關閉">×</button></div>';
+  h+='<p class="small" style="margin-top:-6px">最快：打開百貨給的 PDF，全選、複製，貼到下面再按「讀取」。也可以直接在表格裡打。</p><textarea id="stpaste" class="in" style="height:110px;font-size:13px" placeholder="把對帳單 PDF 的文字貼在這裡" data-bind="ui.stEdit.paste">'+esc(E.paste||'')+'</textarea><button class="btn" style="margin-top:8px" data-act="stparse">讀取貼上的對帳單</button>';
+  if(E.msg)h+=E.msg.map(x=>'<div class="msg '+x[0]+'">'+esc(x[1])+'</div>').join('');
+  let sT=0,sF=0;for(let d=1;d<=nd;d++){const x=(D.days||{})[d]||{};sT+=num(x.tax);sF+=num(x.free)}
+  h+='<div class="sec">每日金額</div><div class="scroll" style="max-height:46vh"><table><thead><tr><th>日</th><th>應稅（冰品）</th><th>免稅（榴槤）</th><th>合計</th></tr></thead><tbody>';
+  for(let d=1;d<=nd;d++){const x=(D.days||{})[d]||{};h+='<tr><td>'+d+'</td><td><input id="sd-t-'+d+'" class="in r sm" inputmode="numeric" placeholder="0" value="'+esc(x.tax??'')+'" data-bind="ui.stEdit.draft.days.'+d+'.tax"></td><td><input id="sd-f-'+d+'" class="in r sm" inputmode="numeric" placeholder="0" value="'+esc(x.free??'')+'" data-bind="ui.stEdit.draft.days.'+d+'.free"></td><td>'+((num(x.tax)+num(x.free))?fmt(num(x.tax)+num(x.free)):'')+'</td></tr>'}
+  h+='</tbody><tfoot><tr><td>合計</td><td>'+fmt(sT)+'</td><td>'+fmt(sF)+'</td><td>'+fmt(sT+sF)+'</td></tr></tfoot></table></div>';
+  for(const [k,l] of [['amount','銷貨營業額（對帳單上的總額）'],['commission','抽成額'],['deduct','代扣項目合計'],['payable','百貨應付我們']])h+='<div class="field" style="grid-template-columns:12em minmax(0,1fr)"><label for="sx-'+k+'">'+l+'</label><input id="sx-'+k+'" class="in r" inputmode="numeric" value="'+esc(D[k]??'')+'" data-bind="ui.stEdit.draft.'+k+'"></div>';
+  if(String(D.amount??'')!==''&&sT+sF&&num(D.amount)!==sT+sF)h+='<div class="msg bad">每日加起來 '+money(sT+sF)+'，跟對帳單總額 '+money(num(D.amount))+' 差 '+money(num(D.amount)-sT-sF)+'，請檢查哪一天打錯。</div>';
+  return h+'<button class="btn" data-act="stsave2">儲存對帳單</button>'}
+function vConsignBoss(d){const month=d.slice(0,7);let h='<h1 style="margin-top:22px">寄賣點</h1>';
+  for(const pt of CONSIGNS){if(S.boss.store!=='all'&&S.boss.store!==pt.id)continue;const cs=countsOf(pt.id).filter(c=>c.date<=d);const cur=cs[cs.length-1],prev=cs[cs.length-2];
+    h+='<div class="card"><div class="row"><h3 class="grow" style="margin:0">'+esc(pt.name)+'</h3>'+(cur?'<span class="tag gray">最近盤點 '+dlabel(cur.date)+'・'+esc(cur.by)+'</span>':'<span class="tag gray">還沒有盤點</span>')+'</div>';
+    if(cur){if(cur.issues&&cur.issues.length)h+='<div class="msg warn">現場回報：'+esc(cur.issues.join('、'))+(cur.note?'（'+esc(cur.note)+'）':'')+'</div>';
+      h+=consignTable(pt.id,cur,prev);const pics=[...(cur.before||[]),...(cur.after||[])].map(photoById).filter(Boolean);if(pics.length)h+=thumbs(pics)}
+    h+='<div class="sec">'+Number(month.slice(5))+' 月金額核對</div>'+consignRecon(pt,month)+'</div>'}
+  return h}
+/* ---------- 月統計 ---------- */
+function monthDays(month){const [y,m]=month.split('-').map(Number);const n=new Date(y,m,0).getDate();const out=[];for(let i=1;i<=n;i++){const d=month+'-'+pad(i);if(d>today())break;out.push(d)}return out}
+function vMonth(d){const B=S.boss;const month=(B.month||d.slice(0,7));const stores=COUNTERS.filter(s=>B.store==='all'||B.store===s.id);const ids=stores.map(s=>s.id);
+  const [y,m]=month.split('-').map(Number);
+  let h='<div class="row" style="margin-bottom:6px"><input id="bm" type="month" class="in" style="max-width:11em" value="'+month+'" data-act-in="bmonth" aria-label="月份"><div class="chips" style="padding:0">'+[['all','全部'],...STORES.map(s=>[s.id,s.name])].map(([k,l])=>'<button class="chip sm'+(B.store===k?' on':'')+'" data-act="bstore" data-v="'+k+'">'+esc(l)+'</button>').join('')+'</div></div>';
+  const days=monthDays(month);const rows=[];let tot=0,cnt=0,cg=0,deal=0,open=0;
+  for(const dd of days){const r={d:dd,by:{},t:0,n:0,ok:0,bad:0,act:0};for(const s of stores){const T=sysTotals(s.id,dd);r.by[s.id]=T.total;r.t+=T.total;r.n+=T.count;deal+=T.deal;cg+=T.count?cogs(s.id,dd):0;const c=closeOf(s.id,dd);if(T.count||c){r.act++;if(c&&c.diff===0&&!(c.blindDiff||[]).length)r.ok++;else r.bad++}}
+    if(r.n||r.act){rows.push(r);tot+=r.t;cnt+=r.n;open++}}
+  const carry=stores.reduce((s,st)=>{const c=(cfg().carry||{})[st.id];return s+(c&&c.month===month?num(c.amount):0)},0);
+  if(stores.length){
+  h+='<h1>'+y+' 年 '+m+' 月 櫃位銷售 '+money(tot+carry)+'</h1>';
+  h+='<div class="kpis"><div class="kpi"><span>系統銷售額</span><b>'+money(tot)+'</b><i>'+cnt+' 筆・客單 '+money(cnt?tot/cnt:0)+'</i></div>'+(carry?'<div class="kpi"><span>系統上線前（手寫累積）</span><b>'+money(carry)+'</b><i>來自日銷表的昨日累積</i></div>':'')+'<div class="kpi"><span>營業天數</span><b>'+open+' 天</b><i>日均 '+money(open?tot/open:0)+'</i></div>'+marginTile(tot,cg)+'<div class="kpi"><span>爭取成交讓利</span><b>'+money(deal)+'</b></div></div>';
+  const mx=Math.max(1,...rows.map(r=>r.t));
+  h+='<div class="card"><h3>日銷售額</h3>'+(rows.length?'<div class="scroll"><table class="frz"><thead><tr><th>日期</th>'+stores.map(s=>'<th>'+esc(s.name.slice(0,4))+'</th>').join('')+'<th>合計</th><th>筆數</th><th>對帳</th><th class="l" style="min-width:90px"></th></tr></thead><tbody>'+rows.map(r=>'<tr><td><button class="lnk" data-act="bgoday" data-v="'+r.d+'">'+dlabel(r.d)+'</button></td>'+stores.map(s=>'<td>'+(r.by[s.id]?fmt(r.by[s.id]):'')+'</td>').join('')+'<td class="hl">'+fmt(r.t)+'</td><td>'+r.n+'</td><td>'+(r.bad?'<span class="tag red">'+r.bad+' 店未對上</span>':'<span class="tag ok">✓</span>')+'</td><td class="l"><div class="hb"><i style="width:'+(r.t/mx*100)+'%"></i></div></td></tr>').join('')+'</tbody><tfoot><tr><td>合計</td>'+stores.map(s=>'<td>'+fmt(rows.reduce((a,r)=>a+(r.by[s.id]||0),0))+'</td>').join('')+'<td>'+fmt(tot)+'</td><td>'+cnt+'</td><td></td><td></td></tr></tfoot></table></div><p class="small">點日期可以看那天的細節。「對帳」＝營業額和庫存都對上才打勾。</p>':'<p class="small">這個月還沒有交易</p>')+'</div>';
+  h+='<div class="card"><h3>時段：哪個時間人最多</h3>'+hourTable(hourStats(ids,x=>x.slice(0,7)===month),true)+'</div>';
+  const by={};for(const t of S.txns){if(t.voided||!ids.includes(t.store)||t.date.slice(0,7)!==month)continue;const k=t.store+'|'+t.staff;const b=by[k]||(by[k]={n:0,amt:0,deals:0,cost:0});b.n++;b.amt+=t.total;if(t.deal&&t.deal.cost){b.deals++;b.cost+=t.deal.cost}}
+  h+='<div class="card"><h3>櫃姐本月</h3><div class="scroll"><table><thead><tr><th class="l">櫃位・櫃姐</th><th>筆數</th><th>銷售額</th><th>讓利筆數</th><th>讓利金額</th></tr></thead><tbody>'+(Object.keys(by).length?Object.entries(by).sort((a,b)=>b[1].amt-a[1].amt).map(([k,b])=>{const [st,n]=k.split('|');return '<tr><td class="l">'+esc(sname(st).slice(0,4)+'・'+n)+'</td><td>'+b.n+'</td><td>'+fmt(b.amt)+'</td><td class="'+(b.deals/b.n>0.5?'neg':'')+'">'+b.deals+'</td><td>'+fmt(b.cost)+'</td></tr>'}).join(''):'<tr><td colspan="5" class="l small">沒有交易</td></tr>')+'</tbody></table></div></div>';
+  const agg={};for(const t of S.txns){if(t.voided||!ids.includes(t.store)||t.date.slice(0,7)!==month)continue;for(const k in t.sold)agg[k]=(agg[k]||0)+t.sold[k]}
+  const top=Object.entries(agg).sort((a,b)=>b[1]-a[1]).slice(0,10);const tm=top.length?top[0][1]:1;
+  h+='<div class="card"><h3>本月熱銷</h3>'+(top.length?top.map(([k,v])=>'<div class="hbar"><span>'+esc(pname(k))+'</span><div><div class="b" style="width:'+(v/tm*100)+'%"></div></div><span class="v">'+v+'</span></div>').join(''):'<p class="small">沒有銷售</p>')+'</div>'}
+  const cps=CONSIGNS.filter(s=>B.store==='all'||B.store===s.id);
+  if(cps.length){h+='<h1 style="margin-top:22px">寄賣點 '+m+' 月金額核對</h1><p class="small" style="margin-top:-8px">用 PT 每次盤點推估賣出的金額，跟超市的結帳金額比。區間跨月的，算在結束那次盤點的月份。</p>';
+    for(const pt of cps)h+='<div class="card"><h3>'+esc(pt.name)+'</h3>'+consignRecon(pt,month)+'</div>'}
+  return h}
+function vSettings(){const c=S.ui.cfg||(S.ui.cfg=clone(cfg()));if(!c.costEdit&&S.costs)c.costEdit=Object.fromEntries(Object.entries(S.costs).map(([k,v])=>[k,String(v)]));
+  let h='<details class="card"'+(S.ui.setOpen?' open':'')+'><summary data-act="settoggle">設定</summary>';
+  for(const s of COUNTERS)h+='<div class="field" style="grid-template-columns:8em minmax(0,1fr)"><label for="sf-'+s.id+'">'+s.name+' 櫃姐</label><input id="sf-'+s.id+'" class="in" value="'+esc((c.staffText||{})[s.id]??(c.staff[s.id]||[]).join('、'))+'" data-bind="ui.cfg.staffText.'+s.id+'" placeholder="用頓號分隔"></div>';
+  for(const s of CONSIGNS)h+='<div class="field" style="grid-template-columns:8em minmax(0,1fr)"><label for="pf-'+s.id+'">'+esc(s.name)+' 盤點</label><input id="pf-'+s.id+'" class="in" value="'+esc((c.ptText||{})[s.id]??((c.pt||{})[s.id]||[]).join('、'))+'" data-bind="ui.cfg.ptText.'+s.id+'" placeholder="用頓號分隔"></div>';
+  for(const [k,l] of [['discountCap','每單折價上限（元）'],['discountStep','每按一次折幾元'],['extraGiftCap','每單加送小禮上限（個）'],['durianGiftCap','每單送榴槤上限（盒）'],['tastingBase','試吃：每天基本盒數'],['tastingPer','試吃：每賣幾盒多 1 盒'],['lowStock','低庫存提醒'],['adminPin','行政 PIN']])h+='<div class="field" style="grid-template-columns:11em minmax(0,1fr)"><label for="cf-'+k+'">'+l+'</label><input id="cf-'+k+'" class="in r" inputmode="numeric" value="'+esc(c[k])+'" data-bind="ui.cfg.'+k+'"></div>';
+  h+='<div class="field" style="grid-template-columns:11em minmax(0,1fr)"><label for="cf-com">百貨抽成 %</label><input id="cf-com" class="in r" inputmode="numeric" value="'+esc(c.commissionPct??Math.round(c.commission*100))+'" data-bind="ui.cfg.commissionPct"></div>';
+  h+='<div class="sec">寄賣價（推估寄賣金額用；空白＝用櫃位定價）</div><div class="cpg">'+CS_ITEMS.map(ci=>'<label>'+esc(ci.name)+'<input id="cp-'+ci.id+'" class="in r sm" inputmode="numeric" placeholder="'+(P[ci.id].price||'未設')+'" value="'+esc((c.cprice||{})[ci.id]??'')+'" data-bind="ui.cfg.cprice.'+ci.id+'"></label>').join('')+'</div>';
+  h+='<div class="sec">櫃姐可以加送的小禮</div><div class="chips wrap">'+['BAGS','BAGL','PLS','KC','PEN','ICSDH'].map(k=>'<button class="chip sm'+(c.dealGifts.includes(k)?' on':'')+'" data-act="cfggift" data-v="'+k+'">'+esc(pname(k))+'</button>').join('')+'</div>';
+  h+='<div class="sec">收櫃點庫存的方式</div><div class="seg">'+[['confirm','顯示應有數量，櫃姐點對／不對'],['blind','不顯示，櫃姐自己點數量']].map(([k,l])=>'<button class="'+((c.closeMode||'confirm')===k?'on':'')+'" data-act="cfgclose" data-v="'+k+'" style="font-size:13px">'+l+'</button>').join('')+'</div><p class="small" style="margin-top:-6px">「對／不對」比較快，但櫃姐可能沒點就按對；「自己點」比較準，比較費時。</p>';
+  h+='<button class="mini'+(c.autoBag?' on':'')+'" data-act="cfgbag">'+(c.autoBag?'✓ ':'')+'買榴槤自動附 1 個簡易保冷袋</button>';
+  if(S.costs){h+='<div class="sec">商品成本（加密存放，只有輸入總經理 PIN 才看得到）</div><div class="cpg">'+PRODUCTS.map(p=>'<label>'+esc(pname(p.id))+'<input id="cc-'+p.id+'" class="in r sm" inputmode="decimal" value="'+esc((c.costEdit||{})[p.id]??'')+'" data-bind="ui.cfg.costEdit.'+p.id+'"></label>').join('')+'</div>';
+    h+='<div class="sec">更改總經理 PIN（不改就留空）</div><div class="field" style="grid-template-columns:8em minmax(0,1fr)"><label for="np1">新 PIN</label><input id="np1" class="in" type="password" inputmode="numeric" autocomplete="off" value="'+esc(c.newPin||'')+'" data-bind="ui.cfg.newPin"></div><div class="field" style="grid-template-columns:8em minmax(0,1fr)"><label for="np2">再輸入一次</label><input id="np2" class="in" type="password" inputmode="numeric" autocomplete="off" value="'+esc(c.newPin2||'')+'" data-bind="ui.cfg.newPin2"></div>'}
+  h+='<button class="btn" data-act="cfgsave">儲存設定</button><p class="small" style="margin-top:14px">資料模式：'+({db:'雲端同步（所有登入的手機看到同一份資料）',gas:'Google 試算表',local:'示範・只存在這台裝置'}[S.mode])+'</p><div class="row"><button class="mini" data-act="demo">載入示範資料</button>'+(S.mode==='local'?'<button class="mini" data-act="reset">清空本機資料</button>':'')+'</div>'+(S.ui.resetAsk?'<div class="msg bad">確定要清空這台裝置的所有資料？<button class="mini" data-act="resetok">確定清空</button></div>':'')+'</details>';
+  return h}
+
+/* ---------- 彈窗 ---------- */
+function vSheet(){if(S.sheet==='cart')return vCart();if(S.sheet==='done')return vDone();if(S.sheet==='txns')return vTxns();
+  if(S.sheet==='photo'){const p=photoById(S.ui.phId);if(!p)return '';return '<div class="sh-h"><h2>'+esc(sname(p.store)+'・'+p.kind)+'</h2><button class="x" data-act="closesheet" aria-label="關閉">×</button></div><img class="big-img" src="'+esc(photoSrc(p))+'" alt="'+esc(p.kind)+'照片"><p class="small">'+dlabel(p.date)+' '+esc(p.time||'')+'・'+esc(p.by||'')+(p.note?'・'+esc(p.note):'')+'</p>'}
+  if(S.sheet==='pick')return vPick();
+  if(S.sheet==='stmt')return vStmt();
+  if(S.sheet==='csv')return '<div class="sh-h"><h2>複製 CSV</h2><button class="x" data-act="closesheet" aria-label="關閉">×</button></div><p class="small">這個畫面不能直接下載檔案，請複製後貼到 Excel 或 Google 試算表。</p><textarea id="csvbox" class="in" style="height:240px;font-size:13px" readonly>'+esc(S.ui.csv||'')+'</textarea><button class="btn" data-act="copycsv">複製</button>';return ''}
+
+/* ---------- CSV ---------- */
+const csvLine=a=>a.map(v=>{v=String(v??'');return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v}).join(',');
+function csvOf(kind){const B=S.boss;const d=B.date||latestDate();const ids=STORES.filter(s=>B.store==='all'||B.store===s.id).map(s=>s.id);let rows=[];
+  if(kind==='txn'){rows.push(['日期','時間','店','序號','櫃姐','品項','數量','單價','小計','折價','應收','現金','刷卡','商券','其他','贈品','讓利原因','加送小禮','備註','作廢']);
+    for(const t of S.txns.filter(t=>ids.includes(t.store)).sort((a,b)=>(a.date+a.store+String(a.no).padStart(4,'0')).localeCompare(b.date+b.store+String(b.no).padStart(4,'0'))))
+      t.items.forEach((i,n)=>rows.push([t.date,t.time,sname(t.store),t.no,t.staff,i.name,i.qty,i.unit,i.total,n?'':t.discount,n?'':t.total,n?'':t.pay.cash,n?'':t.pay.card,n?'':t.pay.voucher,n?'':t.pay.other,n?'':t.giftText,n?'':(t.deal||{}).reason||'',n?'':lineTxt((t.deal||{}).gifts),n?'':t.note,t.voided?'作廢：'+t.voidReason:'']))}
+  else if(kind==='move'){rows.push(['日期','店','類型','品項','數量','經手人','原因','備註']);for(const m of S.moves.filter(m=>ids.includes(m.store)).sort((a,b)=>a.date.localeCompare(b.date)))for(const [k,q] of Object.entries(m.lines))rows.push([m.date,sname(m.store),mvLabel(m),cname(k),q,m.by,m.reason,m.note||''])}
+  else if(kind==='count'){rows.push(['日期','寄賣點','盤點人','品項','保存期限','架上','冰箱底','超市倉','小計','本次進貨','其他','回報']);for(const c of S.counts.filter(c=>ids.includes(c.store)).sort((a,b)=>a.date.localeCompare(b.date)))for(const k of csList(Object.keys(c.lines||{})).filter(k=>(c.lines||{})[k]||(c.inQ||{})[k]||(c.outQ||{})[k])){const l=(c.lines||{})[k]||{};rows.push([c.date,sname(c.store),c.by,cname(k),l.exp||'',num(l.shelf),num(l.under),num(l.wh),num(l.shelf)+num(l.under)+num(l.wh),(c.inQ||{})[k]||'',(c.outQ||{})[k]||'',(c.issues||[]).join('、')])}}
+  else{rows.push(['日期','店','品項','前日庫存','今日銷售','贈品','試吃','進貨','補貨','今日合計','其他','可銷售數量','收櫃實點']);for(const s of ids.filter(i=>COUNTERS.some(c=>c.id===i))){const st=stockTable(s,d);const c=closeOf(s,d);for(const p of PRODUCTS){const r=st[p.id];if(!r.any)continue;rows.push([d,sname(s),pname(p.id),r.prev,r.sold,r.gift,r.taste,r.in,r.re,r.out,r.other,r.avail,c&&c.counts?c.counts[p.id]??'':''])}}}
+  return {name:({txn:'交易明細',move:'庫存異動',count:'寄賣盤點',sheet:'日銷表-'+d}[kind])+'.csv',text:rows.map(csvLine).join('\r\n')}}
+
+/* ---------- 事件 ---------- */
+function unmiss(id){if(S.ui.miss)S.ui.miss=S.ui.miss.filter(x=>x!==id);if(S.ui.guard&&!S.ui.guard.confirm&&S.ui.miss&&!S.ui.miss.length)S.ui.guard=null}
+function getPath(path){return path.split('.').reduce((o,k)=>o==null?undefined:o[k],S)}
+/* 數字點選：點格子跳出大按鈕，點了自動跳下一格 */
+function numf(path,title,hint,cls){const v=getPath(path);const set=String(v??'')!=='';const need=(S.ui.miss||[]).includes(path);
+  return '<button class="numf'+(set?' set':'')+(need?' need':'')+(cls?' '+cls:'')+'" id="nf-'+path.replace(/\./g,'-')+'" data-act="pick" data-v="'+path+'" data-t="'+esc(title)+'" data-h="'+(hint??'')+'" aria-label="'+esc(title)+'">'+(set?num(v):'–')+'</button>'}
+function vPick(){const K=S.ui.pk;if(!K)return '';const v=getPath(K.path);const set=String(v??'')!=='';const hint=K.hint===''||K.hint==null?null:+K.hint;
+  const max=Math.max(24,Math.ceil(((hint||0)+8)/5)*5-1);let g='';for(let i=0;i<=max;i++)g+='<button class="pk'+(set&&num(v)===i?' on':'')+(hint===i?' hint':'')+'" data-act="pickset" data-v="'+i+'">'+i+(hint===i?'<small>應有</small>':'')+'</button>';
+  const i=K.seq.indexOf(K.path);
+  return '<div class="sh-h"><h2>'+esc(K.title)+'</h2><button class="x" data-act="closesheet" aria-label="關閉">×</button></div><div class="pk-now">'+(set?'<b>'+num(v)+'</b>':'<span>還沒填</span>')+(hint!=null?'<span class="small">應有 '+hint+'</span>':'')+'<span class="small">第 '+(i+1)+' / '+K.seq.length+' 格</span></div><div class="pkg">'+g+'</div>'+
+    '<div class="row" style="margin-top:10px"><input id="pkin" class="in r" inputmode="numeric" placeholder="更大的數字，打字輸入" value="'+esc(S.ui.pkin||'')+'" data-bind="ui.pkin"><button class="mini" data-act="pickset" data-v="__in">確定</button></div>'+
+    '<div class="row" style="margin-top:10px">'+(i>0?'<button class="btn ghost" style="margin:0" data-act="pickgo" data-v="-1">‹ 上一格</button>':'')+'<button class="btn ghost" style="margin:0" data-act="pickgo" data-v="1">'+(i<K.seq.length-1?'跳過 ›':'完成')+'</button></div><p class="small">點數字會自動跳到下一格</p>'}
+function openPick(path){let seq=[...$app.querySelectorAll('[data-act=pick]:not(.sm2)')].map(e=>e.dataset.v);const el=$app.querySelector('[data-act=pick][data-v="'+path+'"]');if(!el)return;if(el.classList.contains('sm2'))seq=[path];S.ui.pk={path,title:el.dataset.t,hint:el.dataset.h,seq};S.ui.pkin='';S.sheet='pick';S.ui.pkTop=true}
+function setPath(path,val){const ks=path.split('.');let o=S;for(let i=0;i<ks.length-1;i++){if(o[ks[i]]==null)o[ks[i]]={};o=o[ks[i]]}o[ks[ks.length-1]]=val}
+async function copyText(t){try{await navigator.clipboard.writeText(t);toast('已複製，可以貼到 LINE')}catch(e){S.ui.csv=t;S.sheet='csv';render()}}
+function resetCart(){S.cart=[];S.deal={steps:0,reason:'',gifts:{},durian:{}};S.ui.miss=null;S.ui.confirm=null;S.ui.dopen={};S.bagQty=null;S.pay={cash:'',card:'',voucher:'',other:''};S.note=''}
+const A={
+  role(v){if(v==='staff'||v==='pt')S.login={step:'store',role:v};else S.login={step:'pin',role:v}},
+  lback(){S.login=S.login.step==='name'?{step:'store',role:S.login.role}:{step:'role'}},
+  lstore(v){S.login={step:'name',role:S.login.role,store:v}},
+  lname(v){S.session={role:S.login.role,store:S.login.store,name:v};S.tab='sell';S.sdate=null;S.pt=null;saveSession()},
+  async pinok(){const isB=S.login.role==='boss';const pin=String(S.login.pin||'');const now=Date.now();
+    if(S.login.lockUntil&&now<S.login.lockUntil){S.login.err='錯太多次，請 '+Math.ceil((S.login.lockUntil-now)/1000)+' 秒後再試';return}
+    if(isB){S.login.err='確認中…';render();const c=await openCosts(pin);if(c){S.costs=c;S.bossPin=pin;S.session={role:'boss',name:'總經理'};S.login.tries=0;S.login.err='';S.login.pin='';saveSession();render();return}}
+    else if(pin===String(cfg().adminPin)){S.session={role:'admin',name:'行政'};S.login.tries=0;S.login.pin='';saveSession();return}
+    S.login.tries=(S.login.tries||0)+1;S.login.pin='';S.login.err='PIN 碼不對';if(S.login.tries>=5){S.login.lockUntil=now+30000;S.login.tries=0;S.login.err='錯 5 次，請 30 秒後再試'}render()},
+  logout(){S.costs=null;S.bossPin=null;if(S.cart.length&&!S.ui.outAsk){S.ui.outAsk=true;toast('購物車還有東西沒結帳。再按一次「換人」會清空');setTimeout(()=>S.ui.outAsk=false,5000);return}S.ui.outAsk=false;S.session=null;S.login={step:'role'};resetCart();S.sheet=null;S.pt=null;S.ui.cfg=null;saveSession()},
+  sdmove(v){const [y,m,dd]=sd().split('-').map(Number);const x=new Date(y,m-1,dd+ +v);const n=x.getFullYear()+'-'+pad(x.getMonth()+1)+'-'+pad(x.getDate());S.sdate=n>=today()?null:n;A.tab(S.tab)},
+  sdtoday(){S.sdate=null;A.tab(S.tab)},
+  nagclose(v){S.sdate=v===today()?null:v;A.tab('close')},
+  tab(v){S.tab=v;S.ui.showRep=false;S.ui.guard=null;S.ui.miss=null;S.ui.confirm=null;if(v==='close'){const c=closeOf(S.session.store,sd());const st=stockTable(S.session.store,sd());S.close=c?{...c.receipt,blind:Object.fromEntries(Object.entries(c.counts||{}).map(([k,q])=>[k,String(q)])),wrong:Object.fromEntries((c.blindDiff||[]).map(x=>[x.pid,true]))}:{blind:{},wrong:{}};S.ui.showRep=!!c}window.scrollTo(0,0)},
+  cat(v){S.cat=v},
+  add(v,el){const k=el.dataset.k;const it=S.cart.find(i=>i.kind===k&&i.ref===v);if(it)it.qty++;else S.cart.push({kind:k,ref:v,qty:1})},
+  opencart(){S.sheet='cart';S.ui.guard=null;S.ui.miss=null;S.ui.confirm=null},closesheet(){S.sheet=null;S.ui.voidId=null;S.ui.pk=null},
+  bgclose(v,el,e){if(e.target===el){S.sheet=null;S.ui.voidId=null}},
+  qty(v,el){const i=+el.dataset.i;S.cart[i].qty+=+el.dataset.d;if(S.cart[i].qty<=0)S.cart.splice(i,1);if(!S.cart.length){S.sheet=null;resetCart()}},
+  bag(v,el){const R=curCalc();S.bagQty=Math.max(0,R.bag+ +el.dataset.d)},
+  dstep(v,el){S.deal.steps=Math.max(0,S.deal.steps+ +el.dataset.d)},
+  dgift(v){S.deal.gifts[v]=(S.deal.gifts[v]||0)+1},dgiftclr(){S.deal.gifts={}},
+  dreason(v){S.deal.reason=v;unmiss('reason')},
+  pick(v){openPick(v)},
+  pickset(v){const K=S.ui.pk;if(!K)return;if(v==='__in'&&String(S.ui.pkin||'')==='')return;const n=v==='__in'?num(S.ui.pkin):+v;setPath(K.path,String(n));unmiss(K.path);const m=K.path.match(/^close\.blind\.(.+)$/);if(m)unmiss('it-'+m[1]);const p=K.path.match(/^pt\.lines\.([^.]+)\./);if(p)unmiss('cr-'+p[1]);A.pickgo(1)},
+  pickgo(v){const K=S.ui.pk;const i=K.seq.indexOf(K.path)+ +v;if(i<0)return;if(i>=K.seq.length){S.sheet=null;S.ui.pk=null;return}render();const el=$app.querySelector('[data-act=pick][data-v="'+K.seq[i]+'"]');S.ui.pk={...K,path:K.seq[i],title:el?el.dataset.t:'',hint:el?el.dataset.h:''};S.ui.pkin='';S.ui.pkTop=true},
+  dopen(v){S.ui.dopen=S.ui.dopen||{};S.ui.dopen[v]=!S.ui.dopen[v]},
+  ddur(v,el){S.deal.durian=S.deal.durian||{};S.deal.durian[v]=Math.max(0,(S.deal.durian[v]||0)+ +el.dataset.d)},
+  ckyes(v){const st=stockTable(S.session.store,sd());S.close.blind=S.close.blind||{};S.close.blind[v]=String(st[v].avail);unmiss('it-'+v)},
+  ckno(v){const st=stockTable(S.session.store,sd());S.close.wrong=S.close.wrong||{};S.close.wrong[v]=true;S.close.blind=S.close.blind||{};S.close.blind[v]=String(st[v].avail);unmiss('it-'+v);render();openPick('close.blind.'+v);if(S.ui.pk)S.ui.pk.seq=['close.blind.'+v]},
+  ckback(v){delete S.close.wrong[v];const st=stockTable(S.session.store,sd());S.close.blind[v]=String(st[v].avail)},
+  ckq(v,el){S.close.blind=S.close.blind||{};const cur=S.close.blind[v];const base=String(cur??'')===''?0:num(cur);S.close.blind[v]=String(Math.max(0,base+ +el.dataset.d));unmiss('it-'+v)},
+  ckzero(v){S.close.blind=S.close.blind||{};S.close.blind[v]='0';unmiss('it-'+v)},
+  payall(v){const R=curCalc();S.pay={cash:'',card:'',voucher:'',other:''};S.pay[v]=String(R.total);unmiss('paybox')},
+  clearcart(){resetCart();S.sheet=null},
+  async checkout(){const R=curCalc();const paid=PAYS.reduce((s,[k])=>s+num(S.pay[k]),0);const list=[...R.errors],miss=[];
+    if((R.disc||R.dealCount||R.durN)&&!S.deal.reason){list.push('有讓利，請點一個「為什麼讓利」');miss.push('reason')}
+    if(paid===0){list.push('還沒選付款方式：點現金、刷卡或商券旁邊的「全額」');miss.push('paybox')}
+    else if(paid!==R.total){list.push(paid<R.total?'付款還差 '+money(R.total-paid):'付款多了 '+money(paid-R.total)+'，請改金額');miss.push('paybox')}
+    if(blockIf(list,miss))return render();
+    if(S.ui.confirm!=='checkout'){const big=S.cart.filter(i=>i.qty>=5).map(i=>(i.kind==='product'?pname(i.ref):i.kind==='combo'?CB[i.ref].name:AD[i.ref].name)+' ×'+i.qty);const cl=[];
+      if(big.length)cl.push(big.join('、')+'：數量對嗎？');if(R.total>=20000)cl.push('這單 '+money(R.total)+'，金額比較大，請再看一次');if(R.durN)cl.push('這單有送榴槤 '+R.durN+' 盒');
+      if(cl.length){S.ui.confirm='checkout';S.ui.guard={list:cl,confirm:true};S.ui.jump='guard';return render()}}
+    S.ui.guard=null;S.ui.confirm=null;
+    const t=buildTxn({store:S.session.store,date:today(),staff:S.session.name,cart:S.cart,deal:S.deal,bag:S.bagQty,disc:curDisc(),steps:S.deal.steps,reason:S.deal.reason,pay:S.pay,note:S.note});
+    if(await Store.save('txns',t)){S.last=t;resetCart();S.sheet='done'}render()},
+  voidask(v){S.ui.voidId=v;S.ui.voidReason=''},
+  async voidok(v){const t=S.txns.find(x=>x.id===v);if(!t||!String(S.ui.voidReason||'').trim())return;const n={...t,voided:true,voidReason:S.ui.voidReason.trim(),voidBy:S.session.name,voidTs:Date.now()};S.ui.voidId=null;await Store.save('txns',n);toast('第 '+t.no+' 筆已作廢，庫存已回補');render()},
+  mvtype(v){S.mv={type:v,reason:v==='tasting'?'開盒試吃':'',q:{},photo:false,note:''}},
+  mvreason(v){S.mv.reason=v;S.ui.guard=null},
+  mvq(v,el){S.mv.q[v]=String(Math.max(0,num(S.mv.q[v])+ +el.dataset.d))},
+  async mvsave(){const M=S.mv;const lines={};for(const [k,v] of Object.entries(M.q))if(num(v))lines[k]=num(v);
+    {const st=stockTable(S.session.store,today());const list=[],miss=[];if(!Object.keys(lines).length)list.push('請用 ＋ 點要'+(M.type==='waste'?'銷毀':'試吃')+'的商品數量');
+      if(M.type==='waste'&&!M.reason)list.push('請點一個銷毀原因（過期／破損／退冰）');
+      const bad=Object.entries(lines).filter(([k,q])=>q>st[k].avail);if(bad.length)list.push(bad.map(([k])=>pname(k)).join('、')+' 數量比可售還多');
+      const over=M.type==='tasting'&&Object.entries(lines).some(([k,q])=>q>tasteAllowance(S.session.store,today(),k));if(over&&!M.note.trim()){list.push('試吃超過規則，請在備註寫原因');miss.push('mvnote')}
+      if(M.type==='waste'&&!M.photo){list.push('銷毀一定要拍照');miss.push('up-wastefile')}
+      if(blockIf(list,miss))return render();S.ui.guard=null}
+    let over=false;if(M.type==='tasting')for(const k in lines)if(lines[k]>tasteAllowance(S.session.store,today(),k))over=true;
+    const m={id:uid('m'),store:S.session.store,date:today(),time:nowTime(),ts:Date.now(),type:M.type,by:S.session.name,role:'staff',lines,reason:M.reason,note:M.note.trim(),over,photo:M.photo||null};
+    if(await Store.save('moves',m)){toast(MOVE_TYPES[M.type].label+'已登錄');S.mv={type:M.type,reason:M.type==='tasting'?'開盒試吃':'',q:{},photo:false,note:''}}render()},
+  toggleall(){S.ui.all=!S.ui.all},
+  settoggle(v,el,e){e.preventDefault();S.ui.setOpen=!S.ui.setOpen},
+  dtoggle(v,el,e){e.preventDefault();S.ui.open=S.ui.open||{};S.ui.open[v]=!S.ui.open[v]},
+  async closeok(){const s=S.session.store,d=sd();const T=sysTotals(s,d);const F=S.close;const receipt={};for(const [k] of [['total'],...PAYS])receipt[k]=num(F[k]);
+    {const list=[],miss=[];const st0=stockTable(s,d);const its=SHOP.filter(p=>st0[p.id].any);
+      if(String(F.total??'')===''){list.push('第 1 步：請輸入帳條上的「當日營業額」');miss.push('cl-total')}
+      const left=its.filter(p=>String((F.blind||{})[p.id]??'')==='');if(left.length){list.push('第 2 步：還有 '+left.length+' 項沒確認（'+left.slice(0,4).map(p=>pname(p.id)).join('、')+(left.length>4?'…':'')+'）');left.forEach(p=>miss.push('it-'+p.id))}
+      if(blockIf(list,miss))return render();
+      if(S.ui.confirm!=='close'){const cl=[];const paySum=PAYS.reduce((a,[k])=>a+num(F[k]),0);
+        if(paySum&&paySum!==receipt.total)cl.push('帳條的現金＋刷卡＋商券＋其他＝'+money(paySum)+'，跟當日營業額 '+money(receipt.total)+' 不一樣，有沒有打錯？');
+        if(receipt.total!==T.total)cl.push('營業額：帳條 '+money(receipt.total)+'，系統 '+money(T.total)+'，差 '+money(receipt.total-T.total)+'。請再看一次帳條，或檢查有沒有漏結帳的單。');
+        const bd=its.filter(p=>num((F.blind||{})[p.id])!==st0[p.id].avail);if(bd.length)cl.push('庫存 '+bd.length+' 項不對：'+bd.map(p=>pname(p.id)+(num(F.blind[p.id])>st0[p.id].avail?' 多 ':' 少 ')+Math.abs(num(F.blind[p.id])-st0[p.id].avail)).join('、')+'。請再點一次。');
+        if(cl.length){S.ui.confirm='close';S.ui.guard={list:cl,confirm:true};S.ui.jump='guard';return render()}}
+      S.ui.guard=null;S.ui.confirm=null}
+    const st=stockTable(s,d);const counts={},blindDiff=[];for(const p of SHOP){if(!st[p.id].any)continue;const v=(F.blind||{})[p.id];if(String(v??'')==='')continue;counts[p.id]=num(v);if(counts[p.id]!==st[p.id].avail)blindDiff.push({pid:p.id,count:counts[p.id],sys:st[p.id].avail,diff:counts[p.id]-st[p.id].avail})}
+    const c={id:'close-'+s+'-'+d,store:s,date:d,staff:S.session.name,time:nowTime(),ts:Date.now(),receipt,sys:{total:T.total,cash:T.cash,card:T.card,voucher:T.voucher,other:T.other,count:T.count},diff:receipt.total-T.total,counted:true,counts,blindDiff};
+    Store.put('closes',c);c.report=report(s,d);if(await Store.save('closes',c)){S.ui.showRep=true;toast(c.diff===0&&!blindDiff.length?'收櫃完成：營業額、庫存都對上':'已送出，有不符的地方會通知總經理')}render()},
+  copyrep(v){const [s,d]=v.split('|');const ss=(s==='all'?COUNTERS.map(x=>x.id):[s]).filter(x=>closeOf(x,d)||dayTxns(x,d).length);if(!ss.length)return toast('這天沒有營業');copyText(ss.map(x=>report(x,d)).join('\n\n'))},
+  copytxt(){copyText(S.ui.lastCountRep||'')},
+  phkind(v){S.ph.kind=v},
+  viewph(v){S.ui.phId=v;S.sheet='photo'},
+  ptall(){S.pt.all=!S.pt.all},
+  ptissue(v){const i=S.pt.issues.indexOf(v);if(i>=0)S.pt.issues.splice(i,1);else S.pt.issues.push(v)},
+  async ptsave(){const T=S.pt,s=S.session.store;const lines={},inQ={},outQ={};
+    {const {last,e}=consignExpected(s,T.date);const list=[],miss=[];const has=id=>e[id]>0||(last&&(last.lines||{})[id])||T.lines[id];
+      const filled=id=>{const L=T.lines[id]||{};return !blank(L.shelf)||!blank(L.under)||!blank(L.wh)};
+      if(!T.before.length){list.push('第 1 步：還沒拍盤點前的照片');miss.push('up-ptbefore')}
+      const left=CS_ITEMS.filter(c=>e[c.id]>0&&!filled(c.id));if(left.length){list.push('第 2 步：還有 '+left.length+' 項沒填（'+left.slice(0,4).map(c=>c.name).join('、')+(left.length>4?'…':'')+'），沒有就填 0');left.forEach(c=>miss.push('cr-'+c.id))}
+      if(!CS_ITEMS.some(c=>filled(c.id))&&!left.length){list.push('第 2 步：還沒填任何數量')}
+      if(!T.after.length){list.push('第 3 步：還沒拍盤點後的照片');miss.push('up-ptafter')}
+      if(blockIf(list,miss))return render();
+      if(last&&S.ui.confirm!=='pt'){const more=CS_ITEMS.filter(c=>filled(c.id)&&(num(T.lines[c.id].shelf)+num(T.lines[c.id].under)+num(T.lines[c.id].wh))>e[c.id]);
+        if(more.length){S.ui.confirm='pt';S.ui.guard={list:[more.map(c=>c.name+' 比應有多 '+(num(T.lines[c.id].shelf)+num(T.lines[c.id].under)+num(T.lines[c.id].wh)-e[c.id])).join('、')+'。是不是點錯，或有補貨沒登錄？這次帶來補的請填在「進貨」，不是加在架上。'],confirm:true};S.ui.jump='guard';return render()}}
+      S.ui.guard=null;S.ui.confirm=null}
+    for(const [k,l] of Object.entries(T.lines)){if(num(l.in))inQ[k]=num(l.in);if(num(l.out))outQ[k]=num(l.out);if(blank(l.shelf)&&blank(l.under)&&blank(l.wh))continue;lines[k]={shelf:num(l.shelf),under:num(l.under),wh:num(l.wh),exp:l.exp||''}}
+    const ts=Date.now();const c={id:uid('c'),store:s,date:T.date,time:nowTime(),ts,by:S.session.name,lines,inQ,outQ,before:T.before,after:T.after,issues:T.issues,note:T.note.trim()};
+    Store.put('counts',c);c.report=countReport(c);
+    if(!(await Store.save('counts',c))){render();return}
+    if(Object.keys(inQ).length)await Store.save('moves',{id:c.id+'-in',store:s,date:T.date,time:c.time,ts:ts+1,type:'restock',by:S.session.name,role:'pt',lines:inQ,reason:'盤點時補貨',note:''});
+    if(Object.keys(outQ).length)await Store.save('moves',{id:c.id+'-out',store:s,date:T.date,time:c.time,ts:ts+2,type:'return',by:S.session.name,role:'pt',lines:outQ,reason:'盤點時登錄：其他（退回／報廢）',note:''});
+    S.ui.lastCountRep=c.report;S.pt=ptInit();toast('盤點已送出');window.scrollTo(0,document.body.scrollHeight);render()},
+  astore(v){S.adm.store=v;S.adm.q={}},atype(v){S.adm.type=v},
+  aq(v,el){S.adm.q[v]=String(Math.max(0,num(S.adm.q[v])+ +el.dataset.d))},
+  async asave(){const G=S.adm;const lines={};for(const [k,v] of Object.entries(G.q))if(num(v))lines[k]=num(v);
+    {const list=[];if(!Object.keys(lines).length)list.push('請輸入至少一項的數量');const isC=STORES.find(x=>x.id===G.store).type==='consign';const sign=MOVE_TYPES[G.type].sign;
+      if(sign<0){const ex=isC?consignExpected(G.store,G.date).e:null,st=isC?null:stockTable(G.store,G.date);const neg=Object.entries(lines).filter(([k,q])=>(isC?ex[k]:st[k].avail)-q<0);if(neg.length)list.push(neg.map(([k])=>isC?cname(k):pname(k)).join('、')+' 登錄後會變負數');}
+      if(blockIf(list,[]))return render();S.ui.guard=null}
+    const m={id:uid('m'),store:G.store,date:G.date,time:nowTime(),ts:Date.now(),type:G.type,by:S.session.name,role:'admin',lines,reason:G.note.trim(),note:'',seq:G.type==='restock'||G.type==='in'?restockSeq(G.store,G.date):null};
+    if(await Store.save('moves',m)){toast('已登錄到 '+sname(G.store));G.q={};G.note=''}render()},
+  bstore(v){S.boss.store=v},
+  bview(v){S.boss.view=v;if(v==='month')S.boss.month=(S.boss.date||latestDate()).slice(0,7);window.scrollTo(0,0)},
+  bgoday(v){S.boss.view='day';S.boss.date=v;window.scrollTo(0,0)},
+  stopen(v){const [pt,month]=v.split('|');const st=stmtOf(pt,month);S.ui.stEdit={pt,month,paste:'',msg:null,draft:st?clone({days:st.days||{},amount:st.amount,commission:st.commission,deduct:st.deduct,payable:st.payable,rate:st.rate}):{days:{}}};S.sheet='stmt';S.ui.pkTop=true},
+  stparse(){const E=S.ui.stEdit;const o=parseStmt(E.paste);const pt=STORES.find(x=>x.id===E.pt);const msg=[];
+    if(o.month&&o.month!==E.month)msg.push(['bad','這張是 '+o.month.replace('-',' 年 ')+' 月的對帳單，你現在在填 '+E.month.replace('-',' 年 ')+' 月。已改成存到 '+o.month.replace('-',' 年 ')+' 月。']);
+    if(o.branch&&pt.branch&&o.branch!==pt.branch)msg.push(['bad','對帳單的分店是 '+(o.branchName||'')+'（'+o.branch+'），不是 '+pt.name+'，請確認貼對檔案。']);
+    if(o.n){E.draft={days:Object.fromEntries(Object.entries(o.days).map(([d,x])=>[d,{tax:String(x.tax),free:String(x.free)}])),amount:o.amount,commission:o.commission,deduct:o.deduct,payable:o.payable,rate:o.rate};if(o.month)E.month=o.month;msg.push(['ok','讀到 '+o.n+' 天，合計 '+money(o.sum)+(o.amount!=null?'（對帳單總額 '+money(o.amount)+'）':'')])}
+    o.warn.forEach(w=>msg.push(['warn',w]));E.msg=msg},
+  async stsave2(){const E=S.ui.stEdit;const D=E.draft;const days={};let sum=0;for(const [d,x] of Object.entries(D.days||{})){const t=num(x.tax),f=num(x.free);if(t||f||String(x.tax??'')!==''||String(x.free??'')!==''){days[d]={tax:t,free:f};sum+=t+f}}
+    const rec={id:E.pt+'-'+E.month,store:E.pt,month:E.month,days,amount:String(D.amount??'')!==''?num(D.amount):sum,commission:String(D.commission??'')!==''?num(D.commission):null,deduct:String(D.deduct??'')!==''?num(D.deduct):null,payable:String(D.payable??'')!==''?num(D.payable):null,rate:D.rate||null,ts:Date.now()};
+    if(await Store.save('statements',rec)){toast('已存 '+sname(E.pt)+' '+Number(E.month.slice(5))+' 月對帳單');S.sheet=null;S.ui.stEdit=null}render()},
+  async stsave(v){const [pt,month]=v.split('|');const amt=num(S.ui['st-'+pt+'-'+month]);await Store.save('statements',{id:pt+'-'+month,store:pt,month,amount:amt,ts:Date.now()});toast('已存 '+sname(pt)+' '+Number(month.slice(5))+' 月結帳金額');render()},
+  async csv(v){const f=csvOf(v);let dl=null;try{dl=window.claude&&window.claude.use?await Promise.race([window.claude.use('downloads'),new Promise(r=>setTimeout(()=>r(null),3000))]):null}catch(e){}
+    if(dl){try{await dl.save({filename:f.name,data:'﻿'+f.text});return}catch(e){}}S.ui.csv=f.text;S.sheet='csv';render()},
+  copycsv(){const el=document.getElementById('csvbox');copyText(el?el.value:S.ui.csv)},
+  cfggift(v){const g=S.ui.cfg.dealGifts;const i=g.indexOf(v);if(i>=0)g.splice(i,1);else g.push(v)},
+  cfgbag(){S.ui.cfg.autoBag=!S.ui.cfg.autoBag},
+  cfgclose(v){S.ui.cfg.closeMode=v},
+  async cfgsave(){const c=clone(S.ui.cfg);const split=t=>String(t).split(/[、,，\s]+/).map(x=>x.trim()).filter(Boolean);
+    for(const s of COUNTERS)if((c.staffText||{})[s.id]!=null)c.staff[s.id]=split(c.staffText[s.id]);for(const s of CONSIGNS)if((c.ptText||{})[s.id]!=null){c.pt=c.pt||{};c.pt[s.id]=split(c.ptText[s.id])}delete c.staffText;delete c.ptText;
+    for(const k of ['discountCap','discountStep','extraGiftCap','durianGiftCap','tastingBase','tastingPer','lowStock'])c[k]=num(c[k]);if(c.cprice)for(const k in c.cprice){if(String(c.cprice[k]??'')==='')delete c.cprice[k];else c.cprice[k]=num(c.cprice[k])}if(!c.discountStep)c.discountStep=10;if(c.commissionPct!=null){c.commission=num(c.commissionPct)/100;delete c.commissionPct}delete c.bossPin;c.adminPin=String(c.adminPin||'2222');
+    if(S.costs){const np=String(c.newPin||''),np2=String(c.newPin2||'');if(np&&(np!==np2||np.length<4)){toast(np!==np2?'兩次新 PIN 不一樣':'PIN 至少 4 碼');return}
+      const costs={};for(const [k,v] of Object.entries(c.costEdit||{})){const x=parseFloat(String(v).replace(/[^\d.]/g,''));if(x>0)costs[k]=x}
+      const pin=np||S.bossPin;c.costEnc=await sealCosts(pin,costs);S.costs=costs;if(np){S.bossPin=np;toast('總經理 PIN 已更改')}}
+    delete c.costEdit;delete c.newPin;delete c.newPin2;
+    await Store.saveConfig(c);S.ui.cfg=null;render()},
+  async demo(){await Store.loadDemo();S.boss.date='2026-11-19';render()},
+  reset(){S.ui.resetAsk=true},async resetok(){await Store.resetLocal();S.ui.resetAsk=false;toast('已清空');render()}
+};
+async function onUpload(input){const files=[...(input.files||[])];if(!files.length)return;S.ui.uploading=true;render();
+  try{const r=S.session;
+    if(input.id==='wastefile'){const p=await Store.addPhoto(files[0],{store:r.store,date:today(),kind:'銷毀',by:r.name,note:''});if(p)S.mv.photo=p.id}
+    else if(input.id==='phfile'){for(const f of files)await Store.addPhoto(f,{store:r.store,date:today(),kind:S.ph.kind,by:r.name,note:S.ph.note.trim()});S.ph.note='';toast('照片已上傳')}
+    else if(input.id==='ptbefore'||input.id==='ptafter'){const k=input.id==='ptbefore'?'before':'after';for(const f of files){const p=await Store.addPhoto(f,{store:r.store,date:S.pt.date,kind:k==='before'?'盤點前':'盤點後',by:r.name,note:''});if(p)S.pt[k].push(p.id)}}
+  }catch(e){toast('照片沒有上傳成功：'+(e.code||e.message||e))}
+  S.ui.uploading=false;input.value='';render()}
+document.addEventListener('click',async e=>{const el=e.target.closest('[data-act]');if(!el)return;if(el.disabled)return;const f=A[el.dataset.act];if(!f)return;if(!['checkout','closeok','mvsave','ptsave','asave'].includes(el.dataset.act)){S.ui.confirm=null;if(S.ui.guard&&(S.ui.guard.confirm||!(S.ui.miss||[]).length))S.ui.guard=null}
+  const r=f(el.dataset.v,el,e);if(r&&r.then){await r;return}render()});
+document.addEventListener('input',e=>{const el=e.target;
+  if(el.dataset.bind){let v=el.value;if(el.inputMode==='numeric'&&el.type!=='password')v=v.replace(/[^\d]/g,'');setPath(el.dataset.bind,v);unmiss(el.id);if(el.id.startsWith('pay-'))unmiss('paybox');S.ui.confirm=null;if(S.ui.guard&&S.ui.guard.confirm)S.ui.guard=null;render();return}
+  const a=el.dataset.actIn;if(!a||a==='upload')return;
+  if(a==='qtyset'){const i=+el.dataset.i;const q=num(el.value);if(q>0){S.cart[i].qty=q;render()}}
+  else if(a==='sheetdate'){S.sheetDate=el.value||today();render()}
+  else if(a==='adate'){S.adm.date=el.value||today();render()}
+  else if(a==='ptdate'){S.pt.date=el.value||today();render()}
+  else if(a==='bdate'){S.boss.date=el.value||null;render()}
+  else if(a==='bmonth'){if(el.value)S.boss.month=el.value;render()}});
+document.addEventListener('change',e=>{if(e.target.dataset.actIn==='upload')onUpload(e.target)});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&S.sheet){S.sheet=null;render()}if(e.key==='Enter'&&e.target.id==='pin'){A.pinok();render()}});
+Store.boot().then(()=>{const s=S.session;if(s&&(s.role==='staff'||s.role==='pt')&&!STORES.some(x=>x.id===s.store))S.session=null;render()});
+render();
+}
+</script>
+</body>
+</html>
