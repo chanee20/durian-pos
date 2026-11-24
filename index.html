@@ -184,11 +184,12 @@ table.hours td,table.hours th{padding:6px}table.hours tr.z td{color:var(--mute);
 .ph span{position:absolute;left:0;right:0;bottom:0;background:rgba(0,0,0,.55);color:#fff;font-size:11px;padding:2px 6px;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .upl{display:flex;align-items:center;justify-content:center;gap:8px;border:2px dashed var(--line);border-radius:14px;min-height:64px;padding:10px;font-weight:700;color:var(--green);cursor:pointer;background:var(--card)}
 .upl input{position:absolute;width:1px;height:1px;opacity:0}
-.login{min-height:100%;background:var(--deep);color:#fff;padding:24px max(18px,5vw) 40px}
+.login{min-height:100vh;min-height:100dvh;box-sizing:border-box;background:var(--deep);color:#fff;padding:24px max(18px,5vw) 40px}
 .login .wrap{max-width:560px;width:100%;margin:0 auto}
-.login .logo{width:150px;height:auto;display:block;margin:4px 0 6px}
-.login h1{color:#fff;font-size:clamp(26px,7vw,36px);font-weight:900;margin:10px 0 4px}
-.login p{opacity:.82;margin:0 0 16px}
+.login .logo{width:150px;height:auto;display:block;margin:4px auto 6px}
+html:has(.login),body:has(.login){background:var(--deep)}
+.login h1{color:#fff;font-size:clamp(26px,7vw,36px);font-weight:900;margin:10px 0 4px;text-align:center}
+.login p{opacity:.82;margin:0 0 16px;text-align:center}
 .role{display:flex;align-items:center;gap:14px;width:100%;text-align:left;border:1px solid rgba(255,255,255,.16);border-radius:16px;background:rgba(255,255,255,.07);color:#fff;padding:14px 16px;margin:10px 0;min-height:74px}
 .role b{display:block;font-size:19px}
 .role span{font-size:14px;opacity:.8}
@@ -275,7 +276,7 @@ addons:[
 thresholds:[{min:3000,gift:'BAGL',skipBag:true,label:'大保冷袋'},{min:3500,gift:'PLS',fallback:'KC',label:'小抱枕'}]};
 const CB=Object.fromEntries(CAMPAIGN.combos.map(c=>[c.id,c]));
 const AD=Object.fromEntries(CAMPAIGN.addons.map(a=>[a.id,a]));
-const DEFAULT_CONFIG={staff:{tc:['美玲','淑芬'],ks:['秀英','雅惠']},pt:{'cs-yq':['Cyndi'],'cs-tc':['凱']},discountStep:10,discountCap:100,extraGiftCap:1,durianGiftCap:1,closeMode:'confirm',dealGifts:['BAGS','PLS','KC','PEN'],autoBag:true,tastingBase:1,tastingPer:10,lowStock:3,commission:0.25,adminPin:'2222',costEnc:{"s": "gS9Q8ZNbgYNf1vRkregElw==", "i": "LDvUoGwa1SgluUPn", "d": "/ZHfplKZy4SQeUuIj347fQ+7cS5hfjGjg16fSA3/5nBKhILUjkvWOMGO/K53Z1TdEFIRJ8FCTrhcsOzv0x2sU2Wb1A35juU5lc61ahhtFAL+J+l+GcMcw0yYQp3B/AH/XPlrCx+aPR4LRXir5eqU2FoopD7RCw6PuhfF8Q9hkjfkkVVHOGGaCINZ/9BuLiIFq6XvZQdq0sIDj95gKDemC93yVEywYF5lJ4Y6ukYLTSFdoPUROOzeUzPzxrDIepztoiJJHfSA6okN+o555HUpvDbAb+Cf/KISHqRHSsJeQ3ZOyA2T2Qt5kXyNuH175eC4IBwKnRbUpzO7d8CPHNuyTbeaOKfDd4GAp+EMnZtn8UnAxH1xHDea/r55X0GV0YTzlfUelgQUiKoz3tdM4aSuUOaTBjlx3ESAfP37SzQ+ZEXaB90nH5NTs99Tiyfu0KkeiOIrdcC20oxcgL7HsQ==", "n": 200000},carry:{ks:{month:'2026-11',amount:234287}}};
+const DEFAULT_CONFIG={staff:{tc:['美玲','淑芬'],ks:['秀英','雅惠']},pt:{'cs-yq':['Cyndi'],'cs-tc':['凱']},discountStep:10,discountCap:100,extraGiftCap:1,durianGiftCap:1,closeMode:'confirm',dealGifts:['BAGS','PLS','KC','PEN'],autoBag:true,tastingBase:1,tastingPer:10,lowStock:3,commission:0.25,adminPin:'2222',costEnc:{"s": "JZlKCLo6q2yB/BsQiWuwCQ==", "i": "ycAL55ssWGoDlLQ3", "d": "uXBvZAA/nT2snhPYqzXLGsbMeRLR6Ipi2GBdfi9hs/vFq8UByN1/xso1nZ4tTNf4P2OoN6ILphB6kHOUs7mjcrHAv5LF0n26z73K3liRXH2sQ7Nf3dstRMAlXK+xJEzr8xdLxKCgMqnSr330h+NSSTTcLpILVhm+qQs6OZhRwSIlSjFQHkdCPEmB963/ff2iBWSMavtm7BRBQSbo5HsRVK5Kn59GOMmeaA6DSSi3EUJttnqYkBtVPf45EfuSNsOtWosv4wDJMU+M9z2QrGOeLprE6WTZ2wJqroGboYXS7vwQ9ZwR7GorQjAizbXWtAJVVGnf9yKNtureXn++G6N+o4AhYlupB68l4xeVr4P8/1hiWIoB/e0K2T1LYcS+o+QTe1BEtIsIs1rhd7AnU7xjxyR2cXU51ZLxoq7Vun5YZ85m1J+6Q6I/Jg/jL+C8wqaSjYPPPh8ku2VCPHFmsQ==", "n": 200000},carry:{ks:{month:'2026-11',amount:234287}}};
 const MOVE_TYPES={in:{label:'進櫃',sign:1,col:'in'},restock:{label:'補貨',sign:1,col:'re'},withdraw:{label:'寄庫提領',sign:1,col:'wd'},deposit:{label:'寄庫',sign:-1,col:'dep'},return:{label:'撤櫃回倉',sign:-1,col:'other'},waste:{label:'銷毀',sign:-1,col:'other'},tasting:{label:'試吃',sign:-1,col:'taste'},gift:{label:'贈品',sign:-1,col:'gift'}};
 const CATS=[['combo','雙11組合'],['addon','加購'],['400','400g'],['200','200g'],['ice','冰品甜點'],['goods','周邊']];
 const PAYS=[['cash','現金'],['card','刷卡'],['voucher','商券'],['other','其他']];
