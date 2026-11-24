@@ -167,6 +167,7 @@ table.hours td,table.hours th{padding:6px}table.hours tr.z td{color:var(--mute);
 .addlot{margin-top:10px;width:100%}
 .lot{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) 3.3em 3.3em 3.3em 2.2em;gap:6px;align-items:center;margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}.lot .nm{display:flex;gap:8px;align-items:center}
 .cs-e{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:12px;color:var(--mute)}.cs-e .chip.sm{min-height:34px;padding:4px 10px;font-size:13px}.cs-e input[type=date]{width:9.6em}
+.btn.punch{font-size:22px;min-height:64px}table.pt td{padding:6px 4px;font-size:14px}table.pt a{font-size:12px;white-space:nowrap}
 .fbk{background:var(--bg);border-radius:10px;padding:8px 10px;margin-top:6px;font-size:14px;line-height:1.5}.fbk b{display:block;font-size:13px;color:var(--mute)}
 .cs-x .io{flex-basis:100%;display:flex;gap:14px;padding-left:2.4em}
 .cs-x .sold{margin-left:auto;font-weight:700;color:var(--green);font-size:13px}.cs-x .sold.neg{color:var(--bad)}
@@ -296,13 +297,13 @@ addons:[
 thresholds:[{min:3000,gift:'BAGL',skipBag:true,label:'大保冷袋'},{min:3500,gift:'PLS',fallback:'KC',label:'小抱枕'}]};
 const CB=Object.fromEntries(CAMPAIGN.combos.map(c=>[c.id,c]));
 const AD=Object.fromEntries(CAMPAIGN.addons.map(a=>[a.id,a]));
-const DEFAULT_CONFIG={staff:{tc:['美玲','淑芬'],ks:['秀英','雅惠']},pt:{'cs-yq':['Cyndi'],'cs-tc':['凱']},discountStep:10,discountCap:100,extraGiftCap:3,durianGiftCap:1,closeMode:'confirm',dealGifts:['BAGS','PLS','KC','PEN'],autoBag:true,tastingBase:1,tastingPer:10,lowStock:3,commission:0.25,admins:['行政'],codes:{"staff|tc|美玲": "36fd6609119a3ad3ed4773b060c4f676d55d0e75e976736ef691d3631e4aa517", "staff|tc|淑芬": "668b3778e6bc375a63ff31892d5e8a0a101c9dc09955e26f08abb495ac51e0e7", "staff|ks|秀英": "3a4cfba281cadcd1d679e24c8e2c00430c3ac943c9e02fc8414b82057dad66e8", "staff|ks|雅惠": "8caba75249a8842ca79ebd2a74aeede6cefc8e3726a282aad96604c727793d21", "pt|cs-yq|Cyndi": "cd20f8bb7b77ed33aa2bdbad73b25508b6f5c64d4c9c79a0b441647cf97de0be", "pt|cs-tc|凱": "4d06c59fb1317cbd2d76341a916ef3c2358c2101cb1b84487e190443fc5a67b9", "admin||行政": "effbee3feccca60353e8b131190e3a9bba544fc1b3304384f84043d1e6e1ec50"},costEnc:{"s": "flBJHy+FcDAlfgn5/sG3Tg==", "i": "3QuS1LQs6g+Eh1AB", "d": "S6cPq7KOQTEGXA2Y6MIWAZzAqBAeGmZP3jVSLuyM2RZuWl6wt6twf/QggHMfPut8XgEQbZcwpYnryXIwNnEg+yVvLlRKU0mX+Yy2PVekbTEUOi0xAcPVSiCbTDcYqRDsMmO2T8mBfzbU0mHiw8WcDlWouISNROkgxDxn6f6k+ergRhwH1xUZDoLZaBG+P39eotbWh4siUouxVZzH7R0nuBBJItAAmu8Ilaa6vKE0vrbtdTa/j/XpnYPW11b1F+23Ylh7IMbFtA+6RzyvqFUwtUS4HSziLLkGEjdyauzv1KWuYSGcr0zoS9IgEFscGAEM+fz3e8xQ6CN/J1x2SLsOlefvS3QfDEMcTEQ7E3s/YxHanEvSaFLs3kWOfL7CLtXtAy95IHdk/+tspgl/+avaS1fIUivuMnHS7daqbV66sk17cZsKcW+eTWGTEzyK/GvO+6ILxXraSMJyqg8zTw==", "n": 200000},carry:{ks:{month:'2026-11',amount:234287}}};
+const DEFAULT_CONFIG={staff:{tc:['美玲','淑芬'],ks:['秀英','雅惠']},pt:{'cs-yq':['Cyndi'],'cs-tc':['凱']},discountStep:10,discountCap:100,extraGiftCap:3,durianGiftCap:1,closeMode:'confirm',dealGifts:['BAGS','PLS','KC','PEN'],autoBag:true,tastingBase:1,tastingPer:10,lowStock:3,commission:0.25,admins:['行政'],codes:{"staff|tc|美玲": "36fd6609119a3ad3ed4773b060c4f676d55d0e75e976736ef691d3631e4aa517", "staff|tc|淑芬": "668b3778e6bc375a63ff31892d5e8a0a101c9dc09955e26f08abb495ac51e0e7", "staff|ks|秀英": "3a4cfba281cadcd1d679e24c8e2c00430c3ac943c9e02fc8414b82057dad66e8", "staff|ks|雅惠": "8caba75249a8842ca79ebd2a74aeede6cefc8e3726a282aad96604c727793d21", "pt|cs-yq|Cyndi": "cd20f8bb7b77ed33aa2bdbad73b25508b6f5c64d4c9c79a0b441647cf97de0be", "pt|cs-tc|凱": "4d06c59fb1317cbd2d76341a916ef3c2358c2101cb1b84487e190443fc5a67b9", "admin||行政": "effbee3feccca60353e8b131190e3a9bba544fc1b3304384f84043d1e6e1ec50"},costEnc:{"s": "poVEIb6P1HjEHq5cOCFxcA==", "i": "7T9inkcwu8t36VSj", "d": "ezA2q8PZHgQhdHwzgju/ln0iR+ubX9p5Hg/zf4IV+pcNNr07Xn5TvquSfF2h3MEMOPW1jB2OSoVPRuyImskNqcMXZUBZZ+29CBvZdEggbU/o0YMGXbJK3dOzB1VTggfIpMWhTtXU5GuB0knqKzxGt4DYJ7rzwew7Ok5YU3Y3KRlzTZNpZthjD+526RiEDI2aWbClzgdXkI6eIp2wqO2UQ/KMPRFlZey/YZ32SGq3W97sZuT+y9axSp3ItDScW88RoDOc/Q6vfKeYjeM4ISAgXfbVYpgahGEmB+o9MRocXbNIbTF8uvQiPaihd0seua+hd54ksS5WWIlkfRqplUXyPkOujhBsTADbyJfgUDW6MwRh1jq6wHVgaTWR34KWRakY1scY20McBlIOsQW1tIMvr3ejUUIgdBypruNu5WJmJt1UV+itHxjXy4cq4ODKF/mhSAi///Lfkyib4YFuAQ==", "n": 200000},carry:{ks:{month:'2026-11',amount:234287}}};
 const MOVE_TYPES={in:{label:'進櫃',sign:1,col:'in'},restock:{label:'補貨',sign:1,col:'re'},withdraw:{label:'寄庫提領',sign:1,col:'wd'},deposit:{label:'寄庫',sign:-1,col:'dep'},return:{label:'撤櫃回倉',sign:-1,col:'other'},waste:{label:'銷毀',sign:-1,col:'other'},tasting:{label:'試吃',sign:-1,col:'taste'},gift:{label:'贈品',sign:-1,col:'gift'},linegift:{label:'LINE@贈品',sign:-1,col:'gift'}};
 const CATS=[['combo','雙11組合'],['addon','加購'],['400','400g'],['200','200g'],['ice','冰品甜點'],['goods','周邊']];
 const PAYS=[['cash','現金'],['card','刷卡'],['voucher','商券'],['other','其他']];
 const ISSUES=['擺太高','擺不夠滿','角度歪','結霜嚴重','價卡缺漏','包裝破損','溫度異常','其他'];
 const SLOTS=[];for(let h=10;h<=22;h++)SLOTS.push(h);
-const COLLS=['txns','moves','closes','counts','photos','statements'];
+const COLLS=['txns','moves','closes','counts','photos','statements','punches'];
 
 /* ---------- 工具 ---------- */
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -323,7 +324,7 @@ const lineTxt=m=>Object.entries(m||{}).map(([k,q])=>pname(k)+'×'+q).join('、')
 const clone=o=>JSON.parse(JSON.stringify(o));
 
 /* ---------- 狀態 ---------- */
-const S={sdate:null,mode:'local',txns:[],moves:[],closes:[],counts:[],photos:[],statements:[],config:clone(DEFAULT_CONFIG),session:null,login:{step:'role'},tab:'sell',cat:'combo',cart:[],deal:{steps:0,reason:'',gifts:{},durian:{}},bagQty:null,pay:{cash:'',card:'',voucher:'',other:''},note:'',sheet:null,ui:{},mv:{type:'tasting',reason:'開盒試吃',q:{},photo:false,note:''},adm:{store:'ks',type:'in',date:today(),q:{},note:''},close:{},boss:{date:null,store:'all'},sheetDate:null,last:null,pt:null,ph:{kind:'開櫃',note:''}};
+const S={sdate:null,mode:'local',txns:[],moves:[],closes:[],counts:[],photos:[],statements:[],punches:[],config:clone(DEFAULT_CONFIG),session:null,login:{step:'role'},tab:'sell',cat:'combo',cart:[],deal:{steps:0,reason:'',gifts:{},durian:{}},bagQty:null,pay:{cash:'',card:'',voucher:'',other:''},note:'',sheet:null,ui:{},mv:{type:'tasting',reason:'開盒試吃',q:{},photo:false,note:''},adm:{store:'ks',type:'in',date:today(),q:{},note:''},close:{},boss:{date:null,store:'all'},sheetDate:null,last:null,pt:null,ph:{kind:'開櫃',note:''}};
 try{const s=JSON.parse(localStorage.getItem('dpos-session2')||'null');if(s&&s.role&&s.role!=='boss')S.session=s}catch(e){}
 window.__S=S;
 const saveSession=()=>{try{localStorage.setItem('dpos-session2',JSON.stringify(S.session))}catch(e){}};
@@ -337,6 +338,16 @@ async function sealCosts(pin,costs){const salt=crypto.getRandomValues(new Uint8A
 const codeKey=(role,store,name)=>role+'|'+(store||'')+'|'+name;
 async function codeHash(key,code){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('dpos|'+key+'|'+String(code)));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
 const hasCode=key=>!!((cfg().codes||{})[key]);
+/* ---------- 上下班打卡：時間＋手機定位 ---------- */
+function getLoc(){return new Promise(res=>{if(!navigator.geolocation)return res({err:'這支手機不支援定位'});let done=false;const t=setTimeout(()=>{if(!done){done=true;res({err:'定位逾時'})}},12000);
+  navigator.geolocation.getCurrentPosition(p=>{if(done)return;done=true;clearTimeout(t);res({lat:+p.coords.latitude.toFixed(6),lng:+p.coords.longitude.toFixed(6),acc:Math.round(p.coords.accuracy)})},e=>{if(done)return;done=true;clearTimeout(t);res({err:e.code===1?'沒有允許定位':'定位失敗'})},{enableHighAccuracy:true,timeout:11000,maximumAge:0})})}
+const punchOf=(store,date,name,type)=>S.punches.filter(p=>p.store===store&&p.date===date&&p.name===name&&p.type===type).sort((a,b)=>a.ts-b.ts);
+async function doPunch(type){const ss=S.session;S.ui.punching=type;render();const loc=await getLoc();
+  const p={id:uid('pu'),store:ss.store,date:today(),name:ss.name,type,time:nowTime(),ts:Date.now(),...loc};S.ui.punching=null;
+  if(await Store.save('punches',p)){toast((type==='in'?'上班':'下班')+'打卡 '+p.time+(loc.err?'（'+loc.err+'）':''));return p}return null}
+const mapLink=p=>p&&p.lat!=null?'<a href="https://www.google.com/maps?q='+p.lat+','+p.lng+'" target="_blank" rel="noopener">📍地圖'+(p.acc?'（±'+p.acc+'m）':'')+'</a>':'<span class="neg">'+esc((p&&p.err)||'無定位')+'</span>';
+function punchLine(store,date){const names=[...new Set(S.punches.filter(p=>p.store===store&&p.date===date).map(p=>p.name))];
+  return names.map(n=>{const i=punchOf(store,date,n,'in')[0],o=punchOf(store,date,n,'out').slice(-1)[0];return {n,i,o}})}
 const costOf=k=>(S.costs&&S.costs[k])||0;
 function cogs(store,date){let c=0;for(const t of dayTxns(store,date)){if(t.voided)continue;for(const k in t.sold)c+=costOf(k)*t.sold[k];for(const k in t.gifts)c+=costOf(k)*t.gifts[k]}
   for(const m of S.moves)if(m.store===store&&m.date===date&&['tasting','gift','waste','linegift'].includes(m.type))for(const k in m.lines)c+=costOf(k)*m.lines[k];return c}
@@ -429,6 +440,7 @@ function report(store,date){
   if(top)s+='\n熱銷：'+top;s+='\n試吃 '+taste+'・贈品 '+gift+(lineG?'（含加 LINE@ 送 '+lineG+'）':'');
   if(T.dealN)s+='\n爭取成交 '+T.dealN+' 筆：折價 '+money(T.disc)+(T.dealGiftN?'＋加送小禮 '+T.dealGiftN+' 個':'')+(T.dealDurN?'＋送榴槤商品 '+T.dealDurN+' 件':'');
   if(voids)s+='\n⚠️ 作廢 '+voids+' 筆';
+  {const pl=punchLine(store,date);if(pl.length)s+='\n⏰ 打卡：'+pl.map(x=>x.n+' 上班 '+(x.i?x.i.time+(x.i.lat==null?'(無定位)':''):'—')+'／下班 '+(x.o?x.o.time+(x.o.lat==null?'(無定位)':''):'—')).join('；')}
   if(c&&c.feedback){if((c.feedback.customer||[]).length)s+='\n💬 客人回饋：'+c.feedback.customer.join('；');if((c.feedback.staff||[]).length)s+='\n📝 櫃姐回饋：'+c.feedback.staff.join('；')}
   s+='\n當月累積 '+money(mtd(store,date));return s;
 }
@@ -527,7 +539,7 @@ function demoData(){
     {id:'demo-cs-yq-1117',store:'cs-yq',date:'2026-11-17',time:'11:32',ts:40,by:'Cyndi',lines:{JF400:{shelf:1,under:0},JB400:{shelf:7,under:0},LS400:{shelf:9,under:0},SDH400:{shelf:20,under:0},LGB400:{shelf:11,under:0},HZH400:{shelf:14,under:0},PF6:{shelf:11,under:0},ICSDH:{shelf:28,under:0}},before:[],after:[],issues:[],note:'示範：照 11/17 LINE 回報（未分架上／底下）'},
     {id:'demo-cs-tc-1119',store:'cs-tc',date:'2026-11-19',time:'21:55',ts:41,by:'凱',lines:{HZH400:{shelf:8,under:8,exp:'2027-10-31'},LS400:{shelf:8,under:2,exp:'2027-10-31'},SDH400:{shelf:6,under:3,exp:'2027-05-14'},JB400:{shelf:10,under:3,exp:'2027-10-31'},LGB400:{shelf:4,under:8,exp:'2027-05-14'},ICSDH:{shelf:18,under:23,exp:'2028-08-24'},PF6:{shelf:3,under:9,exp:''},PF1:{shelf:18,under:2,exp:'2027-01-05'}},before:[],after:[],issues:[],note:'示範：照 11/19 LINE 回報'}];
   const statements=[{id:'cs-tc-2026-10',store:'cs-tc',month:'2026-10',days:{"1":{"tax":0,"free":0},"2":{"tax":0,"free":850},"3":{"tax":0,"free":2230},"4":{"tax":0,"free":2680},"5":{"tax":0,"free":0},"6":{"tax":0,"free":0},"7":{"tax":0,"free":2530},"8":{"tax":0,"free":0},"9":{"tax":0,"free":0},"10":{"tax":456,"free":4260},"11":{"tax":0,"free":0},"12":{"tax":170,"free":0},"13":{"tax":170,"free":0},"14":{"tax":340,"free":0},"15":{"tax":0,"free":0},"16":{"tax":341,"free":2980},"17":{"tax":511,"free":2680},"18":{"tax":0,"free":850},"19":{"tax":170,"free":4060},"20":{"tax":0,"free":0},"21":{"tax":143,"free":8400},"22":{"tax":0,"free":3060},"23":{"tax":0,"free":0},"24":{"tax":0,"free":0},"25":{"tax":170,"free":600},"26":{"tax":456,"free":2280},"27":{"tax":0,"free":0},"28":{"tax":0,"free":0},"29":{"tax":0,"free":0},"30":{"tax":170,"free":0},"31":{"tax":0,"free":0}},amount:40557,commission:8111,deduct:12318,payable:20252,rate:20,ts:50,note:'取自 city\'super 台中(3103) T2122 10 月對帳單'}];
-  return {txns,moves,closes,counts,photos:[],statements};
+  return {txns,moves,closes,counts,photos:[],statements,punches:[]};
 }
 
 /* ---------- 儲存：雲端同步／Google 試算表／本機 ---------- */
@@ -581,7 +593,7 @@ function render(){
   const ae=document.activeElement;const fid=ae&&ae.id;let sel=null;try{sel=fid&&ae.selectionStart!=null?[ae.selectionStart,ae.selectionEnd]:null}catch(e){}
   const sy=window.scrollY;const shEl=$sheet.querySelector('.sheet');const ss=shEl?shEl.scrollTop:0;
   const r=S.session&&S.session.role;
-  $app.innerHTML=!r?vLogin():r==='staff'?vStaff():r==='admin'?vAdmin():r==='pt'?vPT():vBoss();
+  $app.innerHTML=!r?vLogin():r==='staff'?(S.session.punched||punchOf(S.session.store,today(),S.session.name,'in').length?vStaff():vPunchIn()):r==='admin'?vAdmin():r==='pt'?vPT():vBoss();
   $sheet.innerHTML=S.sheet?'<div class="sheet-bg" data-act="bgclose"><div class="sheet" role="dialog" aria-modal="true">'+vSheet()+'</div></div>':'';
   const sh2=$sheet.querySelector('.sheet');if(sh2)sh2.scrollTop=S.ui.pkTop?0:ss;S.ui.pkTop=false;window.scrollTo(0,sy);
   if(S.ui.jump){const j=S.ui.jump;S.ui.jump=null;const el=j==='guard'?document.querySelector('.guard'):document.getElementById(j);if(el){el.scrollIntoView({block:'center',behavior:'smooth'});if(el.tagName==='INPUT')el.focus({preventScroll:true})}return}
@@ -614,6 +626,11 @@ function staffNag(){const s=S.session.store,t=today();if(sd()!==t||S.tab==='clos
   if(dayTxns(s,ys).length&&!closeOf(s,ys))h+='<button class="nag" data-act="nagclose" data-v="'+ys+'">⚠️ '+dlabel(ys)+' 還沒收櫃，點這裡補收櫃 ›</button>';
   if(dayTxns(s,t).length&&!closeOf(s,t)&&nowTime()>='21:00')h+='<button class="nag" data-act="nagclose" data-v="'+t+'">下班前記得收櫃（對帳條＋點庫存），點這裡 ›</button>';
   return h}
+function vPunchIn(){const ss=S.session;const busy=S.ui.punching==='in';
+  return '<div class="login"><div class="wrap"><img class="logo" src="'+LOGO+'" alt="榴槤村"><h1>'+esc(ss.name)+'，你好</h1><p>'+esc(sname(ss.store))+'・'+dlabel(today())+'</p>'+
+    '<button class="btn punch" data-act="punchin"'+(busy?' disabled':'')+'>'+(busy?'定位中…':'⏰ 上班打卡')+'</button>'+
+    '<p style="margin-top:12px;font-size:14px;opacity:.85">會記錄現在的時間和手機位置。第一次手機會問「要不要允許位置」，請按<b>允許</b>。</p>'+
+    '<button class="back" style="margin-top:18px" data-act="logout">‹ 不是我，換人</button></div></div>'}
 function vStaff(){const s=S.session;const tabs=[['sell','結帳'],['taste','試吃銷毀'],['sheet','日銷表'],['hours','時段'],['photo','照片'],['close','收櫃']];
   const body={sell:vSell,taste:vTaste,sheet:vDaily,hours:vHours,photo:vPhoto,close:vClose}[S.tab]();const live=S.tab==='sell'&&sd()===today();
   return topBar(sname(s.store),s.name+' · '+dlabel(today()))+'<div class="main'+(live?'':' nobar')+'">'+(S.ui.slow?'<div class="msg warn">雲端資料還沒連上，畫面可能不是最新。</div>':'')+dateBar()+staffNag()+body+'</div>'+
@@ -747,6 +764,8 @@ function vClose(){const s=S.session.store,d=sd();const T=sysTotals(s,d);const c=
       FB[k].forEach((t,j)=>h+='<div style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px;align-items:center;margin-bottom:6px"><input id="fb-'+k+'-'+j+'" class="in" placeholder="'+lab+' '+(j+1)+'" value="'+esc(t)+'" data-bind="close.fb.'+k+'.'+j+'">'+(FB[k].length>1?'<button class="mini" data-act="fbdel" data-v="'+k+'|'+j+'" aria-label="刪除">刪除</button>':'')+'</div>');
       h+='<button class="lnk" data-act="fbadd" data-v="'+k+'">＋ 再加一則'+lab+'</button>'}
     h+='</div>'}
+  {const o=punchOf(s,today(),S.session.name,'out').slice(-1)[0];const busy=S.ui.punching==='out';
+    h+='<div class="card'+((S.ui.miss||[]).includes('punchout')?' need':'')+'" id="punchout"><h3><span class="stepno">4</span>下班打卡</h3>'+(o?'<div class="msg ok">已在 '+esc(o.time)+' 下班打卡 '+mapLink(o)+'</div><button class="mini" data-act="punchout"'+(busy?' disabled':'')+'>重新打卡</button>':'<button class="btn punch" style="margin-top:4px" data-act="punchout"'+(busy?' disabled':'')+'>'+(busy?'定位中…':'⏰ 下班打卡')+'</button><p class="small">會記錄現在的時間和手機位置。</p>')+'</div>'}
   h+=guardBox()+'<button class="btn" data-act="closeok">'+(S.ui.confirm==='close'?'我確認過了，送出收櫃':'送出收櫃・產生 LINE 日報')+'</button>';
   if(c&&S.ui.showRep){if((c.blindDiff||[]).length)h+='<div class="msg bad">庫存有 '+c.blindDiff.length+' 項跟系統不同，請再點一次確認；確定沒點錯就照實送出，總經理會看到。</div>';
     h+='<div class="sec">LINE 日報</div><pre class="rep">'+esc(report(s,d))+'</pre><button class="btn ghost" data-act="copyrep" data-v="'+s+'|'+d+'">複製日報</button>'}
@@ -851,6 +870,7 @@ function vBoss(){const B=S.boss;const d=B.date||latestDate();const showC=B.store
     h+='<div class="card"><div class="row"><h3 class="grow" style="margin:0">'+s.name+'</h3>'+(c?(c.diff===0?'<span class="tag ok">營業額 ✓</span>':'<span class="tag red">營業額差 '+money(c.diff)+'</span>')+(c.counted?(bd.length?'<span class="tag red">庫存 '+bd.length+' 項不符</span>':'<span class="tag ok">庫存 ✓</span>'):''):'<span class="tag gray">未收櫃</span>')+'</div><div class="small">值班 '+esc(staff)+'</div>';
     h+='<table style="margin-top:6px"><thead><tr><th>項目</th><th>系統</th><th>帳條</th></tr></thead><tbody>'+[['total','營業額'],...PAYS].map(([k,l])=>{const r=c?c.receipt[k]:null;return '<tr><td>'+l+'</td><td>'+fmt(T[k])+'</td><td class="'+(c&&r!==T[k]?'neg':'')+'">'+(c?fmt(r):'—')+'</td></tr>'}).join('')+'</tbody></table>';
     if(bd.length)h+='<div class="sec">庫存不符</div>'+bd.map(x=>'<div class="msg bad">'+esc(pname(x.pid))+'：實點 '+x.count+'，系統 '+x.sys+'（'+(x.diff>0?'多 ':'少 ')+Math.abs(x.diff)+'，約 '+money(Math.abs(x.diff)*P[x.pid].price)+' 售價）</div>').join('');
+    {const pl=punchLine(s.id,d);if(pl.length)h+='<div class="sec">打卡</div><table class="pt"><thead><tr><th class="l">櫃姐</th><th class="l">上班</th><th class="l">下班</th></tr></thead><tbody>'+pl.map(x=>'<tr><td class="l">'+esc(x.n)+'</td><td class="l">'+(x.i?'<b>'+esc(x.i.time)+'</b> '+mapLink(x.i):'—')+'</td><td class="l">'+(x.o?'<b>'+esc(x.o.time)+'</b> '+mapLink(x.o):'—')+'</td></tr>').join('')+'</tbody></table>'}
     if(c&&c.feedback&&((c.feedback.customer||[]).length||(c.feedback.staff||[]).length))h+='<div class="sec">回饋</div>'+((c.feedback.customer||[]).length?'<div class="fbk"><b>💬 客人</b>'+c.feedback.customer.map(x=>'<div>・'+esc(x)+'</div>').join('')+'</div>':'')+((c.feedback.staff||[]).length?'<div class="fbk"><b>📝 櫃姐</b>'+c.feedback.staff.map(x=>'<div>・'+esc(x)+'</div>').join('')+'</div>':'');
     h+='</div>'}
   h+='</div>';
@@ -971,7 +991,8 @@ function csvOf(kind){const B=S.boss;const d=B.date||latestDate();const ids=STORE
     for(const t of S.txns.filter(t=>ids.includes(t.store)).sort((a,b)=>(a.date+a.store+String(a.no).padStart(4,'0')).localeCompare(b.date+b.store+String(b.no).padStart(4,'0'))))
       t.items.forEach((i,n)=>rows.push([t.date,t.time,sname(t.store),t.no,t.staff,i.name,i.qty,i.unit,i.total,n?'':t.discount,n?'':t.total,n?'':t.pay.cash,n?'':t.pay.card,n?'':t.pay.voucher,n?'':t.pay.other,n?'':t.giftText,n?'':(t.deal||{}).reason||'',n?'':lineTxt((t.deal||{}).gifts),n?'':t.note,t.voided?'作廢：'+t.voidReason:'']))}
   else if(kind==='move'){rows.push(['日期','店','類型','品項','數量','經手人','原因','備註']);for(const m of S.moves.filter(m=>ids.includes(m.store)).sort((a,b)=>a.date.localeCompare(b.date)))for(const [k,q] of Object.entries(m.lines))rows.push([m.date,sname(m.store),mvLabel(m),cname(k),q,m.by,m.reason,m.note||''])}
-  else if(kind==='count'){rows.push(['日期','寄賣點','盤點人','品項','保存期限','架上','冰箱底','超市冷凍','小計','本次進貨','其他','回報']);for(const c of S.counts.filter(c=>ids.includes(c.store)).sort((a,b)=>a.date.localeCompare(b.date)))for(const k of csList(Object.keys(c.lines||{})).filter(k=>(c.lines||{})[k]||(c.inQ||{})[k]||(c.outQ||{})[k])){const ls=lotsOf((c.lines||{})[k]);(ls.length?ls:[{}]).forEach((l,j)=>rows.push([c.date,sname(c.store),c.by,cname(k),l.exp||'',num(l.shelf),num(l.under),num(l.wh),num(l.shelf)+num(l.under)+num(l.wh),j?'':(c.inQ||{})[k]||'',j?'':(c.outQ||{})[k]||'',(c.issues||[]).join('、')]))}}
+  else if(kind==='count'){rows.push(['打卡']);rows.push(['日期','櫃位','櫃姐','上/下班','時間','緯度','經度','誤差(m)','備註']);for(const p of S.punches.filter(p=>S.boss.store==='all'||p.store===S.boss.store).sort((a,b)=>a.ts-b.ts))rows.push([p.date,sname(p.store),p.name,p.type==='in'?'上班':'下班',p.time,p.lat??'',p.lng??'',p.acc??'',p.err||'']);rows.push([]);
+  rows.push(['日期','寄賣點','盤點人','品項','保存期限','架上','冰箱底','超市冷凍','小計','本次進貨','其他','回報']);for(const c of S.counts.filter(c=>ids.includes(c.store)).sort((a,b)=>a.date.localeCompare(b.date)))for(const k of csList(Object.keys(c.lines||{})).filter(k=>(c.lines||{})[k]||(c.inQ||{})[k]||(c.outQ||{})[k])){const ls=lotsOf((c.lines||{})[k]);(ls.length?ls:[{}]).forEach((l,j)=>rows.push([c.date,sname(c.store),c.by,cname(k),l.exp||'',num(l.shelf),num(l.under),num(l.wh),num(l.shelf)+num(l.under)+num(l.wh),j?'':(c.inQ||{})[k]||'',j?'':(c.outQ||{})[k]||'',(c.issues||[]).join('、')]))}}
   else{rows.push(['日期','店','品項','前日庫存','今日銷售','贈品','試吃','進貨','補貨','今日合計','其他','可銷售數量','收櫃實點']);for(const s of ids.filter(i=>COUNTERS.some(c=>c.id===i))){const st=stockTable(s,d);const c=closeOf(s,d);for(const p of PRODUCTS){const r=st[p.id];if(!r.any)continue;rows.push([d,sname(s),pname(p.id),r.prev,r.sold,r.gift,r.taste,r.in,r.re,r.out,r.other,r.avail,c&&c.counts?c.counts[p.id]??'':''])}}}
   return {name:({txn:'交易明細',move:'庫存異動',count:'寄賣盤點',sheet:'日銷表-'+d}[kind])+'.csv',text:rows.map(csvLine).join('\r\n')}}
 
@@ -1006,7 +1027,7 @@ const A={
     if(S.login.lockUntil&&now<S.login.lockUntil){S.login.err='錯太多次，請 '+Math.ceil((S.login.lockUntil-now)/1000)+' 秒後再試';return}
     if(isB){S.login.err='確認中…';render();const c=await openCosts(pin);if(c){S.costs=c;S.bossPin=pin;S.session={role:'boss',name:'總經理'};S.login.tries=0;S.login.err='';S.login.pin='';saveSession();render();return}}
     S.login.tries=(S.login.tries||0)+1;S.login.pin='';S.login.err='PIN 碼不對';if(S.login.tries>=5){S.login.lockUntil=now+30000;S.login.tries=0;S.login.err='錯 5 次，請 30 秒後再試'}render()},
-  logout(){S.costs=null;S.bossPin=null;if(S.cart.length&&!S.ui.outAsk){S.ui.outAsk=true;toast('購物車還有東西沒結帳。再按一次「換人」會清空');setTimeout(()=>S.ui.outAsk=false,5000);return}S.ui.outAsk=false;S.session=null;S.login={step:'role'};resetCart();S.sheet=null;S.pt=null;S.ui.cfg=null;saveSession()},
+  logout(){S.costs=null;if(S.session)delete S.session.punched;S.bossPin=null;if(S.cart.length&&!S.ui.outAsk){S.ui.outAsk=true;toast('購物車還有東西沒結帳。再按一次「換人」會清空');setTimeout(()=>S.ui.outAsk=false,5000);return}S.ui.outAsk=false;S.session=null;S.login={step:'role'};resetCart();S.sheet=null;S.pt=null;S.ui.cfg=null;saveSession()},
   sdmove(v){const [y,m,dd]=sd().split('-').map(Number);const x=new Date(y,m-1,dd+ +v);const n=x.getFullYear()+'-'+pad(x.getMonth()+1)+'-'+pad(x.getDate());S.sdate=n>=today()?null:n;A.tab(S.tab)},
   sdtoday(){S.sdate=null;A.tab(S.tab)},
   nagclose(v){S.sdate=v===today()?null:v;A.tab('close')},
@@ -1067,6 +1088,7 @@ const A={
   async closeok(){const s=S.session.store,d=sd();const T=sysTotals(s,d);const F=S.close;const receipt={};for(const [k] of [['total'],...PAYS])receipt[k]=num(F[k]);
     {const list=[],miss=[];const st0=stockTable(s,d);const its=SHOP.filter(p=>st0[p.id].any);
       if(String(F.total??'')===''){list.push('第 1 步：請輸入帳條上的「當日營業額」');miss.push('cl-total')}
+      if(d===today()&&!punchOf(s,d,S.session.name,'out').length){list.push('第 4 步：還沒下班打卡');miss.push('punchout')}
       const left=its.filter(p=>String((F.blind||{})[p.id]??'')==='');if(left.length){list.push('第 2 步：還有 '+left.length+' 項沒確認（'+left.slice(0,4).map(p=>pname(p.id)).join('、')+(left.length>4?'…':'')+'）');left.forEach(p=>miss.push('it-'+p.id))}
       if(blockIf(list,miss))return render();
       if(S.ui.confirm!=='close'){const cl=[];const paySum=PAYS.reduce((a,[k])=>a+num(F[k]),0);
@@ -1082,6 +1104,8 @@ const A={
   fbadd(v){S.close.fb[v].push('')},
   fbdel(v){const [k,j]=v.split('|');S.close.fb[k].splice(+j,1)},
   fbquick(v){const [k,q]=v.split('|');const L=S.close.fb[k];const e=L.findIndex(x=>!String(x||'').trim());if(e>=0)L[e]=q;else L.push(q)},
+  async punchin(){const p=await doPunch('in');if(p){S.session.punched=true;saveSession()}render()},
+  async punchout(){await doPunch('out');render()},
   copytxt(){copyText(S.ui.lastCountRep||'')},
   phkind(v){S.ph.kind=v},
   viewph(v){S.ui.phId=v;S.sheet='photo'},
